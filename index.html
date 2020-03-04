@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ossature bois</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <script type="text/javascript" src="js/dat.gui.min.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <script src="js/three.min.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <script src='threex.domevent.js'></script>
+        <script src="js/myScript.js" type="module"></script>
+        <script src="js/helpers.js" type="module"></script>
+        <script type="text/javascript">
+            var controller = new function() {
+                this.scaleX = 1;
+                this.scaleY = 1;
+                this.scaleZ = 1;
+                this.positionX = 0;
+                this.positionY = 0;
+                this.positionZ = 0;
+                this.rotationX = 0;
+                this.rotationY = 90;
+                this.rotationZ = 0;
+                this.castShadow = true;
+                this.boxOpacity = 1;
+            }();
+
+            var gui = new dat.GUI();
+            var guiModules = gui.addFolder('Nombre de modules');
+            guiModules.add(controller, 'scaleX', 1, 5).onChange(function() {
+                //mesh.scale.x = (controller.scaleX);
+            });
+        </script>
+    </div>
+</body></html>
