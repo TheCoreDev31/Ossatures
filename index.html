@@ -21,29 +21,179 @@
     <div id="container">
         <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
-        <script src='threex.domevent.js'></script>
-        <script src="js/myScript.js" type="module"></script>
-        <script src="js/helpers.js" type="module"></script>
+        <script src="js/threex.domevents.js"></script>
+        <!--<script src="js/helpers.js" type="module"></script>//-->
+        <script src="js/main.js" type="module"></script>
         <script type="text/javascript">
-            var controller = new function() {
-                this.scaleX = 1;
-                this.scaleY = 1;
-                this.scaleZ = 1;
-                this.positionX = 0;
-                this.positionY = 0;
-                this.positionZ = 0;
-                this.rotationX = 0;
-                this.rotationY = 90;
-                this.rotationZ = 0;
-                this.castShadow = true;
-                this.boxOpacity = 1;
-            }();
+            const largeurModule = 36;
+            const longueurModule = 72;
+            const hauteurModule = 25;
+            const epaisseurMur = 2;
+            var scene = new THREE.Scene();
+            let loader = new THREE.TextureLoader();
+            var module1, module2, module3, module4;
 
-            var gui = new dat.GUI();
-            var guiModules = gui.addFolder('Nombre de modules');
-            guiModules.add(controller, 'scaleX', 1, 5).onChange(function() {
-                //mesh.scale.x = (controller.scaleX);
-            });
+            function buildModule() {
+                var group = new THREE.Group();
+
+                // Un module = 4 murs + un sol
+                var wallGeometry = new THREE.BoxBufferGeometry(epaisseurMur, hauteurModule, longueurModule);
+                var wallTexture = loader.load("img/crepi.jpg");
+                var wallMaterial = new THREE.MeshLambertMaterial({
+                    map: wallTexture
+                });
+                var roofMaterial = new THREE.MeshLambertMaterial({
+                    map: wallTexture,
+                    opacity: 0.6,
+                    transparent: true
+                });
+
+                var wallLeft = new THREE.Mesh(wallGeometry, wallMaterial);
+                wallLeft.receiveShadow = false;
+                wallLeft.castShadow = true;
+                wallLeft.position.x = -largeurModule / 2;
+
+                var wallRight = wallLeft.clone();
+                wallRight.position.x = largeurModule / 2;
+
+                var wallFront = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule + epaisseurMur, hauteurModule, epaisseurMur), wallMaterial);
+                wallFront.receiveShadow = false;
+                wallFront.castShadow = true;
+                wallFront.position.set(0, 0, largeurModule);
+
+                var wallBack = wallFront.clone();
+                wallBack.position.z = -largeurModule;
+
+                var floorTexture = loader.load("img/carrelage.jpg");
+                floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+                floorTexture.repeat.set(10, 20);
+                var floorMaterial = new THREE.MeshLambertMaterial({
+                    map: floorTexture
+                });
+                var floor = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule, 0.1, longueurModule), floorMaterial);
+                floor.position.set(0, -hauteurModule / 2, 0);
+                floor.receiveShadow = true;
+                floor.castShadow = true;
+
+                var roof = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule, 0.1, longueurModule), roofMaterial);
+                roof.position.set(0, hauteurModule / 2, 0);
+
+                group.add(wallBack);
+                group.add(wallRight);
+                group.add(wallFront);
+                group.add(wallLeft);
+                group.add(floor);
+                group.add(roof);
+
+                return group;
+            }
+
+            function displayGui() {
+                var controller = new function() {
+                    this.afficherTremis = true;
+                }();
+
+                var options = {
+                    Ajouter: function() {
+                        var nbModules = 0;
+                        scene.traverse(function(object) {
+                            if (object instanceof THREE.Group) {
+                                nbModules++;
+                            }
+                        });
+                        switch (nbModules) {
+                            case 1:
+                                module2 = buildModule();
+                                module2.translateX(largeurModule / 2);
+                                module1.translateX(-largeurModule / 2);
+                                module1.children[1].visible = false;
+                                module2.children[3].visible = false;
+                                scene.add(module2);
+                                break;
+                            case 2:
+                                module3 = buildModule();
+                                module3.translateX(largeurModule);
+                                module1.translateX(-largeurModule / 2);
+                                module2.translateX(-largeurModule / 2);
+                                module1.children[1].visible = false;
+                                module2.children[3].visible = false;
+                                module2.children[1].visible = false;
+                                module3.children[3].visible = false;
+                                scene.add(module3);
+                                break;
+                            case 3:
+                                module4 = buildModule();
+                                module4.translateX(largeurModule * 1.5);
+                                module1.translateX(-largeurModule / 2);
+                                module2.translateX(-largeurModule / 2);
+                                module3.translateX(-largeurModule / 2);
+                                module1.children[1].visible = false;
+                                module2.children[3].visible = false;
+                                module2.children[1].visible = false;
+                                module3.children[1].visible = false;
+                                module3.children[3].visible = false;
+                                module4.children[3].visible = false;
+                                scene.add(module4);
+                                break;
+                            default:
+                                alert('Nombre maximum de modules = 4');
+                                break;
+                        }
+                    },
+                    Supprimer: function() {
+                        var nbModules = 0;
+                        scene.traverse(function(object) {
+                            if (object instanceof THREE.Group) {
+                                nbModules++;
+                            }
+                        });
+                        switch (nbModules) {
+                            case 2:
+                                scene.remove(module2);
+                                module1.translateX(largeurModule / 2)
+                                module1.children[1].visible = true;
+                                break;
+                            case 3:
+                                scene.remove(module3);
+                                module1.translateX(largeurModule / 2);
+                                module2.translateX(largeurModule / 2);
+                                module2.children[1].visible = true;
+                                break;
+                            case 4:
+                                scene.remove(module4);
+                                module1.translateX(largeurModule / 2);
+                                module2.translateX(largeurModule / 2);
+                                module3.translateX(largeurModule / 2);
+                                module3.children[1].visible = true;
+                                break;
+                            default:
+                                alert('Nombre minimum de modules = 1');
+                                break;
+                        }
+                    }
+                };
+                var gui = new dat.GUI();
+                var guiModules = gui.addFolder('Gestion des modules');
+                guiModules.add(options, 'Ajouter');
+                guiModules.add(options, 'Supprimer');
+                var guiEnv = gui.addFolder('Autres');
+                guiEnv.add(controller, 'afficherTremis').onChange(function() {
+                    if (module1.children[5].visible) {
+                        module1.children[5].visible = false;
+                        module2.children[5].visible = false;
+                        module3.children[5].visible = false;
+                        module4.children[5].visible = false;
+                    } else {
+                        module1.children[5].visible = true;
+                        module2.children[5].visible = true;
+                        module3.children[5].visible = true;
+                        module4.children[5].visible = true;
+                    }
+                });
+                guiModules.open();
+            }
+
+            displayGui();
         </script>
     </div>
 </body></html>

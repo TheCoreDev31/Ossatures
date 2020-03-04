@@ -1,13 +1,9 @@
-import {
-    loader
-} from "./scene.js"
-
-var module = function buildModule() {
+/*export function buildModule() {
     var group = new THREE.Group();
 
     // Un module = 4 murs + un sol
     var wallGeometry = new THREE.BoxGeometry(2, 25, 72);
-    var wallTexture = new THREE.ImageUtils.loadTexture("img/crepi.jpg");
+    var wallTexture = loader.load("img/crepi.jpg");
     var wallMaterial = new THREE.MeshStandardMaterial({
         map: wallTexture
     });
@@ -46,7 +42,4 @@ var module = function buildModule() {
 
     return group;
 }
-
-export {
-    module
-}
+*/

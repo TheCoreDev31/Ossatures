@@ -1,13 +1,14 @@
-let scene = new THREE.Scene();
-let loader = new THREE.TextureLoader();
 let renderer = new THREE.WebGLRenderer({
     antialias: true
 });
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
 renderer.shadowMapType = THREE.PCFSoftShadowMap;
+renderer.gammaFactor = 2.2;
+renderer.gammaOutput = true;
 
 // Camera
 let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 500);
@@ -15,7 +16,7 @@ let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHe
 camera.position.set(20, 40, 120);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
-console.log(scene.position);
+//console.log(scene.position);
 
 // Environnement
 var groundTexture = loader.load("img/grass.jpg");
@@ -38,7 +39,7 @@ scene.add(ground);
 scene.add(new THREE.AmbientLight(0x111122));
 
 let reference = 200;
-var light = new THREE.DirectionalLight(0xdfebff, 0.62);
+let light = new THREE.DirectionalLight(0xdfebff, 0.62);
 light.position.set(60, 150, -200);
 light.castShadow = true;
 light.shadowCameraVisible = true;
@@ -53,7 +54,7 @@ light.shadowCameraFar = reference * 2;
 light.shadowDarkness = 0.35;
 scene.add(light);
 
-var light2 = light.clone();
+let light2 = light.clone();
 light2.position.set(10, 10, 350);
 light2.shadowCameraVisible = false;
 light2.shadowDarkness = 0.2;
@@ -62,10 +63,7 @@ scene.add(light2);
 document.body.appendChild(renderer.domElement);
 const canvas = renderer.domElement;
 
-
 export {
-    scene,
-    loader,
     renderer,
     camera,
     canvas,

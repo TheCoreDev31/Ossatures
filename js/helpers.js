@@ -1,5 +1,4 @@
 import {
-    scene,
     light,
     light2
 } from "./scene.js"
