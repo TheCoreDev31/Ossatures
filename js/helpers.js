@@ -1,12 +1,12 @@
 import {
-    light,
-    light2
-} from "./scene.js"
+    rearLight,
+    frontLight
+} from "./environment.js"
 
 // Aide au debug
-var lightHelper1 = new THREE.DirectionalLightHelper(light, 5);
-var lightHelper2 = new THREE.DirectionalLightHelper(light2, 5);
-var axesHelper = new THREE.AxesHelper(200);
+var lightHelper1 = new THREE.DirectionalLightHelper(rearLight, 5);
+var lightHelper2 = new THREE.DirectionalLightHelper(frontLight, 5);
+var axesHelper = new THREE.AxesHelper(100);
 
 scene.add(lightHelper1);
 scene.add(lightHelper2);

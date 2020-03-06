@@ -1,6 +1,6 @@
 import {
     canvas
-} from "./scene.js"
+} from "./environment.js"
 
 const pickPosition = {
     x: 0,
@@ -15,13 +15,11 @@ function getCanvasRelativePosition(event) {
     };
 }
 
-function handleClick(event) {
+
+export function handleClick(event) {
     const pos = getCanvasRelativePosition(event);
     pickPosition.x = (pos.x / canvas.clientWidth) * 2 - 1;
     pickPosition.y = (pos.y / canvas.clientHeight) * -2 + 1; // note we flip Y
-}
 
-export {
-    pickPosition,
-    handleClick
+    console.log("X = " + pickPosition.x + " / Y = " + pickPosition.y)
 }
