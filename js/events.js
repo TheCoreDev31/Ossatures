@@ -1,6 +1,8 @@
 import {
-    canvas
+    canvas,
+    camera
 } from "./environment.js"
+
 
 const pickPosition = {
     x: 0,

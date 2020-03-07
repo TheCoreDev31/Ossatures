@@ -12,7 +12,7 @@ renderer.gammaOutput = true;
 
 
 // Camera
-let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 500);
+let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 400);
 camera.position.set(20, 40, 120);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
@@ -32,7 +32,7 @@ ground.position.y = -12.5;
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.background = new THREE.Color(0x99ccff);
-scene.fog = new THREE.Fog(0xcce0ff, 100, 700);
+scene.fog = new THREE.Fog(0xcce0ff, 100, 600);
 scene.add(ground);
 
 
@@ -57,7 +57,7 @@ rearLight.shadowDarkness = 0.35;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
-let frontLight = new THREE.DirectionalLight(0xdfebff, 0.5);
+let frontLight = new THREE.SpotLight(0xdfebff, 0.5);
 frontLight.position.set(10, 10, 350);
 frontLight.castShadow = true;
 frontLight.shadowCameraVisible = false;

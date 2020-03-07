@@ -13,7 +13,7 @@ import {
 
 
 
-function createWindow() {
+export function createWindow() {
 
     // Fenêtre
     let glassMaterial = new THREE.MeshPhongMaterial({
@@ -68,6 +68,28 @@ function createWindow() {
 }
 
 
+function createRoofPan(smallWidth, largeWidth, height) {
+    let texture = loader.load("img/tuile.jpg");
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(0.08, 0.08);
+
+    let geometry = new THREE.Shape();
+    geometry.moveTo(-largeWidth / 2, 0);
+    geometry.lineTo(-smallWidth / 2, height);
+    geometry.lineTo(smallWidth / 2, height);
+    geometry.lineTo(largeWidth / 2, 0);
+    let extrudeSettings = {
+        steps: 4,
+        depth: 0.5,
+        bevelEnabled: false
+    };
+
+    return (new THREE.Mesh(new THREE.ExtrudeBufferGeometry(geometry, extrudeSettings), new THREE.MeshLambertMaterial({
+        map: texture
+    })));
+}
+
+
 export function createModule() {
 
     // Un module = 4 murs + un sol + un plafond
@@ -77,6 +99,7 @@ export function createModule() {
         color: 0xf7db92
     });
     let roofMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
         opacity: 0.6,
         transparent: true
     });
@@ -119,8 +142,27 @@ export function createModule() {
     wallsGroup.add(floor);
     wallsGroup.add(roof);
 
+
+    var frontPan = createRoofPan(largeurModule - 10, largeurModule + 10, 12);
+    var rearPan = frontPan.clone();
+    frontPan.position.set(0, hauteurModule / 2, longueurModule / 2 + 2);
+    frontPan.rotateX(-0.7);
+    wallsGroup.add(frontPan);
+
+    rearPan.rotateX(0.7);
+    rearPan.position.set(0, hauteurModule / 2, -longueurModule / 2 - 2);
+    wallsGroup.add(rearPan);
+
+    var leftPan = createRoofPan(longueurModule - 10, longueurModule + 10, 12);
+    leftPan.rotateY(Math.PI / 2);
+    leftPan.rotateX(0.88);
+    leftPan.position.set(-largeurModule / 2 - 5, hauteurModule / 2, 0);
+    wallsGroup.add(leftPan);
+
+
     return wallsGroup;
 }
+
 
 
 var animate = function () {
@@ -139,8 +181,8 @@ function initControls() {
 
 
 module1 = createModule();
-nbModules++;
 scene.add(module1);
+nbModules++;
 
 let window1 = createWindow();
 scene.add(window1);
