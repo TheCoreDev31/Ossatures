@@ -88,8 +88,8 @@ export function handleGui() {
     guiModules.add(options, 'Supprimer');
 
     let guiEnv = myGui.addFolder('Autres');
-    guiEnv.add(controller, 'afficherPlafond').onChange(function () {
-        if (module1.children[5].visible) {
+    guiEnv.add(controller, 'afficherPlafond').onChange(function (value) {
+        if (!value) {
             module1.children[5].visible = false;
             if (module2) {
                 module2.children[5].visible = false;
