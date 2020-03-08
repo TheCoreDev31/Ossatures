@@ -41,27 +41,23 @@ scene.add(new THREE.AmbientLight(0x111122));
 
 // Un lampe derrière pour l'ombre des bâtiments
 let reference = 200;
-let rearLight = new THREE.DirectionalLight(0xdfebff, 0.75);
-rearLight.position.set(60, 150, -200);
-rearLight.castShadow = true;
-rearLight.shadowCameraVisible = false;
-rearLight.shadowMapWidth = reference * 5;
-rearLight.shadowMapHeight = reference * 5;
 
-rearLight.shadowCameraLeft = -reference;
-rearLight.shadowCameraRight = reference;
-rearLight.shadowCameraTop = reference;
-rearLight.shadowCameraBottom = -reference;
-rearLight.shadowCameraFar = reference * 2;
-rearLight.shadowDarkness = 0.35;
+let rearLight = new THREE.DirectionalLight(0xdfebff, 0.75);
+rearLight.position.set(reference, reference, -reference / 2);
+rearLight.castShadow = true;
+rearLight.shadowMapWidth = reference;
+rearLight.shadowMapHeight = reference;
+rearLight.shadow.camera.left = rearLight.shadow.camera.bottom = -reference;
+rearLight.shadow.camera.right = rearLight.shadow.camera.top = reference;
+rearLight.shadow.camera.near = 1;
+rearLight.shadow.camera.far = reference * 2;
+rearLight.shadowDarkness = 0.15;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
 let frontLight = new THREE.SpotLight(0xdfebff, 0.5);
 frontLight.position.set(10, 10, 350);
-frontLight.castShadow = true;
-frontLight.shadowCameraVisible = false;
-frontLight.shadowDarkness = 0.3;
+frontLight.castShadow = false;
 scene.add(frontLight);
 
 document.body.appendChild(renderer.domElement);

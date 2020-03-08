@@ -94,9 +94,12 @@ export function createModule() {
 
     // Un module = 4 murs + un sol + un plafond
     let wallTexture = loader.load("img/crepi.jpg");
-    let wallMaterial = new THREE.MeshLambertMaterial({
+    wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
+    wallTexture.repeat.set(5, 5);
+    let wallMaterial = new THREE.MeshPhongMaterial({
         map: wallTexture,
-        color: 0xf7db92
+        color: 0xfae5af,
+        roughness: 0.9
     });
     let roofMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
