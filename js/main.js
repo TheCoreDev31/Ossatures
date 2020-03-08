@@ -4,7 +4,9 @@ import {
 } from "./environment.js"
 
 import {
-    handleClick
+    onMouseClick,
+    onMouseMove,
+    onWindowResize
 } from "./events.js"
 
 import {
@@ -162,15 +164,28 @@ export function createModule() {
     leftPan.position.set(-largeurModule / 2 - 5, hauteurModule / 2, 0);
     wallsGroup.add(leftPan);
 
-
     return wallsGroup;
 }
 
 
+function render() {
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObject(module1);
 
-var animate = function () {
+    if (intersects.length > 0) {
+        var intersect = intersects[0];
+        var face = intersect.face;
+
+        alert('touché');
+    }
+
     renderer.render(scene, camera);
+}
+
+
+function animate() {
     requestAnimationFrame(animate);
+    render();
 };
 
 
@@ -179,10 +194,13 @@ function initControls() {
     controls.maxPolarAngle = Math.PI * 0.5;
     controls.minDistance = 20;
     controls.maxDistance = 2000;
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
 }
 
 
-
+// Début
 module1 = createModule();
 scene.add(module1);
 nbModules++;
@@ -190,7 +208,9 @@ nbModules++;
 let window1 = createWindow();
 scene.add(window1);
 
-window.addEventListener('mousedown', handleClick);
+window.addEventListener('mousedown', onMouseClick);
+window.addEventListener('mousemove', onMouseMove, false);
+window.addEventListener('resize', onWindowResize, false);
 initControls();
 handleGui();
 animate();
