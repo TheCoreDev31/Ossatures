@@ -7,8 +7,6 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/dat.gui.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
 </head>
 
 <body>
@@ -16,16 +14,27 @@
         <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
         <script src="js/threex.domevents.js"></script>
+        <script src="js/dat.gui.min.js" type="text/javascript"></script>
         <script src="js/main.js" type="module"></script>
         <!-- <script src="js/helpers.js" type="module"></script> //-->
+        <div class="infos">
+            <h3 id="objectDescription"></h3>
+        </div>
         <script type="text/javascript">
-            const largeurModule = 36;
-            const longueurModule = 72;
-            const hauteurModule = 25;
-            const epaisseurMur = 2;
+            const LARGEUR_MODULE = 36;
+            const LONGUEUR_MODULE = 72;
+            const HAUTEUR_MODULE = 25;
+            const EPAISSEUR_MUR = 2;
+            const COLOR_CIEL = 0x99ccff;
+            const COLOR_RAL7016 = 0x303438;
+            const COLOR_BLANC = 0xffffff;
+            const COLOR_HIGHLIGHT = 0xfd3232;
+
             let scene = new THREE.Scene();
             let loader = new THREE.TextureLoader();
             let module1, module2, module3, module4, nbModules = 0;
+            let editableObjects = new Array(),
+                selectedObjects = new Array();
             let raycaster, mouse;
         </script>
     </div>

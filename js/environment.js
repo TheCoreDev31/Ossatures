@@ -6,9 +6,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
-renderer.shadowMapType = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.gammaFactor = 2.2;
-renderer.gammaOutput = true;
 
 
 // Camera
@@ -31,32 +30,32 @@ let ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), groundMat
 ground.position.y = -12.5;
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
-scene.background = new THREE.Color(0x99ccff);
-scene.fog = new THREE.Fog(0xcce0ff, 100, 600);
+
+scene.background = new THREE.Color(COLOR_CIEL);
+scene.fog = new THREE.Fog(COLOR_CIEL, 100, 600);
 scene.add(ground);
 
 
 // Eclairage
-scene.add(new THREE.AmbientLight(0x111122));
+scene.add(new THREE.AmbientLight(COLOR_BLANC, 0.1));
 
 // Un lampe derrière pour l'ombre des bâtiments
 let reference = 200;
 
-let rearLight = new THREE.DirectionalLight(0xdfebff, 0.75);
+let rearLight = new THREE.DirectionalLight(COLOR_BLANC, .6);
 rearLight.position.set(reference, reference, -reference / 2);
 rearLight.castShadow = true;
-rearLight.shadowMapWidth = reference;
-rearLight.shadowMapHeight = reference;
+rearLight.shadow.mapSize.width = reference;
+rearLight.shadow.mapSize.height = reference;
 rearLight.shadow.camera.left = rearLight.shadow.camera.bottom = -reference;
 rearLight.shadow.camera.right = rearLight.shadow.camera.top = reference;
 rearLight.shadow.camera.near = 1;
 rearLight.shadow.camera.far = reference * 2;
-rearLight.shadowDarkness = 0.15;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
-let frontLight = new THREE.SpotLight(0xdfebff, 0.5);
-frontLight.position.set(10, 10, 350);
+let frontLight = new THREE.SpotLight(COLOR_BLANC, 0.3);
+frontLight.position.set(0, HAUTEUR_MODULE / 2, 350);
 frontLight.castShadow = false;
 scene.add(frontLight);
 

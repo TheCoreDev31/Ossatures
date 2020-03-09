@@ -13,37 +13,43 @@ export function handleGui() {
             switch (nbModules) {
                 case 1:
                     module2 = createModule();
-                    module2.translateX(largeurModule / 2);
-                    module1.translateX(-largeurModule / 2);
+                    module2.name = 'module2';
+                    module2.translateX(LARGEUR_MODULE / 2);
+                    module1.translateX(-LARGEUR_MODULE / 2);
                     module1.children[1].visible = false;
                     module2.children[3].visible = false;
+                    editableObjects.push(module2);
                     scene.add(module2);
                     nbModules++;
                     break;
                 case 2:
                     module3 = createModule();
-                    module3.translateX(largeurModule);
-                    module1.translateX(-largeurModule / 2);
-                    module2.translateX(-largeurModule / 2);
+                    module3.name = 'module3';
+                    module3.translateX(LARGEUR_MODULE);
+                    module1.translateX(-LARGEUR_MODULE / 2);
+                    module2.translateX(-LARGEUR_MODULE / 2);
                     module1.children[1].visible = false;
                     module2.children[3].visible = false;
                     module2.children[1].visible = false;
                     module3.children[3].visible = false;
+                    editableObjects.push(module3);
                     scene.add(module3);
                     nbModules++;
                     break;
                 case 3:
                     module4 = createModule();
-                    module4.translateX(largeurModule * 1.5);
-                    module1.translateX(-largeurModule / 2);
-                    module2.translateX(-largeurModule / 2);
-                    module3.translateX(-largeurModule / 2);
+                    module4.name = 'module4';
+                    module4.translateX(LARGEUR_MODULE * 1.5);
+                    module1.translateX(-LARGEUR_MODULE / 2);
+                    module2.translateX(-LARGEUR_MODULE / 2);
+                    module3.translateX(-LARGEUR_MODULE / 2);
                     module1.children[1].visible = false;
                     module2.children[3].visible = false;
                     module2.children[1].visible = false;
                     module3.children[1].visible = false;
                     module3.children[3].visible = false;
                     module4.children[3].visible = false;
+                    editableObjects.push(module4);
                     scene.add(module4);
                     nbModules++;
                     break;
@@ -56,23 +62,26 @@ export function handleGui() {
             switch (nbModules) {
                 case 2:
                     scene.remove(module2);
-                    module1.translateX(largeurModule / 2)
+                    module1.translateX(LARGEUR_MODULE / 2)
                     module1.children[1].visible = true;
+                    editableObjects.splice(editableObjects.indexOf('module2'), 1);
                     nbModules--;
                     break;
                 case 3:
                     scene.remove(module3);
-                    module1.translateX(largeurModule / 2);
-                    module2.translateX(largeurModule / 2);
+                    module1.translateX(LARGEUR_MODULE / 2);
+                    module2.translateX(LARGEUR_MODULE / 2);
                     module2.children[1].visible = true;
+                    editableObjects.splice(editableObjects.indexOf('module3'), 1);
                     nbModules--;
                     break;
                 case 4:
                     scene.remove(module4);
-                    module1.translateX(largeurModule / 2);
-                    module2.translateX(largeurModule / 2);
-                    module3.translateX(largeurModule / 2);
+                    module1.translateX(LARGEUR_MODULE / 2);
+                    module2.translateX(LARGEUR_MODULE / 2);
+                    module3.translateX(LARGEUR_MODULE / 2);
                     module3.children[1].visible = true;
+                    editableObjects.splice(editableObjects.indexOf('module4'), 1);
                     nbModules--;
                     break;
                 default:
@@ -114,5 +123,4 @@ export function handleGui() {
         }
     });
     guiModules.open();
-    guiEnv.open();
 }

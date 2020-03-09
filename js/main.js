@@ -14,37 +14,36 @@ import {
 } from "./gui.js"
 
 
-
-export function createWindow() {
-
+export function createWindow(largeur = 12.5, hauteur = 10) {
     // Fenêtre
     let glassMaterial = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        shininess: 60,
-        specular: 0x99ccff,
-        refractionRatio: 0.8
+        color: COLOR_CIEL,
+        shininess: 50,
+        specular: 0xffffff,
+        refractionRatio: 0.7
     });
-    let windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(10, 12, 2.1), glassMaterial);
+    let windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 1, hauteur - 1, EPAISSEUR_MUR + 0.1), glassMaterial);
+    windowGlass.position.set(.5, .5, 0);
 
     let windowGeometry = new THREE.Shape();
     windowGeometry.moveTo(0, 0);
-    windowGeometry.lineTo(0, 12.5);
-    windowGeometry.lineTo(10.5, 12.5);
-    windowGeometry.lineTo(10.5, 0);
+    windowGeometry.lineTo(0, hauteur);
+    windowGeometry.lineTo(largeur, hauteur);
+    windowGeometry.lineTo(largeur, 0);
     windowGeometry.lineTo(0, 0);
     let windowHole1 = new THREE.Shape();
-    windowHole1.moveTo(0.5, 0.5);
-    windowHole1.lineTo(0.5, 12);
-    windowHole1.lineTo(5.1, 12);
-    windowHole1.lineTo(5.1, 0.5);
-    windowHole1.lineTo(0.5, 0.5);
+    windowHole1.moveTo(.5, .5);
+    windowHole1.lineTo(.5, hauteur - .5);
+    windowHole1.lineTo((largeur / 2) - .2, hauteur - .5);
+    windowHole1.lineTo((largeur / 2) - .2, .5);
+    windowHole1.lineTo(.5, .5);
     windowGeometry.holes.push(windowHole1);
     let windowHole2 = new THREE.Shape();
-    windowHole2.moveTo(5.5, 0.5);
-    windowHole2.lineTo(5.375, 12);
-    windowHole2.lineTo(10, 12);
-    windowHole2.lineTo(10, 0.5);
-    windowHole2.lineTo(5.5, 0.5);
+    windowHole2.moveTo((largeur / 2) + .2, 0.5);
+    windowHole2.lineTo((largeur / 2) + .2, hauteur - .5);
+    windowHole2.lineTo(largeur - .5, hauteur - .5);
+    windowHole2.lineTo(largeur - .5, 0.5);
+    windowHole2.lineTo((largeur / 2) + .2, 0.5);
     windowGeometry.holes.push(windowHole2);
 
     let extrudeSettings = {
@@ -53,18 +52,18 @@ export function createWindow() {
         bevelEnabled: false
     };
     let windowMaterial = new THREE.MeshStandardMaterial({
-        color: 0x303438,
+        color: COLOR_RAL7016,
         roughness: 0.4,
         metalness: 0.7,
         side: THREE.DoubleSide
     });
     let windowFrame = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(windowGeometry, extrudeSettings), windowMaterial);
-    windowFrame.position.set(-5.25, -6.25, -1.1);
+    windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -1.1);
 
     let window = new THREE.Group();
     window.add(windowFrame);
     window.add(windowGlass);
-    window.position.set(0, 4.5, largeurModule);
+    window.position.set(0, 4.5, LARGEUR_MODULE);
 
     return window;
 }
@@ -98,32 +97,32 @@ export function createModule() {
     let wallTexture = loader.load("img/crepi.jpg");
     wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
     wallTexture.repeat.set(5, 5);
-    let wallMaterial = new THREE.MeshPhongMaterial({
+    let wallMaterial = new THREE.MeshLambertMaterial({
         map: wallTexture,
-        color: 0xfae5af,
-        roughness: 0.9
-    });
-    let roofMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
+        color: 0xf2eede,
+        vertexColors: true
     });
 
-    let wallLeft = new THREE.Mesh(new THREE.BoxBufferGeometry(epaisseurMur, hauteurModule, longueurModule), wallMaterial);
+    let wallLeft = new THREE.Mesh(new THREE.BoxGeometry(EPAISSEUR_MUR, HAUTEUR_MODULE, LONGUEUR_MODULE), wallMaterial);
     wallLeft.receiveShadow = false;
     wallLeft.castShadow = true;
-    wallLeft.position.x = -largeurModule / 2;
+    wallLeft.position.x = -LARGEUR_MODULE / 2;
 
-    let wallRight = wallLeft.clone();
-    wallRight.position.x = largeurModule / 2;
+    let wallRight = new THREE.Mesh(new THREE.BoxGeometry(EPAISSEUR_MUR, HAUTEUR_MODULE, LONGUEUR_MODULE), wallMaterial);
+    wallRight.receiveShadow = false;
+    wallRight.castShadow = true;
+    wallRight.position.x = LARGEUR_MODULE / 2;
 
-    let wallFront = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule + epaisseurMur, hauteurModule, epaisseurMur), wallMaterial);
+    let wallFront = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE + EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
     wallFront.receiveShadow = false;
     wallFront.castShadow = true;
-    wallFront.position.set(0, 0, largeurModule);
+    wallFront.position.set(0, 0, LARGEUR_MODULE);
 
-    let wallBack = wallFront.clone();
-    wallBack.position.z = -largeurModule;
+    let wallBack = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE + EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallBack.receiveShadow = false;
+    wallBack.castShadow = true;
+    wallBack.position.z = -LARGEUR_MODULE;
+
 
     let floorTexture = loader.load("img/carrelage.jpg");
     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
@@ -131,13 +130,18 @@ export function createModule() {
     let floorMaterial = new THREE.MeshLambertMaterial({
         map: floorTexture
     });
-    let floor = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule, 0.1, longueurModule), floorMaterial);
-    floor.position.set(0, -hauteurModule / 2, 0);
+    let floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_MODULE, LONGUEUR_MODULE), floorMaterial);
+    floor.position.set(0, (-HAUTEUR_MODULE / 2) + .01, 0);
+    floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     floor.castShadow = true;
 
-    let roof = new THREE.Mesh(new THREE.BoxBufferGeometry(largeurModule, 0.1, longueurModule), roofMaterial);
-    roof.position.set(0, hauteurModule / 2, 0);
+    let top = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_MODULE, LONGUEUR_MODULE), new THREE.MeshBasicMaterial({
+        opacity: 0.6,
+        transparent: true
+    }));
+    top.rotation.x = -Math.PI / 2;
+    top.position.set(0, (HAUTEUR_MODULE / 2) + .01, 0);
 
     let wallsGroup = new THREE.Group();
     wallsGroup.add(wallBack);
@@ -145,51 +149,42 @@ export function createModule() {
     wallsGroup.add(wallFront);
     wallsGroup.add(wallLeft);
     wallsGroup.add(floor);
-    wallsGroup.add(roof);
-
-
-    var frontPan = createRoofPan(largeurModule - 10, largeurModule + 10, 12);
-    var rearPan = frontPan.clone();
-    frontPan.position.set(0, hauteurModule / 2, longueurModule / 2 + 2);
-    frontPan.rotateX(-0.7);
-    wallsGroup.add(frontPan);
-
-    rearPan.rotateX(0.7);
-    rearPan.position.set(0, hauteurModule / 2, -longueurModule / 2 - 2);
-    wallsGroup.add(rearPan);
-
-    var leftPan = createRoofPan(longueurModule - 10, longueurModule + 10, 12);
-    leftPan.rotateY(Math.PI / 2);
-    leftPan.rotateX(0.88);
-    leftPan.position.set(-largeurModule / 2 - 5, hauteurModule / 2, 0);
-    wallsGroup.add(leftPan);
+    wallsGroup.add(top);
 
     return wallsGroup;
 }
 
 
-function render() {
-    raycaster.setFromCamera(mouse, camera);
-    var intersects = raycaster.intersectObject(module1);
+export function createRoof() {
+    var roof = new THREE.Group();
+    var frontPan = createRoofPan(LARGEUR_MODULE - 10, LARGEUR_MODULE + 10, 12);
+    var rearPan = frontPan.clone();
+    frontPan.position.set(0, HAUTEUR_MODULE / 2, LONGUEUR_MODULE / 2 + 2);
+    frontPan.rotateX(-0.7);
+    roof.add(frontPan);
 
-    if (intersects.length > 0) {
-        var intersect = intersects[0];
-        var face = intersect.face;
+    rearPan.rotateX(0.7);
+    rearPan.position.set(0, HAUTEUR_MODULE / 2, -LONGUEUR_MODULE / 2 - 2);
+    roof.add(rearPan);
 
-        alert('touché');
-    }
+    var leftPan = createRoofPan(LONGUEUR_MODULE - 10, LONGUEUR_MODULE + 10, 12);
+    leftPan.rotateY(Math.PI / 2);
+    leftPan.rotateX(0.88);
+    leftPan.position.set(-LARGEUR_MODULE / 2 - 5, HAUTEUR_MODULE / 2, 0);
+    roof.add(leftPan);
 
-    renderer.render(scene, camera);
+    return roof;
 }
 
+/*********************************************************************************************************************************/
 
 function animate() {
     requestAnimationFrame(animate);
-    render();
+    renderer.render(scene, camera);
 };
 
 
-function initControls() {
+function init() {
     let controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = Math.PI * 0.5;
     controls.minDistance = 20;
@@ -202,15 +197,20 @@ function initControls() {
 
 // Début
 module1 = createModule();
+module1.name = 'module1';
+editableObjects.push(module1);
+nbModules = 1;
 scene.add(module1);
-nbModules++;
 
-let window1 = createWindow();
-scene.add(window1);
+scene.add(createRoof());
 
-window.addEventListener('mousedown', onMouseClick);
-window.addEventListener('mousemove', onMouseMove, false);
+scene.add(createWindow());
+
 window.addEventListener('resize', onWindowResize, false);
-initControls();
+document.addEventListener('click', onMouseClick);
+document.addEventListener('mousemove', onMouseMove, false);
+//document.addEventListener('dblclick', onMouseDoubleClick);
+
+init();
 handleGui();
 animate();

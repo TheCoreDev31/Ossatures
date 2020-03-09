@@ -1,6 +1,22 @@
- html,
- body {
-     margin: 0;
-     padding: 0;
-     overflow: hidden;
- }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.infos {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display: block;
+}
+
+#objectDescription {
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
