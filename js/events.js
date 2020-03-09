@@ -29,7 +29,7 @@ import {
 
 function displayInfos(objet) {
     if (objet != null)
-        document.getElementById('objectDescription').innerHTML = objet.type + objet.id;
+        document.getElementById('objectDescription').innerHTML = objet.parent.name + " sélectionné (Id : " + objet.id + ")";
     else
         document.getElementById('objectDescription').innerHTML = '';
 }
@@ -45,14 +45,9 @@ export function onMouseClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = raycaster.intersectObjects(editableObjects, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans editableObjects[]
-    console.log("Nb d'objets : " + intersects.length);
-    /*
-        for (var i = 0; i < intersects.length; i++) {
-            console.log(intersects[i].id + ' : ' + (intersects[i].children ? intersects[i].children.length : 0));
-        }
-    */
     if (intersects.length === 0) return;
     var objet = intersects[0].object;
+    console.log(objet.parent.name);
     if (objet.geometry.type == 'PlaneBufferGeometry') return;
 
     if (selectedObjects.indexOf(objet.id) < 0) {
@@ -69,16 +64,15 @@ export function onMouseClick(event) {
 
 
 export function onMouseMove(event) {
-    /*
-        event.preventDefault();
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    event.preventDefault();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    //console.log(mouse.x + '-' + mouse.y);
+    /*        raycaster.setFromCamera(mouse, camera);
 
-        raycaster.setFromCamera(mouse, camera);
-
-        var intersects = raycaster.intersectObjects(editableObjects, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans editableObjects[]
-        if (intersects.length === 0) return;
-    */
+            var intersects = raycaster.intersectObjects(editableObjects, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans editableObjects[]
+            if (intersects.length === 0) return;
+        */
 }
 
 

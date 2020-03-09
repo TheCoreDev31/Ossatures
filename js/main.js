@@ -63,31 +63,38 @@ export function createWindow(largeur = 12.5, hauteur = 10) {
     let window = new THREE.Group();
     window.add(windowFrame);
     window.add(windowGlass);
-    window.position.set(0, 4.5, LARGEUR_MODULE);
+    window.position.set(0, -(HAUTEUR_MODULE / 2) + hauteur / 2 + 10, LARGEUR_MODULE);
 
     return window;
 }
 
 
-function createRoofPan(smallWidth, largeWidth, height) {
+function degrees_to_radians(degrees) {
+    var pi = Math.PI;
+    return degrees * (pi / 180);
+}
+
+
+export function createRoof() {
+    var roof = new THREE.Group();
     let texture = loader.load("img/tuile.jpg");
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(0.08, 0.08);
+    texture.repeat.set(3 * nbModules, 3);
 
-    let geometry = new THREE.Shape();
-    geometry.moveTo(-largeWidth / 2, 0);
-    geometry.lineTo(-smallWidth / 2, height);
-    geometry.lineTo(smallWidth / 2, height);
-    geometry.lineTo(largeWidth / 2, 0);
-    let extrudeSettings = {
-        steps: 4,
-        depth: 0.5,
-        bevelEnabled: false
-    };
-
-    return (new THREE.Mesh(new THREE.ExtrudeBufferGeometry(geometry, extrudeSettings), new THREE.MeshLambertMaterial({
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_MODULE + 2, LARGEUR_MODULE * 1.3, 0.2), new THREE.MeshLambertMaterial({
         map: texture
-    })));
+    }));
+    var rearPan = frontPan.clone();
+    frontPan.position.set(0, HAUTEUR_MODULE, (LONGUEUR_MODULE / 2) - 16.8);
+    frontPan.rotateX(-degrees_to_radians(55));
+    roof.add(frontPan);
+
+    rearPan.rotateX(degrees_to_radians(55));
+    rearPan.position.set(0, HAUTEUR_MODULE, -(LONGUEUR_MODULE / 2) + 16.8);
+    roof.add(rearPan);
+    roof.name = 'roofGroup';
+
+    return roof;
 }
 
 
@@ -155,27 +162,6 @@ export function createModule() {
 }
 
 
-export function createRoof() {
-    var roof = new THREE.Group();
-    var frontPan = createRoofPan(LARGEUR_MODULE - 10, LARGEUR_MODULE + 10, 12);
-    var rearPan = frontPan.clone();
-    frontPan.position.set(0, HAUTEUR_MODULE / 2, LONGUEUR_MODULE / 2 + 2);
-    frontPan.rotateX(-0.7);
-    roof.add(frontPan);
-
-    rearPan.rotateX(0.7);
-    rearPan.position.set(0, HAUTEUR_MODULE / 2, -LONGUEUR_MODULE / 2 - 2);
-    roof.add(rearPan);
-
-    var leftPan = createRoofPan(LONGUEUR_MODULE - 10, LONGUEUR_MODULE + 10, 12);
-    leftPan.rotateY(Math.PI / 2);
-    leftPan.rotateX(0.88);
-    leftPan.position.set(-LARGEUR_MODULE / 2 - 5, HAUTEUR_MODULE / 2, 0);
-    roof.add(leftPan);
-
-    return roof;
-}
-
 /*********************************************************************************************************************************/
 
 function animate() {
@@ -197,7 +183,7 @@ function init() {
 
 // Début
 module1 = createModule();
-module1.name = 'module1';
+module1.name = 'Module 1';
 editableObjects.push(module1);
 nbModules = 1;
 scene.add(module1);
