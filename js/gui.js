@@ -28,9 +28,11 @@ function resizeRoof(factor) {
 
 }
 
+
 export function handleGui() {
     let controller = new function () {
-        this.afficherPlafond = true;
+        this.afficherToit = true;
+        this.afficherPlancher = false;
     };
 
     let options = {
@@ -125,7 +127,20 @@ export function handleGui() {
     guiModules.add(options, 'Supprimer');
 
     let guiEnv = myGui.addFolder('Autres');
-    guiEnv.add(controller, 'afficherPlafond').onChange(function (value) {
+    guiEnv.add(controller, 'afficherToit').onChange(function (value) {
+        scene.traverse(function (child) {
+            if (child instanceof THREE.Object3D) {
+                if (child.name == 'roofGroup') {
+                    if (!value)
+                        child.children[0].material.wireframe = true;
+                    else
+                        child.children[0].material.wireframe = false;
+                }
+            }
+        });
+    });
+
+    guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
         if (!value) {
             module1.children[5].visible = false;
             if (module2) {
@@ -150,5 +165,6 @@ export function handleGui() {
             }
         }
     });
+
     guiModules.open();
 }

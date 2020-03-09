@@ -149,6 +149,7 @@ export function createModule() {
     }));
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_MODULE / 2) + .01, 0);
+    top.visible = false;
 
     let wallsGroup = new THREE.Group();
     wallsGroup.add(wallBack);
