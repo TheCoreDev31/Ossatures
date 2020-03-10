@@ -78,9 +78,9 @@ function degrees_to_radians(degrees) {
 
 export function createRoof() {
     var roof = new THREE.Group();
-    let texture = loader.load("img/tuile.jpg");
+    let texture = loader.load("img/ardoise.jpg");
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(3 * nbModules, 3);
+    texture.repeat.set(6 * nbModules, 6);
 
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_MODULE + 2, LARGEUR_MODULE * 1.3, 0.2), new THREE.MeshLambertMaterial({
         map: texture
@@ -102,12 +102,12 @@ export function createRoof() {
 export function createModule() {
 
     // Un module = 4 murs + un sol + un plafond
-    let wallTexture = loader.load("img/crepi_recadre.jpg");
+    let wallTexture = loader.load("img/crepi.jpg");
     wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
     wallTexture.repeat.set(5, 5);
     let wallMaterial = new THREE.MeshLambertMaterial({
         map: wallTexture,
-        color: 0xf2eede,
+        color: 0xf7f4e8,
         vertexColors: true
     });
 

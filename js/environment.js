@@ -18,10 +18,9 @@ camera.lookAt(scene.position);
 
 
 // Environnement
-let groundTexture = loader.load("img/grass.jpg");
+let groundTexture = loader.load("img/gazon.jpg");
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-groundTexture.repeat.set(20, 20);
-groundTexture.anisotropy = 16;
+groundTexture.repeat.set(50, 100);
 groundTexture.encoding = THREE.sRGBEncoding;
 let groundMaterial = new THREE.MeshLambertMaterial({
     map: groundTexture

@@ -10,9 +10,9 @@ function resizeRoof(factor) {
             if (child.name == 'roofGroup') {
 
                 // On joue sur la taille du toit et on recalcule sa texture en fonction.
-                var newTexture = loader.load("img/tuile.jpg");
+                var newTexture = loader.load("img/ardoise.jpg");
                 newTexture.wrapS = newTexture.wrapT = THREE.RepeatWrapping;
-                newTexture.repeat.set(3 * nbModules, 3);
+                newTexture.repeat.set(6 * nbModules, 6);
                 if (factor >= 0) {
                     child.scale.x *= factor;
                 } else
