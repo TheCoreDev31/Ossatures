@@ -1,6 +1,6 @@
 import {
     createModule
-} from "./main.js"
+} from "./objects.js"
 
 import {
     createRoofTexture
