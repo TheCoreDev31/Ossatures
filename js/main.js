@@ -14,13 +14,18 @@ import {
     handleGui
 } from "./gui.js"
 
+import {
+    COLOR_ARRAY,
+    createRoofTexture
+} from "./materials.js"
+
 
 export function createWindow(largeur = 12.5, hauteur = 10) {
     // Fenêtre
     let glassMaterial = new THREE.MeshPhongMaterial({
-        color: COLOR_CIEL,
+        color: COLOR_ARRAY['bleu_ciel'],
         shininess: 50,
-        specular: 0xffffff,
+        specular: COLOR_ARRAY['blanc'],
         refractionRatio: 0.7
     });
     let windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 1, hauteur - 1, EPAISSEUR_MUR + 0.1), glassMaterial);
@@ -53,7 +58,7 @@ export function createWindow(largeur = 12.5, hauteur = 10) {
         bevelEnabled: false
     };
     let windowMaterial = new THREE.MeshStandardMaterial({
-        color: COLOR_RAL7016,
+        color: COLOR_ARRAY['ral7016'],
         roughness: 0.4,
         metalness: 0.7,
         side: THREE.DoubleSide
@@ -78,10 +83,7 @@ function degrees_to_radians(degrees) {
 
 export function createRoof() {
     var roof = new THREE.Group();
-    let texture = loader.load("img/ardoise.jpg");
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(6 * nbModules, 6);
-
+    var texture = createRoofTexture();
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_MODULE + 2, LARGEUR_MODULE * 1.3, 0.2), new THREE.MeshLambertMaterial({
         map: texture
     }));
@@ -107,7 +109,7 @@ export function createModule() {
     wallTexture.repeat.set(5, 5);
     let wallMaterial = new THREE.MeshLambertMaterial({
         map: wallTexture,
-        color: 0xf7f4e8,
+        color: COLOR_ARRAY['crepi'],
         vertexColors: true
     });
 

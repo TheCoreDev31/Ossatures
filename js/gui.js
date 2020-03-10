@@ -2,6 +2,11 @@ import {
     createModule
 } from "./main.js"
 
+import {
+    createRoofTexture
+}
+from "./materials.js"
+
 
 function resizeRoof(factor) {
 
@@ -10,15 +15,14 @@ function resizeRoof(factor) {
             if (child.name == 'roofGroup') {
 
                 // On joue sur la taille du toit et on recalcule sa texture en fonction.
-                var newTexture = loader.load("img/ardoise.jpg");
-                newTexture.wrapS = newTexture.wrapT = THREE.RepeatWrapping;
-                newTexture.repeat.set(6 * nbModules, 6);
+                var newTexture = createRoofTexture();
                 if (factor >= 0) {
                     child.scale.x *= factor;
                 } else
                     child.scale.x /= factor;
                 child.children[0].material.map = newTexture;
                 child.children[0].material.needsUpdate = true;
+                return;
             }
         }
     });

@@ -1,3 +1,9 @@
+import {
+    COLOR_ARRAY,
+    groundMaterial
+} from "./materials.js"
+
+
 // Renderer
 let renderer = new THREE.WebGLRenderer({
     antialias: true
@@ -11,37 +17,32 @@ renderer.gammaFactor = 2.2;
 
 
 // Camera
-let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 400);
+let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 10, 400);
 camera.position.set(20, 40, 120);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
 
 
 // Environnement
-let groundTexture = loader.load("img/gazon.jpg");
-groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-groundTexture.repeat.set(50, 100);
-groundTexture.encoding = THREE.sRGBEncoding;
-let groundMaterial = new THREE.MeshLambertMaterial({
-    map: groundTexture
-});
 let ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), groundMaterial);
 ground.position.y = -12.5;
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
-
-scene.background = new THREE.Color(COLOR_CIEL);
-scene.fog = new THREE.Fog(COLOR_CIEL, 100, 600);
+ground.castShadow = false;
 scene.add(ground);
+
+scene.background = COLOR_ARRAY['bleu_ciel'];
+scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 600);
+
 
 
 // Eclairage
-scene.add(new THREE.AmbientLight(COLOR_BLANC, 0.1));
+scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.1));
 
 // Un lampe derrière pour l'ombre des bâtiments
-let reference = 200;
+const reference = 200;
 
-let rearLight = new THREE.DirectionalLight(COLOR_BLANC, .6);
+let rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], .6);
 rearLight.position.set(reference, reference, -reference / 2);
 rearLight.castShadow = true;
 rearLight.shadow.mapSize.width = reference;
@@ -53,10 +54,12 @@ rearLight.shadow.camera.far = reference * 2;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
-let frontLight = new THREE.SpotLight(COLOR_BLANC, 0.3);
-frontLight.position.set(0, HAUTEUR_MODULE / 2, 350);
+let frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+frontLight.position.set(10, HAUTEUR_MODULE, 300);
 frontLight.castShadow = false;
 scene.add(frontLight);
+
+
 
 document.body.appendChild(renderer.domElement);
 let canvas = renderer.domElement;

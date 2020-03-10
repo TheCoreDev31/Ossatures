@@ -3,6 +3,10 @@ import {
     renderer
 } from "./environment.js"
 
+import {
+    COLOR_ARRAY
+} from "./materials.js"
+
 
 /*   Pour la gestion des faces
 
@@ -50,11 +54,11 @@ export function onMouseClick(event) {
     if (objet.geometry.type == 'PlaneBufferGeometry') return;
 
     if (selectedObjects.indexOf(objet.id) < 0) {
-        objet.material.color.set(COLOR_HIGHLIGHT);
+        objet.material.color.set(COLOR_ARRAY['highlight']);
         selectedObjects.push(objet.id);
         displayInfos(objet);
     } else {
-        objet.material.color.set(COLOR_BLANC);
+        objet.material.color.set(COLOR_ARRAY['blanc']);
         selectedObjects.splice(selectedObjects.indexOf(objet.id), 1);
         clearInfos();
     }
