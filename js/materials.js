@@ -4,7 +4,7 @@ COLOR_ARRAY['ral7016'] = (new THREE.Color(0x303438).convertSRGBToLinear());
 COLOR_ARRAY['blanc'] = (new THREE.Color(0xffffff).convertSRGBToLinear());
 COLOR_ARRAY['crepi'] = (new THREE.Color(0xf7f4e8).convertSRGBToLinear());
 COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
-COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd3232).convertSRGBToLinear());
+COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
 
 
 // Sol gazonné
@@ -21,13 +21,27 @@ export var groundMaterial = new THREE.MeshBasicMaterial({
 
 
 // Toit
-export function createRoofTexture() {
+export function createRoofTexture(repeatX = 1) {
     var roofTexture = new THREE.Texture();
     roofTexture = loader.load("img/ardoise.jpg");
     roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
-
-    console.log(nbModules);
-    roofTexture.repeat.set(6 * (nbModules + 1), 6);
+    roofTexture.repeat.set(5 * repeatX, 5);
 
     return roofTexture;
 }
+
+
+// Fenêtre
+export var glassMaterial = new THREE.MeshPhongMaterial({
+    color: COLOR_ARRAY['bleu_ciel'],
+    shininess: 50,
+    specular: COLOR_ARRAY['gris_clair'],
+    refractionRatio: 0.7
+});
+
+export var windowMaterial = new THREE.MeshStandardMaterial({
+    color: COLOR_ARRAY['ral7016'],
+    roughness: 0.4,
+    metalness: 0.7,
+    side: THREE.DoubleSide
+});

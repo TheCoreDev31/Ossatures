@@ -16,18 +16,39 @@ import {
 
 import {
     COLOR_ARRAY,
-    createRoofTexture
+    createRoofTexture,
+    glassMaterial,
+    windowMaterial
 } from "./materials.js"
 
 
-export function createWindow(largeur = 12.5, hauteur = 10) {
-    // Fenêtre
-    let glassMaterial = new THREE.MeshPhongMaterial({
-        color: COLOR_ARRAY['bleu_ciel'],
-        shininess: 50,
-        specular: COLOR_ARRAY['blanc'],
-        refractionRatio: 0.7
-    });
+
+// Fonctions communes
+function degrees_to_radians(degrees) {
+    var pi = Math.PI;
+    return degrees * (pi / 180);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+};
+
+
+function init() {
+    let controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.maxPolarAngle = Math.PI * 0.5;
+    controls.minDistance = 20;
+    controls.maxDistance = 2000;
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+}
+
+
+
+export function createWindow(largeur = LARGEUR_STANDARD_FENETRE, hauteur = HAUTEUR_STANDARD_FENETRE, nbPanneaux = 2) {
+
     let windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 1, hauteur - 1, EPAISSEUR_MUR + 0.1), glassMaterial);
     windowGlass.position.set(.5, .5, 0);
 
@@ -37,55 +58,60 @@ export function createWindow(largeur = 12.5, hauteur = 10) {
     windowGeometry.lineTo(largeur, hauteur);
     windowGeometry.lineTo(largeur, 0);
     windowGeometry.lineTo(0, 0);
-    let windowHole1 = new THREE.Shape();
-    windowHole1.moveTo(.5, .5);
-    windowHole1.lineTo(.5, hauteur - .5);
-    windowHole1.lineTo((largeur / 2) - .2, hauteur - .5);
-    windowHole1.lineTo((largeur / 2) - .2, .5);
-    windowHole1.lineTo(.5, .5);
-    windowGeometry.holes.push(windowHole1);
-    let windowHole2 = new THREE.Shape();
-    windowHole2.moveTo((largeur / 2) + .2, 0.5);
-    windowHole2.lineTo((largeur / 2) + .2, hauteur - .5);
-    windowHole2.lineTo(largeur - .5, hauteur - .5);
-    windowHole2.lineTo(largeur - .5, 0.5);
-    windowHole2.lineTo((largeur / 2) + .2, 0.5);
-    windowGeometry.holes.push(windowHole2);
+    switch (nbPanneaux) {
+        case 1:
+            let windowHole = new THREE.Shape();
+            windowHole.moveTo(.5, .5);
+            windowHole.lineTo(.5, hauteur - .5);
+            windowHole.lineTo(largeur - .4, hauteur - .5);
+            windowHole.lineTo(largeur - .4, .5);
+            windowHole.lineTo(.5, .5);
+            windowGeometry.holes.push(windowHole);
+            break;
+        default:
+            let windowHole1 = new THREE.Shape();
+            windowHole1.moveTo(.5, .5);
+            windowHole1.lineTo(.5, hauteur - .5);
+            windowHole1.lineTo((largeur / 2) - .2, hauteur - .5);
+            windowHole1.lineTo((largeur / 2) - .2, .5);
+            windowHole1.lineTo(.5, .5);
+            windowGeometry.holes.push(windowHole1);
+            let windowHole2 = new THREE.Shape();
+            windowHole2.moveTo((largeur / 2) + .2, 0.5);
+            windowHole2.lineTo((largeur / 2) + .2, hauteur - .5);
+            windowHole2.lineTo(largeur - .5, hauteur - .5);
+            windowHole2.lineTo(largeur - .5, 0.5);
+            windowHole2.lineTo((largeur / 2) + .2, 0.5);
+            windowGeometry.holes.push(windowHole2);
+            break;
+    }
 
     let extrudeSettings = {
         steps: 4,
-        depth: 2.5,
+        depth: EPAISSEUR_MUR + 0.5,
         bevelEnabled: false
     };
-    let windowMaterial = new THREE.MeshStandardMaterial({
-        color: COLOR_ARRAY['ral7016'],
-        roughness: 0.4,
-        metalness: 0.7,
-        side: THREE.DoubleSide
-    });
     let windowFrame = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(windowGeometry, extrudeSettings), windowMaterial);
     windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -1.1);
 
     let window = new THREE.Group();
     window.add(windowFrame);
     window.add(windowGlass);
+    nbFenetres++;
+    window.name = 'Fenetre ' + nbFenetres;
     window.position.set(0, -(HAUTEUR_MODULE / 2) + hauteur / 2 + 10, LARGEUR_MODULE);
 
     return window;
 }
 
 
-function degrees_to_radians(degrees) {
-    var pi = Math.PI;
-    return degrees * (pi / 180);
-}
-
 
 export function createRoof() {
     var roof = new THREE.Group();
     var texture = createRoofTexture();
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_MODULE + 2, LARGEUR_MODULE * 1.3, 0.2), new THREE.MeshLambertMaterial({
-        map: texture
+        map: texture,
+        color: COLOR_ARRAY['gris_clair']
     }));
     var rearPan = frontPan.clone();
     frontPan.position.set(0, HAUTEUR_MODULE, (LONGUEUR_MODULE / 2) - 16.8);
@@ -95,7 +121,7 @@ export function createRoof() {
     rearPan.rotateX(degrees_to_radians(55));
     rearPan.position.set(0, HAUTEUR_MODULE, -(LONGUEUR_MODULE / 2) + 16.8);
     roof.add(rearPan);
-    roof.name = 'roofGroup';
+    roof.name = 'Toit';
 
     return roof;
 }
@@ -161,6 +187,8 @@ export function createModule() {
     wallsGroup.add(wallLeft);
     wallsGroup.add(floor);
     wallsGroup.add(top);
+    nbModules++;
+    wallsGroup.name = 'Module ' + nbModules;
 
     return wallsGroup;
 }
@@ -168,33 +196,17 @@ export function createModule() {
 
 /*********************************************************************************************************************************/
 
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-};
-
-
-function init() {
-    let controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.maxPolarAngle = Math.PI * 0.5;
-    controls.minDistance = 20;
-    controls.maxDistance = 2000;
-
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
-}
-
-
-// Début
 module1 = createModule();
-module1.name = 'Module 1';
-editableObjects.push(module1);
-nbModules = 1;
 scene.add(module1);
+editableObjects.push(module1);
 
 scene.add(createRoof());
 
-scene.add(createWindow());
+var firstWindow = createWindow();
+scene.add(firstWindow);
+editableObjects.push(firstWindow);
+
+
 
 window.addEventListener('resize', onWindowResize, false);
 document.addEventListener('click', onMouseClick);

@@ -25,10 +25,14 @@
             const LONGUEUR_MODULE = 72;
             const HAUTEUR_MODULE = 25;
             const EPAISSEUR_MUR = 2;
+            const LARGEUR_STANDARD_FENETRE = 12.5;
+            const HAUTEUR_STANDARD_FENETRE = 10;
+            const DOWN = true;
 
             let scene = new THREE.Scene();
             let loader = new THREE.TextureLoader();
-            let module1, module2, module3, module4, nbModules = 0;
+            let module1, module2, module3, module4;
+            let nbModules = nbFenetres = 0;
             let editableObjects = new Array(),
                 selectedObjects = new Array();
             let raycaster, mouse;

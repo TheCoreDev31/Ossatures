@@ -17,8 +17,8 @@ renderer.gammaFactor = 2.2;
 
 
 // Camera
-let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 10, 400);
-camera.position.set(20, 40, 120);
+let camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 400);
+camera.position.set(50, 30, 120);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
 

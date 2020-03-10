@@ -38,10 +38,6 @@ function displayInfos(objet) {
         document.getElementById('objectDescription').innerHTML = '';
 }
 
-function clearInfos() {
-    displayInfos(null);
-}
-
 export function onMouseClick(event) {
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -60,7 +56,7 @@ export function onMouseClick(event) {
     } else {
         objet.material.color.set(COLOR_ARRAY['blanc']);
         selectedObjects.splice(selectedObjects.indexOf(objet.id), 1);
-        clearInfos();
+        displayInfos(null);
     }
 
 }
