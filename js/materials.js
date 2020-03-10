@@ -8,6 +8,30 @@ COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
 COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
 
 
+
+export var textMaterial = new THREE.MeshBasicMaterial({
+    color: COLOR_ARRAY['blanc']
+});
+
+export function createText(texte) {
+    var cotes = new THREE.Mesh();
+    var loader = new THREE.FontLoader();
+    loader.load('./fonts/helvetiker_regular.typeface.json', function (font) {
+        var geometry = new THREE.TextGeometry(texte, {
+            font: font,
+            size: 2,
+            height: 0.1,
+            curveSegments: 4,
+            bevelEnabled: false
+        });
+        cotes.geometry = geometry;
+        cotes.geometry.center();
+        cotes.material = textMaterial;
+    });
+
+    return cotes;
+}
+
 // Sol gazonné
 var groundTexture = loader.load("img/gazon.jpg");
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
@@ -52,18 +76,19 @@ export var windowMaterial = new THREE.MeshStandardMaterial({
 var wallOutTexture = loader.load("img/crepi.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(5, 5);
-
 var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
     color: COLOR_ARRAY['crepi'],
     vertexColors: true
 });
+
 var wallInMaterial = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['blanc'],
     emissive: COLOR_ARRAY['blanc'],
     emissiveIntensity: 0.2
 });
 export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
+
 
 var floorTexture = loader.load("img/carrelage.jpg");
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;

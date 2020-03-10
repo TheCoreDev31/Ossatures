@@ -7,11 +7,28 @@ import {
 }
 from "./materials.js"
 
+import {
+    recalculerCotes
+} from "./main.js"
 
 function resizeRoof(down = false) {
     var factor;
     if (down) factor = -(nbModules + 1) / nbModules;
     else factor = nbModules / (nbModules - 1);
+
+    var leToit = scene.getObjectByName('Toit');
+    if (leToit) {
+        // On joue sur la taille du toit et on recalcule sa texture en fonction.
+        var newTexture = createRoofTexture(nbModules);
+        if (factor >= 0) {
+            leToit.scale.x *= factor;
+        } else
+            leToit.scale.x /= factor;
+        leToit.children[0].material.map = newTexture;
+        leToit.children[0].material.needsUpdate = true;
+    }
+
+    /*   On le garde.... pour l'exemple
 
     scene.traverse(function (child) {
         if (child instanceof THREE.Object3D) {
@@ -29,7 +46,7 @@ function resizeRoof(down = false) {
             }
         }
     });
-
+    */
 }
 
 
@@ -37,6 +54,7 @@ export function handleGui() {
     var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = false;
+        this.afficherCotes = true;
     };
 
     var options = {
@@ -48,8 +66,9 @@ export function handleGui() {
                     module1.translateX(-LARGEUR_MODULE / 2);
                     module1.children[1].visible = false;
                     module2.children[3].visible = false;
-                    editableObjects.push(module2);
+                    objetsModifiables.push(module2);
                     scene.add(module2);
+                    recalculerCotes('largeur');
                     resizeRoof();
                     break;
                 case 2:
@@ -61,8 +80,9 @@ export function handleGui() {
                     module2.children[3].visible = false;
                     module2.children[1].visible = false;
                     module3.children[3].visible = false;
-                    editableObjects.push(module3);
+                    objetsModifiables.push(module3);
                     scene.add(module3);
+                    recalculerCotes('largeur');
                     resizeRoof();
                     break;
                 case 3:
@@ -77,8 +97,9 @@ export function handleGui() {
                     module3.children[1].visible = false;
                     module3.children[3].visible = false;
                     module4.children[3].visible = false;
-                    editableObjects.push(module4);
+                    objetsModifiables.push(module4);
                     scene.add(module4);
+                    recalculerCotes('largeur');
                     resizeRoof();
                     break;
                 default:
@@ -92,8 +113,9 @@ export function handleGui() {
                     scene.remove(module2);
                     module1.translateX(LARGEUR_MODULE / 2)
                     module1.children[1].visible = true;
-                    editableObjects.splice(editableObjects.indexOf('module2'), 1);
+                    objetsModifiables.splice(objetsModifiables.indexOf('module2'), 1);
                     nbModules--;
+                    recalculerCotes('largeur');
                     resizeRoof(DOWN);
                     break;
                 case 3:
@@ -101,8 +123,9 @@ export function handleGui() {
                     module1.translateX(LARGEUR_MODULE / 2);
                     module2.translateX(LARGEUR_MODULE / 2);
                     module2.children[1].visible = true;
-                    editableObjects.splice(editableObjects.indexOf('module3'), 1);
+                    objetsModifiables.splice(objetsModifiables.indexOf('module3'), 1);
                     nbModules--;
+                    recalculerCotes('largeur');
                     resizeRoof(DOWN);
                     break;
                 case 4:
@@ -111,8 +134,9 @@ export function handleGui() {
                     module2.translateX(LARGEUR_MODULE / 2);
                     module3.translateX(LARGEUR_MODULE / 2);
                     module3.children[1].visible = true;
-                    editableObjects.splice(editableObjects.indexOf('module4'), 1);
+                    objetsModifiables.splice(objetsModifiables.indexOf('module4'), 1);
                     nbModules--;
+                    recalculerCotes('largeur');
                     resizeRoof(DOWN);
                     break;
                 default:
@@ -164,6 +188,20 @@ export function handleGui() {
             if (module4) {
                 module4.children[5].visible = true;
             }
+        }
+    });
+
+    guiEnv.add(controller, 'afficherCotes').onChange(function (value) {
+        var cotesX = scene.getObjectByName('CoteX');
+        var cotesY = scene.getObjectByName('CoteY');
+
+        if (value) {
+            if (cotesX) cotesX.visible = true;
+            if (cotesY) cotesY.visible = true;
+        } else {
+            if (cotesX) cotesX.visible = false;
+            if (cotesY) cotesY.visible = false;
+
         }
     });
 
