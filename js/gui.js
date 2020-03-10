@@ -13,9 +13,6 @@ function resizeRoof(factor) {
                 var newTexture = loader.load("img/tuile.jpg");
                 newTexture.wrapS = newTexture.wrapT = THREE.RepeatWrapping;
                 newTexture.repeat.set(3 * nbModules, 3);
-
-                console.log(3 * nbModules);
-
                 if (factor >= 0) {
                     child.scale.x *= factor;
                 } else

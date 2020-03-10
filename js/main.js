@@ -1,7 +1,8 @@
 import {
     renderer,
     camera
-} from "./environment.js"
+}
+from "./environment.js"
 
 import {
     onMouseClick,
@@ -101,7 +102,7 @@ export function createRoof() {
 export function createModule() {
 
     // Un module = 4 murs + un sol + un plafond
-    let wallTexture = loader.load("img/crepi.jpg");
+    let wallTexture = loader.load("img/crepi_recadre.jpg");
     wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
     wallTexture.repeat.set(5, 5);
     let wallMaterial = new THREE.MeshLambertMaterial({

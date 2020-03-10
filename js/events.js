@@ -47,7 +47,6 @@ export function onMouseClick(event) {
     var intersects = raycaster.intersectObjects(editableObjects, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans editableObjects[]
     if (intersects.length === 0) return;
     var objet = intersects[0].object;
-    console.log(objet.parent.name);
     if (objet.geometry.type == 'PlaneBufferGeometry') return;
 
     if (selectedObjects.indexOf(objet.id) < 0) {
