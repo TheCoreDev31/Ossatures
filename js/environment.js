@@ -29,6 +29,8 @@ ground.position.y = -12.5;
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 ground.castShadow = false;
+ground.matrixAutoUpdate = false;
+ground.updateMatrix();
 scene.add(ground);
 
 scene.background = COLOR_ARRAY['bleu_ciel'];
@@ -37,7 +39,7 @@ scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 600);
 
 
 // Eclairage
-scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.1));
+scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.3));
 
 // Un lampe derrière pour l'ombre des bâtiments
 const reference = 200;

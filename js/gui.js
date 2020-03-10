@@ -10,11 +10,8 @@ from "./materials.js"
 
 function resizeRoof(down = false) {
     var factor;
-
     if (down) factor = -(nbModules + 1) / nbModules;
     else factor = nbModules / (nbModules - 1);
-
-    console.log(factor);
 
     scene.traverse(function (child) {
         if (child instanceof THREE.Object3D) {
