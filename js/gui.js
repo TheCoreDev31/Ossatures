@@ -37,12 +37,12 @@ function resizeRoof(down = false) {
 
 
 export function handleGui() {
-    let controller = new function () {
+    var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = false;
     };
 
-    let options = {
+    var options = {
         Ajouter: function () {
             switch (nbModules) {
                 case 1:
@@ -125,16 +125,16 @@ export function handleGui() {
         }
     }
 
-    let myGui = new dat.GUI();
-    let guiModules = myGui.addFolder('Gestion des modules');
+    var myGui = new dat.GUI();
+    var guiModules = myGui.addFolder('Gestion des modules');
     guiModules.add(options, 'Ajouter');
     guiModules.add(options, 'Supprimer');
 
-    let guiEnv = myGui.addFolder('Autres');
+    var guiEnv = myGui.addFolder('Autres');
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
         scene.traverse(function (child) {
             if (child instanceof THREE.Object3D) {
-                if (child.name == 'roofGroup') {
+                if (child.name == 'Toit') {
                     if (!value)
                         child.children[0].material.wireframe = true;
                     else

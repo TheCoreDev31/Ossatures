@@ -50,11 +50,11 @@ export function onMouseClick(event) {
     if (objet.geometry.type == 'PlaneBufferGeometry') return;
 
     if (selectedObjects.indexOf(objet.id) < 0) {
-        objet.material.color.set(COLOR_ARRAY['highlight']);
+        objet.material[1].color.set(COLOR_ARRAY['highlight']);
         selectedObjects.push(objet.id);
         displayInfos(objet);
     } else {
-        objet.material.color.set(COLOR_ARRAY['blanc']);
+        objet.material[1].color.set(COLOR_ARRAY['blanc']);
         selectedObjects.splice(selectedObjects.indexOf(objet.id), 1);
         displayInfos(null);
     }
@@ -64,9 +64,11 @@ export function onMouseClick(event) {
 
 export function onMouseMove(event) {
     event.preventDefault();
+
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     //console.log(mouse.x + '-' + mouse.y);
+
     /*        raycaster.setFromCamera(mouse, camera);
 
             var intersects = raycaster.intersectObjects(editableObjects, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans editableObjects[]

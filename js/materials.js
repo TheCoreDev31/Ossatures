@@ -1,8 +1,8 @@
-export const COLOR_ARRAY = new Array(THREE.Color);
+export var COLOR_ARRAY = new Array(THREE.Color);
 COLOR_ARRAY['bleu_ciel'] = (new THREE.Color(0xc0defc).convertSRGBToLinear());
 COLOR_ARRAY['ral7016'] = (new THREE.Color(0x303438).convertSRGBToLinear());
 COLOR_ARRAY['blanc'] = (new THREE.Color(0xffffff).convertSRGBToLinear());
-COLOR_ARRAY['crepi'] = (new THREE.Color(0xf7f4e8).convertSRGBToLinear());
+COLOR_ARRAY['crepi'] = (new THREE.Color(0xf5f2e6).convertSRGBToLinear());
 COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
 COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
 
@@ -44,4 +44,29 @@ export var windowMaterial = new THREE.MeshStandardMaterial({
     roughness: 0.4,
     metalness: 0.7,
     side: THREE.DoubleSide
+});
+
+
+// Module
+var wallOutTexture = loader.load("img/crepi.jpg");
+wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
+wallOutTexture.repeat.set(5, 5);
+
+var wallOutMaterial = new THREE.MeshLambertMaterial({
+    map: wallOutTexture,
+    color: COLOR_ARRAY['crepi'],
+    vertexColors: true
+});
+var wallInMaterial = new THREE.MeshBasicMaterial({
+    color: COLOR_ARRAY['crepi']
+});
+export var wallMaterial = [wallInMaterial, wallOutMaterial, wallOutMaterial, wallOutMaterial, wallOutMaterial, wallOutMaterial];
+
+var floorTexture = loader.load("img/carrelage.jpg");
+floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+floorTexture.repeat.set(10, 20);
+export var floorMaterial = new THREE.MeshBasicMaterial({
+    map: floorTexture,
+    reflectivity: 0.3,
+    color: COLOR_ARRAY['gris_clair']
 });
