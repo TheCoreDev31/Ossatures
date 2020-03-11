@@ -16,25 +16,25 @@
         <script src="js/threex.domevents.js"></script>
         <script src="js/dat.gui.min.js" type="text/javascript"></script>
         <script src="js/main.js" type="module"></script>
-        <!--                <script src="js/helpers.js" type="module"></script>-->
+        <script src="js/helpers.js" type="module"></script>
         <div class="infos">
-            <h3 id="objectDescription"></h3>
+            <h3 id="objectDescription" class="normal"></h3>
         </div>
         <script type="text/javascript">
             var LARGEUR_MODULE = 36;
             var LONGUEUR_MODULE = 72;
             var HAUTEUR_MODULE = 25;
             var EPAISSEUR_MUR = 2;
-            var LARGEUR_STANDARD_FENETRE = 12.5;
-            var HAUTEUR_STANDARD_FENETRE = 10;
             var DOWN = true;
-
+            var PRODUITS = new Array(5);
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
+            var mesModules = new Array(4);
             var module1, module2, module3, module4;
             var nbModules = nbFenetres = 0;
-            var objetsModifiables = new Array(),
-                objectsSelectionnes = new Array();
+            var objetsSelectionnes = new Array(),
+                objetsModifiables = new Array(),
+                moduleSelectionne;
             var raycaster, mouse;
         </script>
     </div>

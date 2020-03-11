@@ -8,8 +8,12 @@ import {
 from "./materials.js"
 
 import {
-    recalculerCotes
+    recalculerCotes,
+    deplacerModule,
+    info,
+    alerte
 } from "./main.js"
+
 
 function resizeRoof(down = false) {
     var factor;
@@ -29,7 +33,6 @@ function resizeRoof(down = false) {
     }
 
     /*   On le garde.... pour l'exemple
-
     scene.traverse(function (child) {
         if (child instanceof THREE.Object3D) {
             if (child.name == 'Toit') {
@@ -50,11 +53,13 @@ function resizeRoof(down = false) {
 }
 
 
-export function handleGui() {
+export function displayGui() {
+
     var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = false;
         this.afficherCotes = true;
+        this.deplacerModule = 0;
     };
 
     var options = {
@@ -150,19 +155,17 @@ export function handleGui() {
     var guiModules = myGui.addFolder('Gestion des modules');
     guiModules.add(options, 'Ajouter');
     guiModules.add(options, 'Supprimer');
+    guiModules.open();
 
-    var guiEnv = myGui.addFolder('Autres');
+
+    var guiEnv = myGui.addFolder('Autres réglages');
+
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
-        scene.traverse(function (child) {
-            if (child instanceof THREE.Object3D) {
-                if (child.name == 'Toit') {
-                    if (!value)
-                        child.children[0].material.wireframe = true;
-                    else
-                        child.children[0].material.wireframe = false;
-                }
-            }
-        });
+        var leToit = scene.getObjectByName('Toit');
+        if (!value)
+            leToit.children[0].material.wireframe = true;
+        else
+            leToit.children[0].material.wireframe = false;
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
@@ -205,5 +208,15 @@ export function handleGui() {
         }
     });
 
-    guiModules.open();
+    var guiTmp = myGui.addFolder('Temporaire');
+    guiTmp.open();
+    guiTmp.add(controller, 'deplacerModule', -36, 36, 36).onChange(function (value) {
+        if (moduleSelectionne) {
+            if (value > 0) deplacerModule(moduleSelectionne, 'haut');
+            else deplacerModule(moduleSelectionne, 'bas');
+        } else {
+            alerte("Veuillez sélectionner tout d'abord un module.");
+        }
+    });
+
 }

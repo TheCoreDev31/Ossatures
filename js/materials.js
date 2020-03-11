@@ -9,6 +9,7 @@ COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
 
 
 
+// Pour l'affichage des côtes en surimpression
 export var textMaterial = new THREE.MeshBasicMaterial({
     color: COLOR_ARRAY['blanc']
 });
@@ -31,6 +32,7 @@ export function createText(texte) {
 
     return cotes;
 }
+
 
 // Sol gazonné
 var groundTexture = loader.load("img/gazon.jpg");
@@ -56,20 +58,30 @@ export function createRoofTexture(repeatX = 1) {
 }
 
 
-// Fenêtre
-export var glassMaterial = new THREE.MeshPhongMaterial({
-    color: COLOR_ARRAY['bleu_ciel'],
-    shininess: 50,
-    specular: COLOR_ARRAY['gris_clair'],
-    refractionRatio: 0.7
-});
-
+// Pour tout type d'ouverture
 export var windowMaterial = new THREE.MeshStandardMaterial({
     color: COLOR_ARRAY['ral7016'],
     roughness: 0.4,
     metalness: 0.7,
     side: THREE.DoubleSide
 });
+
+// Fenêtre
+export var glassMaterial = new THREE.MeshPhongMaterial({
+    color: COLOR_ARRAY['bleu_ciel'],
+    shininess: 50,
+    specular: COLOR_ARRAY['bleu_ciel'],
+    refractionRatio: 0.7
+});
+
+// Porte ou porte-fenêtre ou porte de garage
+export var doorMaterial = new THREE.MeshStandardMaterial({
+    color: COLOR_ARRAY['ral7016'],
+    roughness: 0.4,
+    metalness: 0.7,
+    side: THREE.DoubleSide
+});
+
 
 
 // Module
@@ -87,6 +99,13 @@ var wallInMaterial = new THREE.MeshLambertMaterial({
     emissive: COLOR_ARRAY['blanc'],
     emissiveIntensity: 0.2
 });
+
+var wallOutMaterial1 = new THREE.MeshLambertMaterial({
+    map: wallOutTexture,
+    color: COLOR_ARRAY['crepi'],
+    vertexColors: true
+});
+
 export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
 
 

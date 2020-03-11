@@ -3,6 +3,7 @@ import {
     createRoofTexture,
     glassMaterial,
     windowMaterial,
+    doorMaterial,
     wallMaterial,
     floorMaterial,
     topMaterial
@@ -14,12 +15,19 @@ function degrees_to_radians(degrees) {
 }
 
 
-export function createWindow(largeur = LARGEUR_STANDARD_FENETRE, hauteur = HAUTEUR_STANDARD_FENETRE, nbPanneaux = 2) {
+//export function createWindow(largeur = LARGEUR_STANDARD_FENETRE, hauteur = HAUTEUR_STANDARD_FENETRE, nbPanneaux = 2, numModule) {
+export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
 
     var windowGrp = new THREE.Group();
-    var windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 1, hauteur - 1, EPAISSEUR_MUR + 0.1), glassMaterial);
-    windowGlass.position.set(.5, .5, 0);
+    var largeur, hauteur, epaisseur, elevation;
 
+    // On récupère d'abord les caractéristiques de l'ouverture à créer
+    largeur = PRODUITS[typeOuverture]['largeur'];
+    hauteur = PRODUITS[typeOuverture]['hauteur'];
+    epaisseur = PRODUITS[typeOuverture]['epaisseur'];
+    elevation = PRODUITS[typeOuverture]['elevation'];
+
+    // On constitue en premier le chassis
     var windowGeometry = new THREE.Shape();
     windowGeometry.moveTo(0, 0);
     windowGeometry.lineTo(0, hauteur);
@@ -56,17 +64,91 @@ export function createWindow(largeur = LARGEUR_STANDARD_FENETRE, hauteur = HAUTE
 
     var extrudeSettings = {
         steps: 4,
-        depth: EPAISSEUR_MUR + 0.5,
+        depth: epaisseur,
         bevelEnabled: false
     };
     var windowFrame = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(windowGeometry, extrudeSettings), windowMaterial);
-    windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -1.1);
-
+    windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -(epaisseur / 2));
+    windowFrame.name = 'excluded';
     windowGrp.add(windowFrame);
-    windowGrp.add(windowGlass);
+
+
+    // Eventuellement, la vitre
+    if (typeOuverture == 'F1' || typeOuverture == 'F2') {
+        var windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
+        windowGlass.position.set(.5, .5, 0);
+        windowGrp.add(windowGlass);
+    } else {
+        var windowDoor = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
+        windowDoor.position.set(.5, .5, 0);
+        windowGrp.add(windowDoor);
+    }
+
     nbFenetres++;
     windowGrp.name = 'Fenetre ' + nbFenetres;
-    windowGrp.position.set(0, -(HAUTEUR_MODULE / 2) + hauteur / 2 + 10, LARGEUR_MODULE - 1);
+    objetsModifiables.push(windowGrp);
+
+    // On calcule la position en fonction du type d'ouverture et de la face du module.
+    var positionX = 0,
+        positionY = 0,
+        positionZ = 0;
+    positionY = -(HAUTEUR_MODULE / 2) + (hauteur / 2) + elevation;
+
+    switch (face) {
+        case 'AV':
+            positionX = 0;
+            positionZ = (LONGUEUR_MODULE / 2) - epaisseur / 2 + 0.5;
+            break;
+        case 'AR':
+            windowGrp.rotation.y = Math.PI;
+            positionX = 0;
+            positionZ = -(LONGUEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
+            break;
+        case 'PGAV':
+            windowGrp.rotation.y = -Math.PI / 2;
+            positionX = -(LARGEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
+            positionZ = (LONGUEUR_MODULE / 4);
+            break;
+        case 'PGAR':
+            windowGrp.rotation.y = -Math.PI / 2;
+            positionX = -(LARGEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
+            positionZ = -(LONGUEUR_MODULE / 4);
+            break;
+        case 'PDAV':
+            windowGrp.rotation.y = Math.PI / 2;
+            positionX = (LARGEUR_MODULE / 2) - (epaisseur / 2) + 0.5;
+            positionZ = (LONGUEUR_MODULE / 4);
+            break;
+        case 'PDAR':
+            windowGrp.rotation.y = Math.PI / 2;
+            positionX = (LARGEUR_MODULE / 2) - (epaisseur / 2) + 0.5;
+            positionZ = -(LONGUEUR_MODULE / 4);
+            break;
+    }
+    windowGrp.position.set(positionX, positionY, positionZ);
+
+
+    // Ne pas oublier de mettre à jour les scores VT du module !!!!!
+    switch (typeOuverture) {
+        case 'F1':
+            mesModules[nomModule]['nbFenetres1']++;
+            break;
+        case 'F2':
+            mesModules[nomModule]['nbFenetres2']++;
+            break;
+        case 'PE':
+            break;
+        case 'PF':
+            break;
+        case 'PG':
+            break;
+
+    }
+    //    mesModules['Module ' + nbModules]['vt_AV'] = 6;    //    mesModules['Module' + numModule]['vt_AR'] = 6;
+    //    mesModules['Module' + numModule]['vt_PGAV'] = 6;
+    //    mesModules['Module' + numModule]['vt_PGAR'] = 6;
+    //    mesModules['Module' + numModule]['vt_PDAV'] = 6;
+    //    mesModules['Module' + numModule]['vt_PDAR'] = 6;
 
     return windowGrp;
 }
@@ -109,6 +191,7 @@ export function createModule() {
     var wallFront = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
     wallFront.rotation.y = Math.PI;
     wallFront.position.z = LARGEUR_MODULE - (EPAISSEUR_MUR / 2);
+    wallFront.name = 'front';
 
     var wallBack = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
     wallBack.position.z = -LARGEUR_MODULE + (EPAISSEUR_MUR / 2);
@@ -122,20 +205,33 @@ export function createModule() {
     top.position.set(0, (HAUTEUR_MODULE / 2) + .01, 0);
     top.visible = false;
 
-    var wallsGroup = new THREE.Group();
-    wallsGroup.add(wallBack);
-    wallsGroup.add(wallRight);
-    wallsGroup.add(wallFront);
-    wallsGroup.add(wallLeft);
-    wallsGroup.add(floor);
-    wallsGroup.add(top);
+    var wallsGrp = new THREE.Group();
+    wallsGrp.add(wallBack);
+    wallsGrp.add(wallRight);
+    wallsGrp.add(wallFront);
+    wallsGrp.add(wallLeft);
+    wallsGrp.add(floor);
+    wallsGrp.add(top);
     nbModules++;
-    wallsGroup.name = 'Module ' + nbModules;
+    wallsGrp.name = 'Module ' + nbModules;
+    objetsModifiables.push(wallsGrp);
 
-    for (var i = 0; i < wallsGroup.children.length; i++) {
-        wallsGroup.children[i].receiveShadow = false;
-        wallsGroup.children[i].castShadow = true;
+    for (var i = 0; i < wallsGrp.children.length; i++) {
+        wallsGrp.children[i].receiveShadow = false;
+        wallsGrp.children[i].castShadow = true;
     }
 
-    return wallsGroup;
+    // Initialisation du tableau d'infos sur le module
+    mesModules['Module ' + nbModules]['nom'] = wallsGrp.name;
+    mesModules['Module ' + nbModules]['nbFenetres1'] = 0;
+    mesModules['Module ' + nbModules]['nbFenetres2'] = 0;
+    mesModules['Module ' + nbModules]['nbPorteEntree'] = 0;
+    mesModules['Module ' + nbModules]['vt_AV'] = 6;
+    mesModules['Module ' + nbModules]['vt_AR'] = 6;
+    mesModules['Module ' + nbModules]['vt_PGAV'] = 6;
+    mesModules['Module ' + nbModules]['vt_PGAR'] = 6;
+    mesModules['Module ' + nbModules]['vt_PDAV'] = 6;
+    mesModules['Module ' + nbModules]['vt_PDAR'] = 6;
+
+    return wallsGrp;
 }
