@@ -15,7 +15,6 @@ function degrees_to_radians(degrees) {
 }
 
 
-//export function createWindow(largeur = LARGEUR_STANDARD_FENETRE, hauteur = HAUTEUR_STANDARD_FENETRE, nbPanneaux = 2, numModule) {
 export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
 
     var windowGrp = new THREE.Group();
@@ -177,24 +176,37 @@ export function createRoof() {
 }
 
 
-export function createModule() {
+export function createTravee() {
 
-    // Un module = 4 murs + un sol + un plafond
-    var wallLeft = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE - (EPAISSEUR_MUR * 2), HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
-    wallLeft.rotation.y = Math.PI / 2;
-    wallLeft.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_MODULE / 2;
+    // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
+    // IMPORTANT : on crée les murs avec la face AV devant.
+    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallAR.position.z = -LARGEUR_MODULE + (EPAISSEUR_MUR / 2);
 
-    var wallRight = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE - (EPAISSEUR_MUR * 2), HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
-    wallRight.rotation.y = -Math.PI / 2;
-    wallRight.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_MODULE / 2;
+    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallPDAR.rotation.y = -Math.PI / 2;
+    wallPDAR.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_MODULE / 2;
+    wallPDAR.position.z = -(LONGUEUR_MODULE / 4) + EPAISSEUR_MUR / 2;
 
-    var wallFront = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
-    wallFront.rotation.y = Math.PI;
-    wallFront.position.z = LARGEUR_MODULE - (EPAISSEUR_MUR / 2);
-    wallFront.name = 'front';
+    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallPDAV.rotation.y = -Math.PI / 2;
+    wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_MODULE / 2;
+    wallPDAV.position.z = (LONGUEUR_MODULE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallBack = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
-    wallBack.position.z = -LARGEUR_MODULE + (EPAISSEUR_MUR / 2);
+    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallAV.rotation.y = Math.PI;
+    wallAV.position.z = LARGEUR_MODULE - (EPAISSEUR_MUR / 2);
+    wallAV.name = 'front';
+
+    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallPGAV.rotation.y = Math.PI / 2;
+    wallPGAV.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_MODULE / 2;
+    wallPGAV.position.z = (LONGUEUR_MODULE / 4) - EPAISSEUR_MUR / 2;
+
+    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    wallPGAR.rotation.y = Math.PI / 2;
+    wallPGAR.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_MODULE / 2;
+    wallPGAR.position.z = -(LONGUEUR_MODULE / 4) + EPAISSEUR_MUR / 2;
 
     var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_MODULE, LONGUEUR_MODULE), floorMaterial);
     floor.position.set(0, (-HAUTEUR_MODULE / 2) + .01, 0);
@@ -206,10 +218,12 @@ export function createModule() {
     top.visible = false;
 
     var wallsGrp = new THREE.Group();
-    wallsGrp.add(wallBack);
-    wallsGrp.add(wallRight);
-    wallsGrp.add(wallFront);
-    wallsGrp.add(wallLeft);
+    wallsGrp.add(wallAR);
+    wallsGrp.add(wallPDAR);
+    wallsGrp.add(wallPDAV);
+    wallsGrp.add(wallAV);
+    wallsGrp.add(wallPGAV);
+    wallsGrp.add(wallPGAR);
     wallsGrp.add(floor);
     wallsGrp.add(top);
     nbModules++;
@@ -223,15 +237,15 @@ export function createModule() {
 
     // Initialisation du tableau d'infos sur le module
     mesModules['Module ' + nbModules]['nom'] = wallsGrp.name;
-    mesModules['Module ' + nbModules]['nbFenetres1'] = 0;
-    mesModules['Module ' + nbModules]['nbFenetres2'] = 0;
-    mesModules['Module ' + nbModules]['nbPorteEntree'] = 0;
-    mesModules['Module ' + nbModules]['vt_AV'] = 6;
-    mesModules['Module ' + nbModules]['vt_AR'] = 6;
-    mesModules['Module ' + nbModules]['vt_PGAV'] = 6;
-    mesModules['Module ' + nbModules]['vt_PGAR'] = 6;
-    mesModules['Module ' + nbModules]['vt_PDAV'] = 6;
-    mesModules['Module ' + nbModules]['vt_PDAR'] = 6;
+    mesModules['Module ' + nbModules]['nbF1'] = 0;
+    mesModules['Module ' + nbModules]['nbF2'] = 0;
+    mesModules['Module ' + nbModules]['nbPE'] = 0;
+    mesModules['Module ' + nbModules]['vt_AR'] = 3;
+    mesModules['Module ' + nbModules]['vt_PDAR'] = 1;
+    mesModules['Module ' + nbModules]['vt_PDAV'] = 1;
+    mesModules['Module ' + nbModules]['vt_AV'] = 3;
+    mesModules['Module ' + nbModules]['vt_PGAV'] = 1;
+    mesModules['Module ' + nbModules]['vt_PGAR'] = 1;
 
     return wallsGrp;
 }

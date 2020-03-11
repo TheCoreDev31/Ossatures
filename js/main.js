@@ -17,7 +17,7 @@ import {
 import {
     createOpening,
     createRoof,
-    createModule
+    createTravee
 } from "./objects.js"
 
 import {
@@ -117,16 +117,8 @@ function incrusterCotes(direction = 'largeur') {
     }
 }
 
-export function incrusterCotesX() {
-    incrusterCotes('largeur');
-}
 
-export function incrusterCotesY() {
-    incrusterCotes('longueur');
-}
-
-
-export function deplacerModule(moduleName, direction) {
+export function deplacerTravee(moduleName, direction) {
     if (nbModules <= 1) {
         alerte("Vous devez avoir plus d'un module dans votre projet.");
         return;
@@ -151,7 +143,6 @@ function initialisationTableaux() {
     for (var i = 0; i < 4; i++) {
         mesModules['Module ' + (i + 1)] = new Array();
     }
-
 
     var nbCaract = 5;
     PRODUITS['PE'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
@@ -196,7 +187,7 @@ function initialisationTableaux() {
 
 initialisationTableaux();
 
-module1 = createModule();
+module1 = createTravee();
 scene.add(module1);
 
 scene.add(createRoof());

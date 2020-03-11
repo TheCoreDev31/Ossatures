@@ -1,5 +1,5 @@
 import {
-    createModule
+    createTravee
 } from "./objects.js"
 
 import {
@@ -9,10 +9,18 @@ from "./materials.js"
 
 import {
     recalculerCotes,
-    deplacerModule,
+    deplacerTravee,
     info,
     alerte
 } from "./main.js"
+
+
+// Quelques constantes pratiques
+var indicePDAR = 1;
+var indicePDAV = 2;
+var indicePGAV = 4;
+var indicePGAR = 5;
+var indiceRoof = 7;
 
 
 function resizeRoof(down = false) {
@@ -66,42 +74,42 @@ export function displayGui() {
         Ajouter: function () {
             switch (nbModules) {
                 case 1:
-                    module2 = createModule();
+                    module2 = createTravee();
                     module2.translateX(LARGEUR_MODULE / 2);
                     module1.translateX(-LARGEUR_MODULE / 2);
-                    module1.children[1].visible = false;
-                    module2.children[3].visible = false;
+                    module1.children[indicePDAV].visible = false;
+                    module1.children[indicePDAR].visible = false;
+                    module2.children[indicePGAV].visible = false;
+                    module2.children[indicePGAR].visible = false;
                     objetsModifiables.push(module2);
                     scene.add(module2);
                     recalculerCotes('largeur');
                     resizeRoof();
                     break;
                 case 2:
-                    module3 = createModule();
+                    module3 = createTravee();
                     module3.translateX(LARGEUR_MODULE);
                     module1.translateX(-LARGEUR_MODULE / 2);
                     module2.translateX(-LARGEUR_MODULE / 2);
-                    module1.children[1].visible = false;
-                    module2.children[3].visible = false;
-                    module2.children[1].visible = false;
-                    module3.children[3].visible = false;
+                    module2.children[indicePDAV].visible = false;
+                    module2.children[indicePDAR].visible = false;
+                    module3.children[indicePGAV].visible = false;
+                    module3.children[indicePGAR].visible = false;
                     objetsModifiables.push(module3);
                     scene.add(module3);
                     recalculerCotes('largeur');
                     resizeRoof();
                     break;
                 case 3:
-                    module4 = createModule();
+                    module4 = createTravee();
                     module4.translateX(LARGEUR_MODULE * 1.5);
                     module1.translateX(-LARGEUR_MODULE / 2);
                     module2.translateX(-LARGEUR_MODULE / 2);
                     module3.translateX(-LARGEUR_MODULE / 2);
-                    module1.children[1].visible = false;
-                    module2.children[3].visible = false;
-                    module2.children[1].visible = false;
-                    module3.children[1].visible = false;
-                    module3.children[3].visible = false;
-                    module4.children[3].visible = false;
+                    module3.children[indicePDAV].visible = false;
+                    module3.children[indicePDAR].visible = false;
+                    module4.children[indicePGAV].visible = false;
+                    module4.children[indicePGAR].visible = false;
                     objetsModifiables.push(module4);
                     scene.add(module4);
                     recalculerCotes('largeur');
@@ -117,7 +125,8 @@ export function displayGui() {
                 case 2:
                     scene.remove(module2);
                     module1.translateX(LARGEUR_MODULE / 2)
-                    module1.children[1].visible = true;
+                    module1.children[indicePDAV].visible = true;
+                    module1.children[indicePDAR].visible = true;
                     objetsModifiables.splice(objetsModifiables.indexOf('module2'), 1);
                     nbModules--;
                     recalculerCotes('largeur');
@@ -127,7 +136,8 @@ export function displayGui() {
                     scene.remove(module3);
                     module1.translateX(LARGEUR_MODULE / 2);
                     module2.translateX(LARGEUR_MODULE / 2);
-                    module2.children[1].visible = true;
+                    module2.children[indicePDAV].visible = true;
+                    module2.children[indicePDAR].visible = true;
                     objetsModifiables.splice(objetsModifiables.indexOf('module3'), 1);
                     nbModules--;
                     recalculerCotes('largeur');
@@ -138,7 +148,8 @@ export function displayGui() {
                     module1.translateX(LARGEUR_MODULE / 2);
                     module2.translateX(LARGEUR_MODULE / 2);
                     module3.translateX(LARGEUR_MODULE / 2);
-                    module3.children[1].visible = true;
+                    module3.children[indicePDAV].visible = true;
+                    module3.children[indicePDAR].visible = true;
                     objetsModifiables.splice(objetsModifiables.indexOf('module4'), 1);
                     nbModules--;
                     recalculerCotes('largeur');
@@ -152,7 +163,7 @@ export function displayGui() {
     }
 
     var myGui = new dat.GUI();
-    var guiModules = myGui.addFolder('Gestion des modules');
+    var guiModules = myGui.addFolder('Gestion des travées');
     guiModules.add(options, 'Ajouter');
     guiModules.add(options, 'Supprimer');
     guiModules.open();
@@ -169,27 +180,28 @@ export function displayGui() {
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
+        var indicePlancher = 7;
         if (!value) {
-            module1.children[5].visible = false;
+            module1.children[indicePlancher].visible = false;
             if (module2) {
-                module2.children[5].visible = false;
+                module2.children[indicePlancher].visible = false;
             }
             if (module3) {
-                module3.children[5].visible = false;
+                module3.children[indicePlancher].visible = false;
             }
             if (module4) {
-                module4.children[5].visible = false;
+                module4.children[indicePlancher].visible = false;
             }
         } else {
-            module1.children[5].visible = true;
+            module1.children[indicePlancher].visible = true;
             if (module2) {
-                module2.children[5].visible = true;
+                module2.children[indicePlancher].visible = true;
             }
             if (module3) {
-                module3.children[5].visible = true;
+                module3.children[indicePlancher].visible = true;
             }
             if (module4) {
-                module4.children[5].visible = true;
+                module4.children[indicePlancher].visible = true;
             }
         }
     });
