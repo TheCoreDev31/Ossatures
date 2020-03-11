@@ -36,7 +36,7 @@ export function onMouseClick(event) {
             if (objetsSelectionnes.indexOf(numFace) < 0) {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
                 objetsSelectionnes.push(numFace);
-                moduleSelectionne = objet.parent.name;
+                traveeSelectionnee = objet.parent.name;
 
                 // Dans la Gui, remettre à 0 la jauge "deplacerModule"
 
@@ -45,7 +45,7 @@ export function onMouseClick(event) {
             } else {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['blanc']);
                 objetsSelectionnes.splice(objetsSelectionnes.indexOf(numFace), 1);
-                moduleSelectionne = '';
+                traveeSelectionnee = '';
                 info(null);
             }
         }

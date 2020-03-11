@@ -93,20 +93,20 @@ export function recalculerCotes(direction = 'largeur') {
 
 function incrusterCotes(direction = 'largeur') {
     if (direction == 'largeur') {
-        var texte = (nbModules * (LARGEUR_MODULE / 10)) + ' m';
+        var texte = (nbTravees * (LARGEUR_TRAVEE / 10)) + ' m';
         var cotes = createText(texte);
-        var hauteurTexte = -(HAUTEUR_MODULE / 2) + 0.2;
+        var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
         var cotesGrp = new THREE.Group();
 
         cotes.rotation.x = -Math.PI / 2;
-        cotes.position.set(0, hauteurTexte, (LONGUEUR_MODULE / 2) + 8);
+        cotes.position.set(0, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8);
         cotesGrp.add(cotes);
 
         var points = [];
-        points.push(new THREE.Vector3((-LARGEUR_MODULE / 2) * nbModules, hauteurTexte, (LONGUEUR_MODULE / 2) + 1));
-        points.push(new THREE.Vector3((-LARGEUR_MODULE / 2) * nbModules, hauteurTexte, (LONGUEUR_MODULE / 2) + 10));
-        points.push(new THREE.Vector3((LARGEUR_MODULE / 2) * nbModules, hauteurTexte, (LONGUEUR_MODULE / 2) + 10));
-        points.push(new THREE.Vector3((LARGEUR_MODULE / 2) * nbModules, hauteurTexte, (LONGUEUR_MODULE / 2) + 1));
+        points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+        points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrp.add(line);
         cotesGrp.name = 'CoteX';
@@ -118,21 +118,29 @@ function incrusterCotes(direction = 'largeur') {
 }
 
 
-export function deplacerTravee(moduleName, direction) {
-    if (nbModules <= 1) {
-        alerte("Vous devez avoir plus d'un module dans votre projet.");
+export function deplacerTravee(nomTravee, direction) {
+    if (nbTravees <= 1) {
+        alerte("Vous devez avoir plus d'une travée dans votre projet.");
         return;
     }
 
-    var module = scene.getObjectByName(moduleName);
-    var nbMurs = module.children.length;
+    if ((direction == 'haut' && vtTraveesExistantes[nomTravee]['decalee'] == 1) ||
+        (direction == 'bas' && vtTraveesExistantes[nomTravee]['decalee'] == -1)) {
+        alerte("Travée déjà décalée dans cette direction.");
+        return;
+    }
+
+    var travee = scene.getObjectByName(nomTravee);
+    var nbMurs = travee.children.length;
     for (var i = 0; i < nbMurs - 1; i++) {
-        module.children[i].visible = true;
+        travee.children[i].visible = true;
     };
     if (direction == 'haut') {
-        module.position.z += 36;
+        travee.position.z += 36;
+        vtTraveesExistantes[nomTravee]['decalee']++;
     } else {
-        module.position.z -= 36;
+        travee.position.z -= 36;
+        vtTraveesExistantes[nomTravee]['decalee']--;
     }
 
 }
@@ -141,7 +149,7 @@ export function deplacerTravee(moduleName, direction) {
 function initialisationTableaux() {
 
     for (var i = 0; i < 4; i++) {
-        mesModules['Module ' + (i + 1)] = new Array();
+        vtTraveesExistantes['Travee ' + (i + 1)] = new Array();
     }
 
     var nbCaract = 5;
@@ -179,7 +187,6 @@ function initialisationTableaux() {
     PRODUITS['PG']['hauteur'] = 20;
     PRODUITS['PG']['epaisseur'] = 3;
     PRODUITS['PG']['elevation'] = 0;
-
 }
 
 
@@ -187,18 +194,18 @@ function initialisationTableaux() {
 
 initialisationTableaux();
 
-module1 = createTravee();
-scene.add(module1);
+travee1 = createTravee();
+scene.add(travee1);
 
 scene.add(createRoof());
 
-var firstWindow = createOpening(module1.name, 'AV', 'F2', 2);
+var firstWindow = createOpening(travee1.name, 'AV', 'F2', 2);
 scene.add(firstWindow);
 
-var secondWindow = createOpening(module1.name, 'PGAV', 'F1');
+var secondWindow = createOpening(travee1.name, 'PGAV', 'F1');
 scene.add(secondWindow);
 
-var firstDoor = createOpening(module1.name, 'PDAR', 'PE');
+var firstDoor = createOpening(travee1.name, 'PDAR', 'PE');
 scene.add(firstDoor);
 
 

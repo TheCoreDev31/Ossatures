@@ -92,7 +92,7 @@ export var doorMaterial = new THREE.MeshStandardMaterial({
 
 
 
-// Module
+// Travee
 var wallOutTexture = loader.load("img/crepi.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(5, 5);

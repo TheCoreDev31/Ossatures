@@ -15,7 +15,7 @@ function degrees_to_radians(degrees) {
 }
 
 
-export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
+export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
     var windowGrp = new THREE.Group();
     var largeur, hauteur, epaisseur, elevation;
@@ -87,53 +87,56 @@ export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
     windowGrp.name = 'Fenetre ' + nbFenetres;
     objetsModifiables.push(windowGrp);
 
-    // On calcule la position en fonction du type d'ouverture et de la face du module.
+    // On calcule la position en fonction du type d'ouverture et de la face de la travée.
     var positionX = 0,
         positionY = 0,
         positionZ = 0;
-    positionY = -(HAUTEUR_MODULE / 2) + (hauteur / 2) + elevation;
+    positionY = -(HAUTEUR_TRAVEE / 2) + (hauteur / 2) + elevation;
 
     switch (face) {
         case 'AV':
             positionX = 0;
-            positionZ = (LONGUEUR_MODULE / 2) - epaisseur / 2 + 0.5;
+            positionZ = (LONGUEUR_TRAVEE / 2) - epaisseur / 2 + 0.5;
             break;
         case 'AR':
             windowGrp.rotation.y = Math.PI;
             positionX = 0;
-            positionZ = -(LONGUEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
+            positionZ = -(LONGUEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
             break;
         case 'PGAV':
             windowGrp.rotation.y = -Math.PI / 2;
-            positionX = -(LARGEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
-            positionZ = (LONGUEUR_MODULE / 4);
+            positionX = -(LARGEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
+            positionZ = (LONGUEUR_TRAVEE / 4);
             break;
         case 'PGAR':
             windowGrp.rotation.y = -Math.PI / 2;
-            positionX = -(LARGEUR_MODULE / 2) + (epaisseur / 2) - 0.5;
-            positionZ = -(LONGUEUR_MODULE / 4);
+            positionX = -(LARGEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
+            positionZ = -(LONGUEUR_TRAVEE / 4);
             break;
         case 'PDAV':
             windowGrp.rotation.y = Math.PI / 2;
-            positionX = (LARGEUR_MODULE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = (LONGUEUR_MODULE / 4);
+            positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
+            positionZ = (LONGUEUR_TRAVEE / 4);
             break;
         case 'PDAR':
             windowGrp.rotation.y = Math.PI / 2;
-            positionX = (LARGEUR_MODULE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = -(LONGUEUR_MODULE / 4);
+            positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
+            positionZ = -(LONGUEUR_TRAVEE / 4);
             break;
     }
     windowGrp.position.set(positionX, positionY, positionZ);
 
 
-    // Ne pas oublier de mettre à jour les scores VT du module !!!!!
+    // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
+
+    console.log(nomTravee);
+
     switch (typeOuverture) {
         case 'F1':
-            mesModules[nomModule]['nbFenetres1']++;
+            vtTraveesExistantes[nomTravee]['nbF1']++;
             break;
         case 'F2':
-            mesModules[nomModule]['nbFenetres2']++;
+            vtTraveesExistantes[nomTravee]['nbF2']++;
             break;
         case 'PE':
             break;
@@ -143,11 +146,12 @@ export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
             break;
 
     }
-    //    mesModules['Module ' + nbModules]['vt_AV'] = 6;    //    mesModules['Module' + numModule]['vt_AR'] = 6;
-    //    mesModules['Module' + numModule]['vt_PGAV'] = 6;
-    //    mesModules['Module' + numModule]['vt_PGAR'] = 6;
-    //    mesModules['Module' + numModule]['vt_PDAV'] = 6;
-    //    mesModules['Module' + numModule]['vt_PDAR'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_AV'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_AR'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_PGAV'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_PGAR'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_PDAV'] = 6;
+    //    vtTraveesExistantes[nomTravee]['vt_PDAR'] = 6;
 
     return windowGrp;
 }
@@ -156,18 +160,18 @@ export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
 export function createRoof() {
     var roofGrp = new THREE.Group();
     var texture = createRoofTexture();
-    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_MODULE + 2, LARGEUR_MODULE * 1.3, 0.2), new THREE.MeshLambertMaterial({
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE + 2, LARGEUR_TRAVEE * 1.3, 0.2), new THREE.MeshLambertMaterial({
         map: texture,
         color: COLOR_ARRAY['gris_clair']
     }));
     var rearPan = frontPan.clone();
-    frontPan.position.set(0, HAUTEUR_MODULE, (LONGUEUR_MODULE / 2) - 16.8);
+    frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 16.8);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
     roofGrp.add(frontPan);
 
     rearPan.rotateX(degrees_to_radians(55));
-    rearPan.position.set(0, HAUTEUR_MODULE, -(LONGUEUR_MODULE / 2) + 16.8);
+    rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 16.8);
     rearPan.castShadow = true;
     roofGrp.add(rearPan);
     roofGrp.name = 'Toit';
@@ -176,45 +180,46 @@ export function createRoof() {
 }
 
 
+
 export function createTravee() {
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face AV devant.
-    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
-    wallAR.position.z = -LARGEUR_MODULE + (EPAISSEUR_MUR / 2);
+    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
 
-    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
-    wallPDAR.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_MODULE / 2;
-    wallPDAR.position.z = -(LONGUEUR_MODULE / 4) + EPAISSEUR_MUR / 2;
+    wallPDAR.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
+    wallPDAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
 
-    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAV.rotation.y = -Math.PI / 2;
-    wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_MODULE / 2;
-    wallPDAV.position.z = (LONGUEUR_MODULE / 4) - EPAISSEUR_MUR / 2;
+    wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
+    wallPDAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_MODULE, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAV.rotation.y = Math.PI;
-    wallAV.position.z = LARGEUR_MODULE - (EPAISSEUR_MUR / 2);
+    wallAV.position.z = LARGEUR_TRAVEE - (EPAISSEUR_MUR / 2);
     wallAV.name = 'front';
 
-    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAV.rotation.y = Math.PI / 2;
-    wallPGAV.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_MODULE / 2;
-    wallPGAV.position.z = (LONGUEUR_MODULE / 4) - EPAISSEUR_MUR / 2;
+    wallPGAV.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
+    wallPGAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_MODULE / 2 - EPAISSEUR_MUR, HAUTEUR_MODULE, EPAISSEUR_MUR), wallMaterial);
+    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAR.rotation.y = Math.PI / 2;
-    wallPGAR.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_MODULE / 2;
-    wallPGAR.position.z = -(LONGUEUR_MODULE / 4) + EPAISSEUR_MUR / 2;
+    wallPGAR.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
+    wallPGAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
 
-    var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_MODULE, LONGUEUR_MODULE), floorMaterial);
-    floor.position.set(0, (-HAUTEUR_MODULE / 2) + .01, 0);
+    var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), floorMaterial);
+    floor.position.set(0, (-HAUTEUR_TRAVEE / 2) + .01, 0);
     floor.rotation.x = -Math.PI / 2;
 
-    var top = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_MODULE, LONGUEUR_MODULE), topMaterial);
+    var top = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), topMaterial);
     top.rotation.x = -Math.PI / 2;
-    top.position.set(0, (HAUTEUR_MODULE / 2) + .01, 0);
+    top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = false;
 
     var wallsGrp = new THREE.Group();
@@ -226,8 +231,8 @@ export function createTravee() {
     wallsGrp.add(wallPGAR);
     wallsGrp.add(floor);
     wallsGrp.add(top);
-    nbModules++;
-    wallsGrp.name = 'Module ' + nbModules;
+    nbTravees++;
+    wallsGrp.name = 'Travee ' + nbTravees;
     objetsModifiables.push(wallsGrp);
 
     for (var i = 0; i < wallsGrp.children.length; i++) {
@@ -235,17 +240,18 @@ export function createTravee() {
         wallsGrp.children[i].castShadow = true;
     }
 
-    // Initialisation du tableau d'infos sur le module
-    mesModules['Module ' + nbModules]['nom'] = wallsGrp.name;
-    mesModules['Module ' + nbModules]['nbF1'] = 0;
-    mesModules['Module ' + nbModules]['nbF2'] = 0;
-    mesModules['Module ' + nbModules]['nbPE'] = 0;
-    mesModules['Module ' + nbModules]['vt_AR'] = 3;
-    mesModules['Module ' + nbModules]['vt_PDAR'] = 1;
-    mesModules['Module ' + nbModules]['vt_PDAV'] = 1;
-    mesModules['Module ' + nbModules]['vt_AV'] = 3;
-    mesModules['Module ' + nbModules]['vt_PGAV'] = 1;
-    mesModules['Module ' + nbModules]['vt_PGAR'] = 1;
-
+    // Initialisation du tableau d'infos sur la travée
+    vtTraveesExistantes['Travee ' + nbTravees]['nom'] = wallsGrp.name;
+    vtTraveesExistantes['Travee ' + nbTravees]['decalee'] = 0;
+    vtTraveesExistantes['Travee ' + nbTravees]['nbF1'] = 0;
+    vtTraveesExistantes['Travee ' + nbTravees]['nbF2'] = 0;
+    vtTraveesExistantes['Travee ' + nbTravees]['nbPE'] = 0;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_AR'] = 3;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_PDAR'] = 1;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_PDAV'] = 1;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_AV'] = 3;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAV'] = 1;
+    vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAR'] = 1;
+    console.log(vtTraveesExistantes);
     return wallsGrp;
 }

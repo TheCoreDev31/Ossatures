@@ -17,8 +17,8 @@ renderer.gammaFactor = 2.2;
 
 
 // Camera
-var camera = new THREE.PerspectiveCamera(75, (window.innerWidth / window.innerHeight), 1, 400);
-camera.position.set(50, 20, 120);
+var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 400);
+camera.position.set(50, 20, 160);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
 
@@ -57,7 +57,7 @@ scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
 var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
-frontLight.position.set(10, HAUTEUR_MODULE, 300);
+frontLight.position.set(10, HAUTEUR_TRAVEE, 300);
 frontLight.castShadow = false;
 scene.add(frontLight);
 
