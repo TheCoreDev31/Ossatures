@@ -204,7 +204,7 @@ scene.add(createRoof());
 var firstWindow = createOpening(module1.name, 'AV', 'F2', 2);
 scene.add(firstWindow);
 
-var secondWindow = createOpening(module1.name, 'PDAV', 'F1');
+var secondWindow = createOpening(module1.name, 'PGAV', 'F1');
 scene.add(secondWindow);
 
 var firstDoor = createOpening(module1.name, 'PDAR', 'PE');

@@ -74,6 +74,14 @@ export var glassMaterial = new THREE.MeshPhongMaterial({
     refractionRatio: 0.7
 });
 
+export var selectedGlassMaterial = new THREE.MeshPhongMaterial({
+    color: COLOR_ARRAY['highlight'],
+    shininess: 20,
+    specular: COLOR_ARRAY['highlight'],
+    refractionRatio: 0.4
+});
+
+
 // Porte ou porte-fenêtre ou porte de garage
 export var doorMaterial = new THREE.MeshStandardMaterial({
     color: COLOR_ARRAY['ral7016'],

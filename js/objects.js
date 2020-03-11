@@ -75,11 +75,11 @@ export function createOpening(nomModule, face, typeOuverture, nbPanneaux = 1) {
 
     // Eventuellement, la vitre
     if (typeOuverture == 'F1' || typeOuverture == 'F2') {
-        var windowGlass = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
+        var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
         windowGlass.position.set(.5, .5, 0);
         windowGrp.add(windowGlass);
     } else {
-        var windowDoor = new THREE.Mesh(new THREE.BoxBufferGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
+        var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
         windowDoor.position.set(.5, .5, 0);
         windowGrp.add(windowDoor);
     }
