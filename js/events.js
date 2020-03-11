@@ -30,7 +30,6 @@ export function onMouseClick(event) {
 
     if (objet.material[1]) { // Objets multi-matériaux (= les murs)
 
-        //if (objet.name == 'front') {
         var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
         for (var j = 0; j < 2; j++) {
             var numFace = face * 2 + j;
@@ -51,10 +50,7 @@ export function onMouseClick(event) {
             }
         }
         objet.geometry.elementsNeedUpdate = true;
-        /*        } else {
-                    alerte("Sur un module, merci de sélectionner la façade avant.");
-                }
-        */
+
     } else { // Objets mono-matériau = fenêtres par exemple
 
         var face = Math.floor(intersects[0].faceIndex / 2);
