@@ -134,7 +134,7 @@ export function displayGui() {
     var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = false;
-        this.afficherCotes = true;
+        this.afficherCotes = false;
     };
 
     var options = {
@@ -277,13 +277,12 @@ export function displayGui() {
         var cotesX = scene.getObjectByName('CoteX');
         var cotesY = scene.getObjectByName('CoteY');
 
-        if (value) {
-            if (cotesX) cotesX.visible = true;
-            if (cotesY) cotesY.visible = true;
-        } else {
+        if (!value) {
             if (cotesX) cotesX.visible = false;
             if (cotesY) cotesY.visible = false;
-
+        } else {
+            if (cotesX) cotesX.visible = true;
+            if (cotesY) cotesY.visible = true;
         }
     });
 }

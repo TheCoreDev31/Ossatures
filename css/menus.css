@@ -61,9 +61,11 @@ ul.liste-deroulante {
     cursor: not-allowed;
 }
 
+/*
 .liste-deroulante li:hover {
-    background-color: #36567e;
+    background-color: #25446a;
 }
+*/
 
 .liste-deroulante li.disabled:hover {
     background-color: #202020;

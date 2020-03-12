@@ -34,6 +34,16 @@ export function createText(texte) {
 }
 
 
+// Boussole
+var boussoleTexture = loader.load("img/boussole.png");
+boussoleTexture.encoding = THREE.sRGBEncoding;
+boussoleTexture.needsUpdate = true;
+export var boussoleMaterial = new THREE.MeshBasicMaterial({
+    map: boussoleTexture,
+    transparent: true,
+    color: COLOR_ARRAY['blanc']
+});
+
 // Sol gazonné
 var groundTexture = loader.load("img/gazon.jpg");
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;

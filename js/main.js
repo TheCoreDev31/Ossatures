@@ -117,6 +117,7 @@ function incrusterCotes(direction = 'largeur') {
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrp.add(line);
         cotesGrp.name = 'CoteX';
+        cotesGrp.visible = false;
         scene.add(cotesGrp);
     } else {
         /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels

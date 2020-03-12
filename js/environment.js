@@ -1,6 +1,7 @@
 import {
     COLOR_ARRAY,
-    groundMaterial
+    groundMaterial,
+    boussoleMaterial
 } from "./materials.js"
 
 
@@ -36,6 +37,14 @@ scene.add(ground);
 scene.background = COLOR_ARRAY['bleu_ciel'];
 scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 600);
 
+
+// Repère face avant
+var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(16, 16), boussoleMaterial);
+boussole.rotation.x = -Math.PI / 2;
+boussole.position.set(0, -(HAUTEUR_TRAVEE / 2) + 0.1, 80);
+boussole.matrixAutoUpdate = false;
+boussole.updateMatrix();
+scene.add(boussole);
 
 
 // Eclairage
