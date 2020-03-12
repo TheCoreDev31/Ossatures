@@ -11,7 +11,8 @@ import {
 } from "./events.js"
 
 import {
-    displayGui
+    displayGui,
+    hideContextualMenu
 } from "./gui.js"
 
 import {
@@ -45,6 +46,7 @@ function init() {
 }
 
 
+/***********************************************************************/
 export function alerte(message) {
     document.getElementById('objectDescription').className = 'alerte';
     document.getElementById('objectDescription').innerHTML = message;
@@ -53,7 +55,6 @@ export function alerte(message) {
         document.getElementById('objectDescription').innerHTML = '';
     }, 2000);
 }
-
 
 export function info(param) {
     if (param == null) {
@@ -74,6 +75,12 @@ export function info(param) {
         return;
     }
 }
+
+export function log(message) {
+    console.log(message);
+}
+
+/***********************************************************************/
 
 
 export function recalculerCotes(direction = 'largeur') {

@@ -83,10 +83,8 @@ export var selectedGlassMaterial = new THREE.MeshPhongMaterial({
 
 
 // Porte ou porte-fenêtre ou porte de garage
-export var doorMaterial = new THREE.MeshStandardMaterial({
+export var doorMaterial = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['ral7016'],
-    roughness: 0.4,
-    metalness: 0.7,
     side: THREE.DoubleSide
 });
 

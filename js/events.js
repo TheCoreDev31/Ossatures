@@ -11,8 +11,14 @@ import {
 
 import {
     info,
-    alerte
+    alerte,
+    log
 } from "./main.js"
+
+import {
+    displayContextualMenu,
+    hideContextualMenu
+} from "./gui.js"
 
 
 
@@ -23,7 +29,16 @@ export function onMouseClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = raycaster.intersectObjects(objetsModifiables, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans objetsModifiables[]
-    if (intersects.length === 0) return;
+    if (intersects.length === 0) {
+        hideContextualMenu();
+        return
+    }
+
+    // Désélectionner l'objet actuellement sélectionné)
+    //        for (var i = 0; i < facesSelectionnes.length; i++) {
+    //
+    //        }
+
     var objet = intersects[0].object;
     if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol
     if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres)
@@ -33,20 +48,18 @@ export function onMouseClick(event) {
         var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
         for (var j = 0; j < 2; j++) {
             var numFace = face * 2 + j;
-            if (objetsSelectionnes.indexOf(numFace) < 0) {
+            if (facesSelectionnes.indexOf(numFace) < 0) {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-                objetsSelectionnes.push(numFace);
+                facesSelectionnes.push(numFace);
                 traveeSelectionnee = objet.parent.name;
-
-                // Dans la Gui, remettre à 0 la jauge "deplacerModule"
-
                 info(objet);
-
+                displayContextualMenu(objet, mouse.left, mouse.top);
             } else {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['blanc']);
-                objetsSelectionnes.splice(objetsSelectionnes.indexOf(numFace), 1);
+                facesSelectionnes.splice(facesSelectionnes.indexOf(numFace), 1);
                 traveeSelectionnee = '';
                 info(null);
+                hideContextualMenu();
             }
         }
         objet.geometry.elementsNeedUpdate = true;
@@ -56,14 +69,18 @@ export function onMouseClick(event) {
         var face = Math.floor(intersects[0].faceIndex / 2);
         for (var j = 0; j < 2; j++) {
             var numFace = face * 2 + j;
-            if (objetsSelectionnes.indexOf(numFace) < 0) {
+            if (facesSelectionnes.indexOf(numFace) < 0) {
                 objet.material = selectedGlassMaterial;
-                objetsSelectionnes.push(numFace);
+                facesSelectionnes.push(numFace);
                 info(objet);
+
+                displayContextualMenu(objet, mouse.left, mouse.top);
+
             } else {
                 objet.material = glassMaterial;
-                objetsSelectionnes.splice(objetsSelectionnes.indexOf(numFace), 1);
+                facesSelectionnes.splice(facesSelectionnes.indexOf(numFace), 1);
                 info(null);
+                hideContextualMenu();
             }
         }
     }
@@ -74,6 +91,8 @@ export function onMouseMove(event) {
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.left = event.pageX;
+    mouse.top = event.pageY;
 }
 
 

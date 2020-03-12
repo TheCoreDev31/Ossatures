@@ -11,8 +11,10 @@ import {
     recalculerCotes,
     deplacerTravee,
     info,
-    alerte
+    alerte,
+    log
 } from "./main.js"
+
 
 
 // Quelques constantes pratiques
@@ -61,13 +63,78 @@ function resizeRoof(down = false) {
 }
 
 
+function addMenu(menuTitle, isActive, action) {
+
+    var liText = liText = "<li data-action='" + action + "'";
+
+    if (action.match('moveUp')) liText += " class=\"moveUp\"";
+    if (action.match('moveDown')) liText += " class=\"moveDown\"";
+    if (action.match('add')) liText += " class=\"add\"";
+
+    if (!isActive) liText += " class=\"disabled\"";
+    liText += ">" + menuTitle + "</li>";
+    $('.liste-deroulante').append(liText);
+}
+
+
+export function hideContextualMenu() {
+    $("#contextualMenuDiv").css({
+        opacity: 0
+    });
+}
+
+
+export function displayContextualMenu(objet, x, y) {
+
+    if (facesSelectionnes.length > 1) return;
+
+    /*   -> parent = 'Travee X' et fils = 'front' ou 'back' => décaler la travée + rajouter ouverture
+         -> parent = 'Travee X' et fils = ''                => seulement rajouter une ouverture
+         -> parent <> 'Travee X' (donc une ouverture        => seulement supprimer l'ouverture                */
+
+    $('.liste-deroulante').empty();
+
+    if (objet.parent.name.includes('Travee')) {
+        if (objet.name == 'front' || objet.name == 'back') {
+
+            var decalageActuel = vtTraveesExistantes[objet.parent.name]['decalee'];
+            log(decalageActuel);
+            if (decalageActuel < 0) {
+                addMenu("Reculer cette travée", false, 'moveUpTravee');
+                addMenu("Avancer cette travée", true, 'moveDownTravee');
+            } else {
+                if (decalageActuel > 0) {
+                    addMenu("Reculer cette travée", true, 'moveUpTravee');
+                    addMenu("Avancer cette travée", false, 'moveDownTravee');
+
+                } else {
+                    addMenu("Reculer cette travée", true, 'moveUpTravee');
+                    addMenu("Avancer cette travée", true, 'moveDownTravee');
+                }
+            }
+
+
+        } else addMenu("Ajouter une ouverture", true, 'addOpening');
+    } else
+        addMenu("Supprimer cette ouverture", true, 'deleteOpening');
+
+    // Suivant la position du curseur, on place le menu à gauche ou à droite de cette dernière.
+    var left = (x >= (window.innerWidth / 2)) ? (x + 30) + 'px' : (x - $("#contextualMenuDiv").width() - 30) + 'px';
+    $("#contextualMenuDiv").css({
+        opacity: 1,
+        left: left,
+        //        left: x + 30 + 'px',
+        top: y - ($("#contextualMenuDiv").height() / 2) + 'px'
+    });
+}
+
+
 export function displayGui() {
 
     var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = false;
         this.afficherCotes = true;
-        this.deplacerTravee = 0;
     };
 
     var options = {
@@ -116,7 +183,7 @@ export function displayGui() {
                     resizeRoof();
                     break;
                 default:
-                    alert('Vous avez atteint le nombre maximum de travees (4).');
+                    alerte('Vous avez atteint le nombre maximum de travees (4).');
                     break;
             }
         },
@@ -156,7 +223,7 @@ export function displayGui() {
                     resizeRoof(DOWN);
                     break;
                 default:
-                    alert('Au moins un travee requis.');
+                    alerte('Au moins une travée requis.');
                     break;
             }
         }
@@ -219,16 +286,29 @@ export function displayGui() {
 
         }
     });
-
-    var guiTmp = myGui.addFolder('Temporaire');
-    guiTmp.open();
-    guiTmp.add(controller, 'deplacerTravee', -36, 36, 36).onChange(function (value) {
-        if (traveeSelectionnee) {
-            if (value > 0) deplacerTravee(traveeSelectionnee, 'haut');
-            else deplacerTravee(traveeSelectionnee, 'bas');
-        } else {
-            alerte("Veuillez sélectionner tout d'abord un travee.");
-        }
-    });
-
 }
+
+
+$("#contextualMenuDiv").click(function () {
+
+    var action = $('#contextualMenuDiv li').attr('data-action');
+    switch (action) {
+        case 'deleteOpening':
+            alert('delete');
+            deleteOpening();
+            break;
+        case 'addOpening':
+            alert('add');
+            break;
+        case 'moveUpTravee':
+            deplacerTravee(traveeSelectionnee, 'haut');
+            break;
+        case 'moveDownTravee':
+            deplacerTravee(traveeSelectionnee, 'bas');
+            break;
+        default:
+            alert('Autre action inconnue !');
+            break;
+    }
+    hideContextualMenu();
+});

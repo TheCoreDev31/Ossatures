@@ -15,6 +15,10 @@ function degrees_to_radians(degrees) {
 }
 
 
+export function deleteOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
+
+}
+
 export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
     var windowGrp = new THREE.Group();
@@ -128,9 +132,6 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
 
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
-
-    console.log(nomTravee);
-
     switch (typeOuverture) {
         case 'F1':
             vtTraveesExistantes[nomTravee]['nbF1']++;
@@ -187,6 +188,8 @@ export function createTravee() {
     // IMPORTANT : on crée les murs avec la face AV devant.
     var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
+    wallAR.name = 'back';
+
 
     var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
@@ -252,6 +255,6 @@ export function createTravee() {
     vtTraveesExistantes['Travee ' + nbTravees]['vt_AV'] = 3;
     vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAV'] = 1;
     vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAR'] = 1;
-    console.log(vtTraveesExistantes);
+
     return wallsGrp;
 }

@@ -1,0 +1,77 @@
+#contextualMenuDiv {
+    display: flex;
+    z-index: 1000;
+    position: absolute;
+
+    border-radius: 12px;
+    box-shadow: 0 0 12px black;
+    background: black;
+    color: white;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 18x;
+    font-weight: normal;
+
+    opacity: 0;
+    -webkit-transition: opacity 200ms;
+    -moz-transition: opacity 200ms;
+    -o-transition: opacity 200ms;
+    -ms-transition: opacity 200ms;
+}
+
+.liste-deroulante {
+    list-style: none;
+    margin-right: 20px;
+}
+
+ul.liste-deroulante {
+    margin: 10px;
+    border: 0px;
+}
+
+.liste-deroulante li {
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+.liste-deroulante li::before {
+    font-family: "Glyphicons Halflings";
+    content: "\e014";
+    margin-right: 8px;
+}
+
+.liste-deroulante li.moveUp::before {
+    font-family: "Glyphicons Halflings";
+    content: "\e093";
+    margin-right: 8px;
+}
+
+.liste-deroulante li.moveDown::before {
+    font-family: "Glyphicons Halflings";
+    content: "\e094";
+    margin-right: 8px;
+}
+
+.liste-deroulante li.add::before {
+    font-family: "Glyphicons Halflings";
+    content: "\2b";
+    margin-right: 8px;
+}
+
+.liste-deroulante li.disabled {
+    cursor: not-allowed;
+}
+
+.liste-deroulante li:hover {
+    background-color: #36567e;
+}
+
+.liste-deroulante li.disabled:hover {
+    background-color: #202020;
+}
+
+.liste-deroulante hr {
+    background-color: grey;
+    height: 1px;
+    border: 0;
+    margin: 2px 0px;
+}
