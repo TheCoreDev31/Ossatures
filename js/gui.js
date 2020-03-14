@@ -3,7 +3,7 @@ import {
 } from "./objects.js"
 
 import {
-    createRoofTexture
+    createToitTexture
 }
 from "./materials.js"
 
@@ -33,7 +33,7 @@ function resizeRoof(down = false) {
     var leToit = scene.getObjectByName('Toit');
     if (leToit) {
         // On joue sur la taille du toit et on recalcule sa texture en fonction.
-        var newTexture = createRoofTexture(nbTravees);
+        var newTexture = createToitTexture(nbTravees);
         if (factor >= 0) {
             leToit.scale.x *= factor;
         } else
@@ -48,7 +48,7 @@ function resizeRoof(down = false) {
             if (child.name == 'Toit') {
 
                 // On joue sur la taille du toit et on recalcule sa texture en fonction.
-                var newTexture = createRoofTexture(nbTravees);
+                var newTexture = createToitTexture(nbTravees);
                 if (factor >= 0) {
                     child.scale.x *= factor;
                 } else
@@ -98,7 +98,6 @@ export function displayContextualMenu(objet, x, y) {
         if (objet.name == 'front' || objet.name == 'back') {
 
             var decalageActuel = vtTraveesExistantes[objet.parent.name]['decalee'];
-            log(decalageActuel);
             if (decalageActuel < 0) {
                 addMenu("Reculer cette travée", false, 'moveUpTravee');
                 addMenu("Avancer cette travée", true, 'moveDownTravee');
@@ -223,7 +222,7 @@ export function displayGui() {
                     resizeRoof(DOWN);
                     break;
                 default:
-                    alerte('Au moins une travée requis.');
+                    alerte('Au moins une travée requise.');
                     break;
             }
         }
@@ -240,10 +239,15 @@ export function displayGui() {
 
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
         var leToit = scene.getObjectByName('Toit');
-        if (!value)
-            leToit.children[0].material.wireframe = true;
-        else
-            leToit.children[0].material.wireframe = false;
+        if (!value) {
+            for (var i = 0; i < leToit.children.length; i++) {
+                leToit.children[i].material.wireframe = true;
+            }
+        } else {
+            for (var i = 0; i < leToit.children.length; i++) {
+                leToit.children[i].material.wireframe = false;
+            }
+        }
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {

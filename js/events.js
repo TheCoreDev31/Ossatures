@@ -31,13 +31,13 @@ export function onMouseClick(event) {
     var intersects = raycaster.intersectObjects(objetsModifiables, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans objetsModifiables[]
     if (intersects.length === 0) {
         hideContextualMenu();
+        traveeSelectionnee = '';
+
+        log('onMouseClick : facesSelectionnes=' + facesSelectionnes);
         return
     }
 
     // Désélectionner l'objet actuellement sélectionné)
-    //        for (var i = 0; i < facesSelectionnes.length; i++) {
-    //
-    //        }
 
     var objet = intersects[0].object;
     if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol

@@ -6,7 +6,7 @@ import {
 
 
 // Renderer
-var renderer = new THREE.WebGLRenderer({
+export var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -18,7 +18,7 @@ renderer.gammaFactor = 2.2;
 
 
 // Camera
-var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 400);
+export var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 400);
 camera.position.set(50, 20, 160);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
@@ -41,9 +41,7 @@ scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 600);
 // Repère face avant
 var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(16, 16), boussoleMaterial);
 boussole.rotation.x = -Math.PI / 2;
-boussole.position.set(0, -(HAUTEUR_TRAVEE / 2) + 0.1, 80);
-boussole.matrixAutoUpdate = false;
-boussole.updateMatrix();
+boussole.position.set(0, -(HAUTEUR_TRAVEE / 2) + 0.1, 100);
 scene.add(boussole);
 
 
@@ -53,7 +51,7 @@ scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.3));
 // Un lampe derrière pour l'ombre des bâtiments
 const reference = 200;
 
-var rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], .6);
+export var rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], .6);
 rearLight.position.set(reference, reference, -reference / 2);
 rearLight.castShadow = true;
 rearLight.shadow.mapSize.width = reference;
@@ -65,21 +63,11 @@ rearLight.shadow.camera.far = reference * 2;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
-var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+export var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
 frontLight.position.set(10, HAUTEUR_TRAVEE, 300);
 frontLight.castShadow = false;
 scene.add(frontLight);
 
 
-
 document.body.appendChild(renderer.domElement);
-var canvas = renderer.domElement;
-
-
-export {
-    renderer,
-    camera,
-    canvas,
-    rearLight,
-    frontLight
-}
+export var canvas = renderer.domElement;

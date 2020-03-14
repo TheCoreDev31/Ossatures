@@ -37,7 +37,6 @@ export function createText(texte) {
 // Boussole
 var boussoleTexture = loader.load("img/boussole.png");
 boussoleTexture.encoding = THREE.sRGBEncoding;
-boussoleTexture.needsUpdate = true;
 export var boussoleMaterial = new THREE.MeshBasicMaterial({
     map: boussoleTexture,
     transparent: true,
@@ -58,7 +57,7 @@ export var groundMaterial = new THREE.MeshLambertMaterial({
 
 
 // Toit
-export function createRoofTexture(repeatX = 1) {
+export function createToitTexture(repeatX = 1) {
     var roofTexture = new THREE.Texture();
     roofTexture = loader.load("img/ardoise.jpg");
     roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
@@ -104,10 +103,11 @@ export var doorMaterial = new THREE.MeshLambertMaterial({
 var wallOutTexture = loader.load("img/crepi.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(5, 5);
-var wallOutMaterial = new THREE.MeshLambertMaterial({
+export var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
     color: COLOR_ARRAY['crepi'],
-    vertexColors: true
+    vertexColors: true,
+    side: THREE.DoubleSide
 });
 
 var wallInMaterial = new THREE.MeshLambertMaterial({
@@ -116,13 +116,18 @@ var wallInMaterial = new THREE.MeshLambertMaterial({
     emissiveIntensity: 0.2
 });
 
-var wallOutMaterial1 = new THREE.MeshLambertMaterial({
-    map: wallOutTexture,
+export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
+
+
+var pignonTexture = loader.load("img/crepi.jpg");
+pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
+pignonTexture.repeat.set(0.15, 0.15);
+export var pignonMaterial = new THREE.MeshLambertMaterial({
+    map: pignonTexture,
     color: COLOR_ARRAY['crepi'],
-    vertexColors: true
+    side: THREE.DoubleSide
 });
 
-export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
 
 
 var floorTexture = loader.load("img/carrelage.jpg");

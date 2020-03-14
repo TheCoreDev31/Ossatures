@@ -17,7 +17,7 @@ import {
 
 import {
     createOpening,
-    createRoof,
+    createToit,
     createTravee
 } from "./objects.js"
 
@@ -28,7 +28,6 @@ import {
 
 
 // Fonctions communes
-
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -140,6 +139,9 @@ export function deplacerTravee(nomTravee, direction) {
 
     var travee = scene.getObjectByName(nomTravee);
     var nbMurs = travee.children.length;
+
+    log('deplacerTravee : travee=' + travee + ' et nbMurs=' + nbMurs);
+
     for (var i = 0; i < nbMurs - 1; i++) {
         travee.children[i].visible = true;
     };
@@ -150,7 +152,6 @@ export function deplacerTravee(nomTravee, direction) {
         travee.position.z -= 36;
         vtTraveesExistantes[nomTravee]['decalee']--;
     }
-
 }
 
 
@@ -205,7 +206,7 @@ initialisationTableaux();
 travee1 = createTravee();
 scene.add(travee1);
 
-scene.add(createRoof());
+scene.add(createToit());
 
 var firstWindow = createOpening(travee1.name, 'AV', 'F2', 2);
 scene.add(firstWindow);

@@ -1,10 +1,11 @@
 import {
     COLOR_ARRAY,
-    createRoofTexture,
+    createToitTexture,
     glassMaterial,
     windowMaterial,
     doorMaterial,
     wallMaterial,
+    pignonMaterial,
     floorMaterial,
     topMaterial
 } from "./materials.js"
@@ -158,23 +159,43 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 }
 
 
-export function createRoof() {
+
+export function createToit() {
     var roofGrp = new THREE.Group();
-    var texture = createRoofTexture();
-    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE + 2, LARGEUR_TRAVEE * 1.3, 0.2), new THREE.MeshLambertMaterial({
+    var texture = createToitTexture();
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE + 2, LARGEUR_TRAVEE * 1.256, 0.2), new THREE.MeshLambertMaterial({
         map: texture,
         color: COLOR_ARRAY['gris_clair']
     }));
-    var rearPan = frontPan.clone();
-    frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 16.8);
+    frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
     roofGrp.add(frontPan);
 
-    rearPan.rotateX(degrees_to_radians(55));
-    rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 16.8);
+    var rearPan = frontPan.clone();
+    rearPan.rotateX(2 * degrees_to_radians(55));
+    rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 17.5);
     rearPan.castShadow = true;
     roofGrp.add(rearPan);
+
+    var pignonGeometry = new THREE.Shape();
+    pignonGeometry.moveTo(-LONGUEUR_TRAVEE / 2, 0);
+    pignonGeometry.lineTo(0, (LONGUEUR_TRAVEE / 2) * 0.71, 0);
+    pignonGeometry.lineTo(LONGUEUR_TRAVEE / 2, 0, 0);
+    pignonGeometry.lineTo(0, 0);
+    var extrudeSettings = {
+        depth: EPAISSEUR_MUR,
+        bevelEnabled: false
+    };
+    var leftPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+    leftPignon.rotation.y = Math.PI / 2;
+    leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
+    leftPignon.name = 'excluded';
+    roofGrp.add(leftPignon);
+    var rightPignon = leftPignon.clone()
+    rightPignon.position.x = (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR;
+    roofGrp.add(rightPignon);
+
     roofGrp.name = 'Toit';
 
     return roofGrp;
