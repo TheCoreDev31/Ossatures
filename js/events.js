@@ -28,18 +28,22 @@ export function onMouseClick(event) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
 
-    var intersects = raycaster.intersectObjects(objetsModifiables, true); // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans objetsModifiables[]
-    if (intersects.length === 0) {
+    // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans objetsModifiables[]
+    var intersects = raycaster.intersectObjects(objetsModifiables, true);
+
+    if (intersects.length === 0) { // On clique en-dehors d'un objet cliquable.
         hideContextualMenu();
         traveeSelectionnee = '';
 
-        log('onMouseClick : facesSelectionnes=' + facesSelectionnes);
-        return
+        return;
     }
 
     // Désélectionner l'objet actuellement sélectionné)
 
+
     var objet = intersects[0].object;
+    log(objet);
+
     if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol
     if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres)
 
@@ -48,15 +52,15 @@ export function onMouseClick(event) {
         var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
         for (var j = 0; j < 2; j++) {
             var numFace = face * 2 + j;
-            if (facesSelectionnes.indexOf(numFace) < 0) {
+            if (facesSelectionnees.indexOf(numFace) < 0) {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-                facesSelectionnes.push(numFace);
+                facesSelectionnees.push(numFace);
                 traveeSelectionnee = objet.parent.name;
                 info(objet);
                 displayContextualMenu(objet, mouse.left, mouse.top);
             } else {
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['blanc']);
-                facesSelectionnes.splice(facesSelectionnes.indexOf(numFace), 1);
+                facesSelectionnees.splice(facesSelectionnees.indexOf(numFace), 1);
                 traveeSelectionnee = '';
                 info(null);
                 hideContextualMenu();
@@ -69,16 +73,16 @@ export function onMouseClick(event) {
         var face = Math.floor(intersects[0].faceIndex / 2);
         for (var j = 0; j < 2; j++) {
             var numFace = face * 2 + j;
-            if (facesSelectionnes.indexOf(numFace) < 0) {
+            if (facesSelectionnees.indexOf(numFace) < 0) {
                 objet.material = selectedGlassMaterial;
-                facesSelectionnes.push(numFace);
+                facesSelectionnees.push(numFace);
                 info(objet);
 
                 displayContextualMenu(objet, mouse.left, mouse.top);
 
             } else {
                 objet.material = glassMaterial;
-                facesSelectionnes.splice(facesSelectionnes.indexOf(numFace), 1);
+                facesSelectionnees.splice(facesSelectionnees.indexOf(numFace), 1);
                 info(null);
                 hideContextualMenu();
             }

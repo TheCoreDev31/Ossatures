@@ -63,10 +63,20 @@ rearLight.shadow.camera.far = reference * 2;
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
-export var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+export var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.2);
 frontLight.position.set(10, HAUTEUR_TRAVEE, 300);
 frontLight.castShadow = false;
 scene.add(frontLight);
+
+export var leftLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+leftLight.position.set(-300, HAUTEUR_TRAVEE, 0);
+leftLight.castShadow = false;
+scene.add(leftLight);
+
+export var rightLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
+rightLight.castShadow = false;
+scene.add(rightLight);
 
 
 document.body.appendChild(renderer.domElement);

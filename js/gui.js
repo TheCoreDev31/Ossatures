@@ -79,14 +79,17 @@ function addMenu(menuTitle, isActive, action) {
 
 export function hideContextualMenu() {
     $("#contextualMenuDiv").css({
-        opacity: 0
+        opacity: 0,
+        left: -300, // Obligé sinon le menu était encore cliquable, même invisible.
+        top: -300
     });
+
 }
 
 
 export function displayContextualMenu(objet, x, y) {
 
-    if (facesSelectionnes.length > 1) return;
+    if (facesSelectionnees.length > 1) return;
 
     /*   -> parent = 'Travee X' et fils = 'front' ou 'back' => décaler la travée + rajouter ouverture
          -> parent = 'Travee X' et fils = ''                => seulement rajouter une ouverture
@@ -97,7 +100,7 @@ export function displayContextualMenu(objet, x, y) {
     if (objet.parent.name.includes('Travee')) {
         if (objet.name == 'front' || objet.name == 'back') {
 
-            var decalageActuel = vtTraveesExistantes[objet.parent.name]['decalee'];
+            var decalageActuel = tableauTravees[objet.parent.name]['decalee'];
             if (decalageActuel < 0) {
                 addMenu("Reculer cette travée", false, 'moveUpTravee');
                 addMenu("Avancer cette travée", true, 'moveDownTravee');
@@ -140,8 +143,9 @@ export function displayGui() {
         Ajouter: function () {
             switch (nbTravees) {
                 case 1:
-                    travee2 = createTravee();
+                    var travee2 = createTravee();
                     travee2.translateX(LARGEUR_TRAVEE / 2);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
                     travee1.children[indicePDAV].visible = false;
                     travee1.children[indicePDAR].visible = false;
@@ -153,9 +157,11 @@ export function displayGui() {
                     resizeRoof();
                     break;
                 case 2:
-                    travee3 = createTravee();
+                    var travee3 = createTravee();
                     travee3.translateX(LARGEUR_TRAVEE);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
+                    var travee2 = scene.getObjectByName('Travee 2');
                     travee2.translateX(-LARGEUR_TRAVEE / 2);
                     travee2.children[indicePDAV].visible = false;
                     travee2.children[indicePDAR].visible = false;
@@ -167,10 +173,13 @@ export function displayGui() {
                     resizeRoof();
                     break;
                 case 3:
-                    travee4 = createTravee();
+                    var travee4 = createTravee();
                     travee4.translateX(LARGEUR_TRAVEE * 1.5);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
+                    var travee2 = scene.getObjectByName('Travee 2');
                     travee2.translateX(-LARGEUR_TRAVEE / 2);
+                    var travee3 = scene.getObjectByName('Travee 3');
                     travee3.translateX(-LARGEUR_TRAVEE / 2);
                     travee3.children[indicePDAV].visible = false;
                     travee3.children[indicePDAR].visible = false;
@@ -189,7 +198,9 @@ export function displayGui() {
         Supprimer: function () {
             switch (nbTravees) {
                 case 2:
+                    var travee2 = scene.getObjectByName('Travee 2');
                     scene.remove(travee2);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(LARGEUR_TRAVEE / 2)
                     travee1.children[indicePDAV].visible = true;
                     travee1.children[indicePDAR].visible = true;
@@ -199,8 +210,11 @@ export function displayGui() {
                     resizeRoof(DOWN);
                     break;
                 case 3:
+                    var travee3 = scene.getObjectByName('Travee 3');
                     scene.remove(travee3);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(LARGEUR_TRAVEE / 2);
+                    var travee2 = scene.getObjectByName('Travee 2');
                     travee2.translateX(LARGEUR_TRAVEE / 2);
                     travee2.children[indicePDAV].visible = true;
                     travee2.children[indicePDAR].visible = true;
@@ -210,9 +224,13 @@ export function displayGui() {
                     resizeRoof(DOWN);
                     break;
                 case 4:
+                    var travee4 = scene.getObjectByName('Travee 4');
                     scene.remove(travee4);
+                    var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(LARGEUR_TRAVEE / 2);
+                    var travee2 = scene.getObjectByName('Travee 2');
                     travee2.translateX(LARGEUR_TRAVEE / 2);
+                    var travee3 = scene.getObjectByName('Travee 3');
                     travee3.translateX(LARGEUR_TRAVEE / 2);
                     travee3.children[indicePDAV].visible = true;
                     travee3.children[indicePDAR].visible = true;
@@ -298,7 +316,7 @@ $("#contextualMenuDiv").click(function () {
     switch (action) {
         case 'deleteOpening':
             alert('delete');
-            deleteOpening();
+            deleteOpening(traveeSelectionnee.name, faceTraveeSelectionnee); // nomTravee, face
             break;
         case 'addOpening':
             alert('add');

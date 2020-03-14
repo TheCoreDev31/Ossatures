@@ -68,7 +68,7 @@ export function info(param) {
         }, 2000);
         return;
     } else {
-        var newMessage = param.parent.name + " sélectionné (Id : " + param.id + ")";
+        var newMessage = "Sélection : " + param.parent.name + " (VT = ???)";
         document.getElementById('objectDescription').className = 'normal';
         document.getElementById('objectDescription').innerHTML = newMessage;
         return;
@@ -149,8 +149,8 @@ export function deplacerTravee(nomTravee, direction) {
         return;
     }
 
-    if ((direction == 'haut' && vtTraveesExistantes[nomTravee]['decalee'] == 1) ||
-        (direction == 'bas' && vtTraveesExistantes[nomTravee]['decalee'] == -1)) {
+    if ((direction == 'haut' && tableauTravees[nomTravee]['decalee'] == 1) ||
+        (direction == 'bas' && tableauTravees[nomTravee]['decalee'] == -1)) {
         alerte("Travée déjà décalée dans cette direction.");
         return;
     }
@@ -158,62 +158,78 @@ export function deplacerTravee(nomTravee, direction) {
     var travee = scene.getObjectByName(nomTravee);
     var nbMurs = travee.children.length;
 
-    log('deplacerTravee : travee=' + travee + ' et nbMurs=' + nbMurs);
-
     for (var i = 0; i < nbMurs - 1; i++) {
         travee.children[i].visible = true;
     };
     if (direction == 'haut') {
         travee.position.z += 36;
-        vtTraveesExistantes[nomTravee]['decalee']++;
+        tableauTravees[nomTravee]['decalee']++;
     } else {
         travee.position.z -= 36;
-        vtTraveesExistantes[nomTravee]['decalee']--;
+        tableauTravees[nomTravee]['decalee']--;
     }
 }
 
 
 function initialisationTableaux() {
 
-    for (var i = 0; i < 4; i++) {
-        vtTraveesExistantes['Travee ' + (i + 1)] = new Array();
-    }
-
+    // Tableau fixe des produits
     var nbCaract = 5;
-    PRODUITS['PE'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
+    PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
+    PRODUITS['MU']['VT'] = 3;
+    PRODUITS['MU']['largeur'] = 0;
+    PRODUITS['MU']['hauteur'] = 0;
+    PRODUITS['MU']['epaisseur'] = 0;
+    PRODUITS['MU']['elevation'] = 0;
+
+    PRODUITS['PE'] = new Array(nbCaract);
     PRODUITS['PE']['VT'] = 2;
     PRODUITS['PE']['largeur'] = 9;
     PRODUITS['PE']['hauteur'] = 21.5;
     PRODUITS['PE']['epaisseur'] = 3;
     PRODUITS['PE']['elevation'] = 0;
 
-    PRODUITS['F1'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur
+    PRODUITS['F1'] = new Array(nbCaract);
     PRODUITS['F1']['VT'] = 2;
     PRODUITS['F1']['largeur'] = 4.5;
     PRODUITS['F1']['hauteur'] = 6.5;
     PRODUITS['F1']['epaisseur'] = 3;
     PRODUITS['F1']['elevation'] = 15;
 
-    PRODUITS['F2'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur
+    PRODUITS['F2'] = new Array(nbCaract);
     PRODUITS['F2']['VT'] = 2;
     PRODUITS['F2']['largeur'] = 10.5;
     PRODUITS['F2']['hauteur'] = 11.5;
     PRODUITS['F2']['epaisseur'] = 3;
     PRODUITS['F2']['elevation'] = 10;
 
-    PRODUITS['PF'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur
+    PRODUITS['PF'] = new Array(nbCaract);
     PRODUITS['PF']['VT'] = 1.4;
     PRODUITS['PF']['largeur'] = 18;
     PRODUITS['PF']['hauteur'] = 21.5;
     PRODUITS['PF']['epaisseur'] = 3;
     PRODUITS['PF']['elevation'] = 0;
 
-    PRODUITS['PG'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur
+    PRODUITS['PG'] = new Array(nbCaract);
     PRODUITS['PG']['VT'] = 0;
     PRODUITS['PG']['largeur'] = 24;
     PRODUITS['PG']['hauteur'] = 20;
     PRODUITS['PG']['epaisseur'] = 3;
     PRODUITS['PG']['elevation'] = 0;
+
+    PRODUITS['PE+F1'] = new Array(nbCaract);
+    PRODUITS['PE+F1']['VT'] = 0.5;
+    PRODUITS['PE+F1']['largeur'] = 0;
+    PRODUITS['PE+F1']['hauteur'] = 0;
+    PRODUITS['PE+F1']['epaisseur'] = 0;
+    PRODUITS['PE+F1']['elevation'] = 0;
+
+    PRODUITS['PO'] = new Array(nbCaract);
+    PRODUITS['PO']['VT'] = 0;
+    PRODUITS['PO']['largeur'] = 36;
+    PRODUITS['PO']['hauteur'] = 25;
+    PRODUITS['PO']['epaisseur'] = 0;
+    PRODUITS['PO']['elevation'] = 0;
 }
 
 
@@ -221,12 +237,12 @@ function initialisationTableaux() {
 
 initialisationTableaux();
 
-travee1 = createTravee();
+var travee1 = createTravee();
 scene.add(travee1);
 
 scene.add(createToit());
 
-var firstWindow = createOpening(travee1.name, 'AV', 'F2', 2);
+var firstWindow = createOpening(travee1.name, 'AV', 'F2');
 scene.add(firstWindow);
 
 var secondWindow = createOpening(travee1.name, 'PGAV', 'F1');
@@ -235,15 +251,19 @@ scene.add(secondWindow);
 var firstDoor = createOpening(travee1.name, 'PDAR', 'PE');
 scene.add(firstDoor);
 
+var secondDoor = createOpening(travee1.name, 'PGAR', 'PF', 2);
+scene.add(secondDoor);
+
+log(tableauTravees);
+
+
 
 incrusterCotes();
-
 
 window.addEventListener('resize', onWindowResize, false);
 document.addEventListener('click', onMouseClick);
 document.addEventListener('mousemove', onMouseMove, false);
 //document.addEventListener('dblclick', onMouseDoubleClick);
-
 init();
 displayGui();
 animate();

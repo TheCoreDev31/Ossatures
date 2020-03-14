@@ -37,15 +37,14 @@
             var HAUTEUR_TRAVEE = 25;
             var EPAISSEUR_MUR = 2;
             var DOWN = true;
-            var PRODUITS = new Array(5);
+            var PRODUITS = new Array(8);
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
-            var vtTraveesExistantes = new Array(4);
-            var travee1, travee2, travee3, travee4; // A remplacer par tableau d'objets
+            var tableauTravees = new Array();
             var nbTravees = nbFenetres = 0;
-            var facesSelectionnes = new Array(),
+            var facesSelectionnees = new Array(),
                 objetsModifiables = new Array(),
-                traveeSelectionnee;
+                traveeSelectionnee, faceTraversSelectionnee;
             var raycaster, mouse;
         </script>
     </div>

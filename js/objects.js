@@ -10,13 +10,18 @@ import {
     topMaterial
 } from "./materials.js"
 
+import {
+    log
+} from "./main.js"
+
+
 function degrees_to_radians(degrees) {
     var pi = Math.PI;
     return degrees * (pi / 180);
 }
 
 
-export function deleteOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
+export function deleteOpening(nomTravee, face) {
 
 }
 
@@ -48,7 +53,7 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
             windowHole.lineTo(.5, .5);
             windowGeometry.holes.push(windowHole);
             break;
-        default:
+        default: // Normalement 2
             var windowHole1 = new THREE.Shape();
             windowHole1.moveTo(.5, .5);
             windowHole1.lineTo(.5, hauteur - .5);
@@ -77,8 +82,8 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
     windowGrp.add(windowFrame);
 
 
-    // Eventuellement, la vitre
-    if (typeOuverture == 'F1' || typeOuverture == 'F2') {
+    // Eventuellement, une vitre
+    if (typeOuverture == 'F1' || typeOuverture == 'F2' || typeOuverture == 'PF') {
         var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
         windowGlass.position.set(.5, .5, 0);
         windowGrp.add(windowGlass);
@@ -92,7 +97,7 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
     windowGrp.name = 'Fenetre ' + nbFenetres;
     objetsModifiables.push(windowGrp);
 
-    // On calcule la position en fonction du type d'ouverture et de la face de la travée.
+    // On calcule la position en fonction du type d'ouverture, de la face de la travée et de la position de la travée.
     var positionX = 0,
         positionY = 0,
         positionZ = 0;
@@ -133,27 +138,32 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
 
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
-    switch (typeOuverture) {
-        case 'F1':
-            vtTraveesExistantes[nomTravee]['nbF1']++;
+    switch (face) {
+        case 'AV':
+            if (tableauTravees[nomTravee]['ouvertures_AV']++ == 0) tableauTravees[nomTravee]['vt_AV'] = 0;
+            tableauTravees[nomTravee]['vt_AV'] += PRODUITS[typeOuverture]['VT'];
             break;
-        case 'F2':
-            vtTraveesExistantes[nomTravee]['nbF2']++;
+        case 'AR':
+            if (tableauTravees[nomTravee]['ouvertures_AR']++ == 0) tableauTravees[nomTravee]['vt_AR'] = 0;
+            tableauTravees[nomTravee]['vt_AR'] += PRODUITS[typeOuverture]['VT'];
             break;
-        case 'PE':
+        case 'PGAV':
+            if (tableauTravees[nomTravee]['ouvertures_PGAV']++ == 0) tableauTravees[nomTravee]['vt_PGAV'] = 0;
+            tableauTravees[nomTravee]['vt_PGAV'] += PRODUITS[typeOuverture]['VT'];
             break;
-        case 'PF':
+        case 'PGAR':
+            if (tableauTravees[nomTravee]['ouvertures_PGAR']++ == 0) tableauTravees[nomTravee]['vt_PGAR'] = 0;
+            tableauTravees[nomTravee]['vt_PGAR'] += PRODUITS[typeOuverture]['VT'];
             break;
-        case 'PG':
+        case 'PDAV':
+            if (tableauTravees[nomTravee]['ouvertures_PDAV']++ == 0) tableauTravees[nomTravee]['vt_PDAV'] = 0;
+            tableauTravees[nomTravee]['vt_PDAV'] += PRODUITS[typeOuverture]['VT'];
             break;
-
+        case 'PDAR':
+            if (tableauTravees[nomTravee]['ouvertures_PDAR']++ == 0) tableauTravees[nomTravee]['vt_PDAR'] = 0;
+            tableauTravees[nomTravee]['vt_PDAR'] += PRODUITS[typeOuverture]['VT'];
+            break;
     }
-    //    vtTraveesExistantes[nomTravee]['vt_AV'] = 6;
-    //    vtTraveesExistantes[nomTravee]['vt_AR'] = 6;
-    //    vtTraveesExistantes[nomTravee]['vt_PGAV'] = 6;
-    //    vtTraveesExistantes[nomTravee]['vt_PGAR'] = 6;
-    //    vtTraveesExistantes[nomTravee]['vt_PDAV'] = 6;
-    //    vtTraveesExistantes[nomTravee]['vt_PDAR'] = 6;
 
     return windowGrp;
 }
@@ -209,8 +219,6 @@ export function createTravee() {
     // IMPORTANT : on crée les murs avec la face AV devant.
     var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
-    wallAR.name = 'back';
-
 
     var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
@@ -225,7 +233,6 @@ export function createTravee() {
     var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAV.rotation.y = Math.PI;
     wallAV.position.z = LARGEUR_TRAVEE - (EPAISSEUR_MUR / 2);
-    wallAV.name = 'front';
 
     var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAV.rotation.y = Math.PI / 2;
@@ -247,15 +254,21 @@ export function createTravee() {
     top.visible = false;
 
     var wallsGrp = new THREE.Group();
+    nbTravees++;
     wallsGrp.add(wallAR);
+    wallAR.name = 'Travee ' + nbTravees + '-AR';
     wallsGrp.add(wallPDAR);
+    wallPDAR.name = 'Travee ' + nbTravees + '-PDAR';
     wallsGrp.add(wallPDAV);
+    wallPDAV.name = 'Travee ' + nbTravees + '-PDAV';
     wallsGrp.add(wallAV);
+    wallAR.name = 'Travee ' + nbTravees + '-AR';
     wallsGrp.add(wallPGAV);
+    wallPGAV.name = 'Travee ' + nbTravees + '-PGAV';
     wallsGrp.add(wallPGAR);
+    wallPGAR.name = 'Travee ' + nbTravees + '-PGAR';
     wallsGrp.add(floor);
     wallsGrp.add(top);
-    nbTravees++;
     wallsGrp.name = 'Travee ' + nbTravees;
     objetsModifiables.push(wallsGrp);
 
@@ -264,18 +277,27 @@ export function createTravee() {
         wallsGrp.children[i].castShadow = true;
     }
 
-    // Initialisation du tableau d'infos sur la travée
-    vtTraveesExistantes['Travee ' + nbTravees]['nom'] = wallsGrp.name;
-    vtTraveesExistantes['Travee ' + nbTravees]['decalee'] = 0;
-    vtTraveesExistantes['Travee ' + nbTravees]['nbF1'] = 0;
-    vtTraveesExistantes['Travee ' + nbTravees]['nbF2'] = 0;
-    vtTraveesExistantes['Travee ' + nbTravees]['nbPE'] = 0;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_AR'] = 3;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_PDAR'] = 1;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_PDAV'] = 1;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_AV'] = 3;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAV'] = 1;
-    vtTraveesExistantes['Travee ' + nbTravees]['vt_PGAR'] = 1;
+    // Initialisation du tableau d'infos sur la travée que l'on vient de créer...
+    var vtMur = PRODUITS['MU']['VT'];
+    tableauTravees['Travee ' + nbTravees] = new Array();
+    tableauTravees['Travee ' + nbTravees]['nom'] = wallsGrp.name;
+    tableauTravees['Travee ' + nbTravees]['decalee'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_AR'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_AR'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_PDAR'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_PDAR'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_PDAV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_PDAV'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_AV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_AV'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_PGAV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_PGAV'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_PGAR'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['ouvertures_PGAR'] = 0;
+
+    // .. ne pas oublier que cela modifie les scores VT des autres travées adjacentes.
+
+
 
     return wallsGrp;
 }
