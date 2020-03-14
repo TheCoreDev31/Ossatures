@@ -97,31 +97,49 @@ export function recalculerCotes(direction = 'largeur') {
     }
 }
 
-function incrusterCotes(direction = 'largeur') {
-    if (direction == 'largeur') {
-        var texte = (nbTravees * (LARGEUR_TRAVEE / 10)) + ' m';
-        var cotes = createText(texte);
-        var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
-        var cotesGrp = new THREE.Group();
+function incrusterCotes() {
 
-        cotes.rotation.x = -Math.PI / 2;
-        cotes.position.set(0, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8);
-        cotesGrp.add(cotes);
+    var texte = (nbTravees * (LARGEUR_TRAVEE / 10)) + ' m';
+    var cotes = createText(texte);
+    var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
+    var cotesGrp = new THREE.Group();
 
-        var points = [];
-        points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
-        points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-        points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-        points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
-        var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
-        cotesGrp.add(line);
-        cotesGrp.name = 'CoteX';
-        cotesGrp.visible = false;
-        scene.add(cotesGrp);
-    } else {
-        /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels
-         */
-    }
+    cotes.rotation.x = -Math.PI / 2;
+    cotes.position.set(0, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8);
+    cotesGrp.add(cotes);
+
+    var points = [];
+    points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+    points.push(new THREE.Vector3((-LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) * nbTravees, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+    var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
+    cotesGrp.add(line);
+    cotesGrp.name = 'CoteX';
+    cotesGrp.visible = false;
+    scene.add(cotesGrp);
+
+    /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels    */
+    var texte = (LONGUEUR_TRAVEE / 10) + ' m';
+    var cotes = createText(texte);
+    var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
+    var cotesGrp = new THREE.Group();
+    cotes.rotation.z = -Math.PI / 2;
+    cotes.rotation.x = Math.PI / 2;
+    cotes.rotation.y = Math.PI;
+    cotes.position.set((LARGEUR_TRAVEE / 2) + 8, hauteurTexte, 0);
+    cotesGrp.add(cotes);
+
+    var points = [];
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 1, hauteurTexte, LONGUEUR_TRAVEE / 2));
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 10, hauteurTexte, LONGUEUR_TRAVEE / 2));
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 10, hauteurTexte, -LONGUEUR_TRAVEE / 2));
+    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 1, hauteurTexte, -LONGUEUR_TRAVEE / 2));
+    var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
+    cotesGrp.add(line);
+    cotesGrp.name = 'CoteY';
+    cotesGrp.visible = false;
+    scene.add(cotesGrp);
 }
 
 
