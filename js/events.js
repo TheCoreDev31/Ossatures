@@ -17,8 +17,35 @@ import {
 
 import {
     displayContextualMenu,
-    hideContextualMenu
+    hideContextualMenu,
+    unSelect
 } from "./gui.js"
+
+
+/*******************************    Gestion du clic sur le menu déroulant    **************************************/
+$("#contextualMenuDiv").click(function () {
+
+    var action = $('#contextualMenuDiv li').attr('data-action');
+    switch (action) {
+        case 'deleteOpening':
+            alert('delete');
+            deleteOpening(traveeSelectionnee.name, faceTraveeSelectionnee); // nomTravee, face
+            break;
+        case 'addOpening':
+            alert('add');
+            break;
+        case 'moveUpTravee':
+            deplacerTravee(traveeSelectionnee, 'haut');
+            break;
+        case 'moveDownTravee':
+            deplacerTravee(traveeSelectionnee, 'bas');
+            break;
+        default:
+            alert('Autre action inconnue !');
+            break;
+    }
+    hideContextualMenu();
+});
 
 
 
@@ -32,62 +59,37 @@ export function onMouseClick(event) {
     var intersects = raycaster.intersectObjects(objetsModifiables, true);
 
     if (intersects.length === 0) { // On clique en-dehors d'un objet cliquable.
-        hideContextualMenu();
-        traveeSelectionnee = '';
-
+        unSelect();
         return;
     }
 
-    // Désélectionner l'objet actuellement sélectionné)
-
-
     var objet = intersects[0].object;
-    log(objet);
 
+    // On n'intercepte pas volontairement certains objets
     if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol
-    if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres)
+    if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
+    if (objet.name.includes('Travee') && !objet.parent.name.includes('>') && intersects[0].faceIndex < 10) return; // Façade != façade avant du mur
 
-    if (objet.material[1]) { // Objets multi-matériaux (= les murs)
-
-        var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
-        for (var j = 0; j < 2; j++) {
-            var numFace = face * 2 + j;
-            if (facesSelectionnees.indexOf(numFace) < 0) {
+    var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
+    for (var j = 0; j < 2; j++) {
+        var numFace = face * 2 + j;
+        if (facesSelectionnees.indexOf(numFace) < 0) {
+            if (objet.material[1]) { // Les murs
                 objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-                facesSelectionnees.push(numFace);
-                traveeSelectionnee = objet.parent.name;
-                info(objet);
-                displayContextualMenu(objet, mouse.left, mouse.top);
-            } else {
-                objet.geometry.faces[numFace].color.set(COLOR_ARRAY['blanc']);
-                facesSelectionnees.splice(facesSelectionnees.indexOf(numFace), 1);
-                traveeSelectionnee = '';
-                info(null);
-                hideContextualMenu();
-            }
-        }
-        objet.geometry.elementsNeedUpdate = true;
-
-    } else { // Objets mono-matériau = fenêtres par exemple
-
-        var face = Math.floor(intersects[0].faceIndex / 2);
-        for (var j = 0; j < 2; j++) {
-            var numFace = face * 2 + j;
-            if (facesSelectionnees.indexOf(numFace) < 0) {
+            } else { // Les ouvertures
                 objet.material = selectedGlassMaterial;
-                facesSelectionnees.push(numFace);
-                info(objet);
-
-                displayContextualMenu(objet, mouse.left, mouse.top);
-
-            } else {
-                objet.material = glassMaterial;
-                facesSelectionnees.splice(facesSelectionnees.indexOf(numFace), 1);
-                info(null);
-                hideContextualMenu();
             }
+            objetSelectionne = objet.name;
+            facesSelectionnees.push(numFace);
+            info(objet);
+            displayContextualMenu(objet, mouse.left, mouse.top);
+        } else {
+            // On arrive ici si on-reclique sur la sélection actuelle.
+            unSelect();
+            return;
         }
     }
+    objet.geometry.elementsNeedUpdate = true;
 }
 
 

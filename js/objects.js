@@ -86,15 +86,17 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
     if (typeOuverture == 'F1' || typeOuverture == 'F2' || typeOuverture == 'PF') {
         var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
         windowGlass.position.set(.5, .5, 0);
+        windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
         windowGrp.add(windowGlass);
     } else {
         var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
         windowDoor.position.set(.5, .5, 0);
+        windowDoor.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Porte';
         windowGrp.add(windowDoor);
     }
 
     nbFenetres++;
-    windowGrp.name = 'Fenetre ' + nbFenetres;
+    windowGrp.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture;
     objetsModifiables.push(windowGrp);
 
     // On calcule la position en fonction du type d'ouverture, de la face de la travée et de la position de la travée.
@@ -222,7 +224,7 @@ export function createTravee() {
 
     var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
-    wallPDAR.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
+    wallPDAR.position.x = ((-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2) - 0.01;
     wallPDAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
 
     var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
@@ -256,20 +258,21 @@ export function createTravee() {
     var wallsGrp = new THREE.Group();
     nbTravees++;
     wallsGrp.add(wallAR);
-    wallAR.name = 'Travee ' + nbTravees + '-AR';
+    var prefixe = 'Travee ' + nbTravees;
+    wallAR.name = prefixe + '>AR';
     wallsGrp.add(wallPDAR);
-    wallPDAR.name = 'Travee ' + nbTravees + '-PDAR';
+    wallPDAR.name = prefixe + '>PDAR';
     wallsGrp.add(wallPDAV);
-    wallPDAV.name = 'Travee ' + nbTravees + '-PDAV';
+    wallPDAV.name = prefixe + '>PDAV';
     wallsGrp.add(wallAV);
-    wallAR.name = 'Travee ' + nbTravees + '-AR';
+    wallAV.name = prefixe + '>AV';
     wallsGrp.add(wallPGAV);
-    wallPGAV.name = 'Travee ' + nbTravees + '-PGAV';
+    wallPGAV.name = prefixe + '>PGAV';
     wallsGrp.add(wallPGAR);
-    wallPGAR.name = 'Travee ' + nbTravees + '-PGAR';
+    wallPGAR.name = prefixe + '>PGAR';
     wallsGrp.add(floor);
     wallsGrp.add(top);
-    wallsGrp.name = 'Travee ' + nbTravees;
+    wallsGrp.name = prefixe;
     objetsModifiables.push(wallsGrp);
 
     for (var i = 0; i < wallsGrp.children.length; i++) {

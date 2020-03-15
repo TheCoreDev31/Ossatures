@@ -92,9 +92,11 @@ export var selectedGlassMaterial = new THREE.MeshPhongMaterial({
 
 
 // Porte ou porte-fenêtre ou porte de garage
-export var doorMaterial = new THREE.MeshLambertMaterial({
+export var doorMaterial = new THREE.MeshPhongMaterial({
     color: COLOR_ARRAY['ral7016'],
-    side: THREE.DoubleSide
+    shininess: 50,
+    specular: COLOR_ARRAY['ral7016'],
+    refractionRatio: 0.6
 });
 
 
@@ -103,16 +105,15 @@ export var doorMaterial = new THREE.MeshLambertMaterial({
 var wallOutTexture = loader.load("img/crepi.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(5, 5);
-export var wallOutMaterial = new THREE.MeshLambertMaterial({
+var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
     color: COLOR_ARRAY['crepi'],
-    vertexColors: true,
-    side: THREE.DoubleSide
+    vertexColors: true
 });
 
 var wallInMaterial = new THREE.MeshLambertMaterial({
-    color: COLOR_ARRAY['blanc'],
-    emissive: COLOR_ARRAY['blanc'],
+    color: COLOR_ARRAY['crepi'],
+    emissive: COLOR_ARRAY['crepi'],
     emissiveIntensity: 0.2
 });
 

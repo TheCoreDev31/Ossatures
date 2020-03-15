@@ -3,7 +3,9 @@ import {
 } from "./objects.js"
 
 import {
-    createToitTexture
+    createToitTexture,
+    glassMaterial,
+    COLOR_ARRAY
 }
 from "./materials.js"
 
@@ -17,7 +19,7 @@ import {
 
 
 
-// Quelques constantes pratiques
+// Quelques constantes pratiques pour repérer les faces
 var indicePDAR = 1;
 var indicePDAV = 2;
 var indicePGAV = 4;
@@ -67,16 +69,47 @@ function addMenu(menuTitle, isActive, action) {
 
     var liText = liText = "<li data-action='" + action + "'";
 
-    if (action.match('moveUp')) liText += " class=\"moveUp\"";
-    if (action.match('moveDown')) liText += " class=\"moveDown\"";
-    if (action.match('add')) liText += " class=\"add\"";
+    if (action.match('moveUp')) liText += " class=\"moveUp";
+    if (action.match('moveDown')) liText += " class=\"moveDown";
+    if (action.match('add')) liText += " class=\"add";
+    if (!isActive) liText += " disabled";
+    liText += "\">" + menuTitle + "</li>";
 
-    if (!isActive) liText += " class=\"disabled\"";
-    liText += ">" + menuTitle + "</li>";
     $('.liste-deroulante').append(liText);
 }
 
 
+
+export function unSelect() {
+
+    /* On masque le menu déroulant...
+       on déselectionne tous les objets à l'IHM,
+       puis on vide les variables  */
+
+    hideContextualMenu();
+
+    if (objetSelectionne) {
+        var objet = scene.getObjectByName(objetSelectionne);
+
+        log('objetSelectionne=' + objet);
+
+        for (var i = 0; i < facesSelectionnees.length; i++) {
+            if (objet.material[1]) { // Les murs
+                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['crepi']);
+            } else { // Les ouvertures
+                objet.material = glassMaterial;
+            }
+        }
+        objet.geometry.elementsNeedUpdate = true;
+        facesSelectionnees.length = 0;
+        objetSelectionne = '';
+        info(null);
+    }
+}
+
+
+
+/*******************************    Gestion du menu contextuel    ***********************************************/
 export function hideContextualMenu() {
     $("#contextualMenuDiv").css({
         opacity: 0,
@@ -125,7 +158,6 @@ export function displayContextualMenu(objet, x, y) {
     $("#contextualMenuDiv").css({
         opacity: 1,
         left: left,
-        //        left: x + 30 + 'px',
         top: y - ($("#contextualMenuDiv").height() / 2) + 'px'
     });
 }
@@ -308,28 +340,3 @@ export function displayGui() {
         }
     });
 }
-
-
-$("#contextualMenuDiv").click(function () {
-
-    var action = $('#contextualMenuDiv li').attr('data-action');
-    switch (action) {
-        case 'deleteOpening':
-            alert('delete');
-            deleteOpening(traveeSelectionnee.name, faceTraveeSelectionnee); // nomTravee, face
-            break;
-        case 'addOpening':
-            alert('add');
-            break;
-        case 'moveUpTravee':
-            deplacerTravee(traveeSelectionnee, 'haut');
-            break;
-        case 'moveDownTravee':
-            deplacerTravee(traveeSelectionnee, 'bas');
-            break;
-        default:
-            alert('Autre action inconnue !');
-            break;
-    }
-    hideContextualMenu();
-});

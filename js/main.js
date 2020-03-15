@@ -79,8 +79,8 @@ export function log(message) {
     console.log(message);
 }
 
-/***********************************************************************/
 
+/************************   Gestion des cotes affichées sur le plan   ***********************************************/
 
 export function recalculerCotes(direction = 'largeur') {
 
@@ -141,6 +141,7 @@ function incrusterCotes() {
     cotesGrp.visible = false;
     scene.add(cotesGrp);
 }
+
 
 
 export function deplacerTravee(nomTravee, direction) {
@@ -253,9 +254,6 @@ scene.add(firstDoor);
 
 var secondDoor = createOpening(travee1.name, 'PGAR', 'PF', 2);
 scene.add(secondDoor);
-
-log(tableauTravees);
-
 
 
 incrusterCotes();
