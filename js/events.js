@@ -21,6 +21,11 @@ import {
     unSelect
 } from "./gui.js"
 
+import {
+    deleteOpening,
+    deplacerTravee
+} from "./objects.js"
+
 
 /*******************************    Gestion du clic sur le menu déroulant    **************************************/
 $("#contextualMenuDiv").click(function () {
@@ -28,17 +33,16 @@ $("#contextualMenuDiv").click(function () {
     var action = $('#contextualMenuDiv li').attr('data-action');
     switch (action) {
         case 'deleteOpening':
-            alert('delete');
-            deleteOpening(traveeSelectionnee.name, faceTraveeSelectionnee); // nomTravee, face
+            deleteOpening(objetSelectionne);
             break;
         case 'addOpening':
             alert('add');
             break;
         case 'moveUpTravee':
-            deplacerTravee(traveeSelectionnee, 'haut');
+            deplacerTravee(objetSelectionne, 'haut');
             break;
         case 'moveDownTravee':
-            deplacerTravee(traveeSelectionnee, 'bas');
+            deplacerTravee(objetSelectionne, 'bas');
             break;
         default:
             alert('Autre action inconnue !');
@@ -62,32 +66,30 @@ export function onMouseClick(event) {
         unSelect();
         return;
     }
+    if ($('#contextualMenuDiv').css('opacity') == 1) return;
 
     var objet = intersects[0].object;
 
-    // On n'intercepte pas volontairement certains objets
+    // On n'intercepte volontairement pas certains objets
     if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol
     if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
     if (objet.name.includes('Travee') && !objet.parent.name.includes('>') && intersects[0].faceIndex < 10) return; // Façade != façade avant du mur
 
+    // S'il existe déjà une précédente sélection, on l'efface.
+    if (facesSelectionnees.length > 0) unSelect()
+
     var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
     for (var j = 0; j < 2; j++) {
         var numFace = face * 2 + j;
-        if (facesSelectionnees.indexOf(numFace) < 0) {
-            if (objet.material[1]) { // Les murs
-                objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-            } else { // Les ouvertures
-                objet.material = selectedGlassMaterial;
-            }
-            objetSelectionne = objet.name;
-            facesSelectionnees.push(numFace);
-            info(objet);
-            displayContextualMenu(objet, mouse.left, mouse.top);
-        } else {
-            // On arrive ici si on-reclique sur la sélection actuelle.
-            unSelect();
-            return;
+        if (objet.material[1]) { // Les murs
+            objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+        } else { // Les ouvertures
+            objet.material = selectedGlassMaterial;
         }
+        objetSelectionne = objet.name;
+        facesSelectionnees.push(numFace);
+        info(objet);
+        displayContextualMenu(objet, mouse.left, mouse.top);
     }
     objet.geometry.elementsNeedUpdate = true;
 }

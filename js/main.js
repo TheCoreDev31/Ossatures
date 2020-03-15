@@ -47,31 +47,29 @@ function init() {
 
 /***********************************************************************/
 export function alerte(message) {
-    document.getElementById('objectDescription').className = 'alerte';
-    document.getElementById('objectDescription').innerHTML = message;
+    $("#messageInfo").prop("class", "alerte");
+    $("#messageInfo").html(message);
     setTimeout(function () {
-        document.getElementById('objectDescription').className = 'normal';
-        document.getElementById('objectDescription').innerHTML = '';
+        $("#messageInfo").prop("class", "normal");
+        $("#messageInfo").html("");
     }, 2000);
 }
 
 export function info(param) {
     if (param == null) {
-        document.getElementById('objectDescription').className = 'normal';
-        document.getElementById('objectDescription').innerHTML = '';
+        document.getElementById('messageInfo').className = 'normal';
+        document.getElementById('messageInfo').innerHTML = '';
         return;
     }
     if (typeof (param) == 'string') {
-        document.getElementById('objectDescription').innerHTML = param;
+        document.getElementById('messageInfo').innerHTML = param;
         setTimeout(function () {
-            document.getElementById('objectDescription').innerHTML = '';
+            document.getElementById('messageInfo').innerHTML = '';
         }, 2000);
-        return;
     } else {
         var newMessage = "Sélection : " + param.parent.name + " (VT = ???)";
-        document.getElementById('objectDescription').className = 'normal';
-        document.getElementById('objectDescription').innerHTML = newMessage;
-        return;
+        document.getElementById('messageInfo').className = 'normal';
+        document.getElementById('messageInfo').innerHTML = newMessage;
     }
 }
 
@@ -140,35 +138,6 @@ function incrusterCotes() {
     cotesGrp.name = 'CoteY';
     cotesGrp.visible = false;
     scene.add(cotesGrp);
-}
-
-
-
-export function deplacerTravee(nomTravee, direction) {
-    if (nbTravees <= 1) {
-        alerte("Vous devez avoir plus d'une travée dans votre projet.");
-        return;
-    }
-
-    if ((direction == 'haut' && tableauTravees[nomTravee]['decalee'] == 1) ||
-        (direction == 'bas' && tableauTravees[nomTravee]['decalee'] == -1)) {
-        alerte("Travée déjà décalée dans cette direction.");
-        return;
-    }
-
-    var travee = scene.getObjectByName(nomTravee);
-    var nbMurs = travee.children.length;
-
-    for (var i = 0; i < nbMurs - 1; i++) {
-        travee.children[i].visible = true;
-    };
-    if (direction == 'haut') {
-        travee.position.z += 36;
-        tableauTravees[nomTravee]['decalee']++;
-    } else {
-        travee.position.z -= 36;
-        tableauTravees[nomTravee]['decalee']--;
-    }
 }
 
 

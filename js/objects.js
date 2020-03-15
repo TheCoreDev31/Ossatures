@@ -11,8 +11,13 @@ import {
 } from "./materials.js"
 
 import {
-    log
+    log,
+    alerte
 } from "./main.js"
+
+import {
+    unSelect
+} from "./gui.js"
 
 
 function degrees_to_radians(degrees) {
@@ -21,8 +26,14 @@ function degrees_to_radians(degrees) {
 }
 
 
-export function deleteOpening(nomTravee, face) {
+export function deleteOpening(nomObjet) {
+    var objet = scene.getObjectByName(nomObjet);
 
+    // Il faut supprimer l'objet à l'IHM, recalculer les scores VT de la travée concernée et enfin, déselectionner l'objet.
+    scene.remove(objet.parent);
+    objetsModifiables.splice(objetsModifiables.indexOf(nomObjet), 1);
+    objetSelectionne = '';
+    unSelect();
 }
 
 export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
@@ -95,7 +106,6 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
         windowGrp.add(windowDoor);
     }
 
-    nbFenetres++;
     windowGrp.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture;
     objetsModifiables.push(windowGrp);
 
@@ -213,6 +223,24 @@ export function createToit() {
     return roofGrp;
 }
 
+export function resizeToit(down = false) {
+    var factor;
+    if (down) factor = -(nbTravees + 1) / nbTravees;
+    else factor = nbTravees / (nbTravees - 1);
+
+    var leToit = scene.getObjectByName('Toit');
+    if (leToit) {
+        // On joue sur la taille du toit et on recalcule sa texture en fonction.
+        var newTexture = createToitTexture(nbTravees);
+        if (factor >= 0) {
+            leToit.scale.x *= factor;
+        } else
+            leToit.scale.x /= factor;
+        leToit.children[0].material.map = newTexture;
+        leToit.children[0].material.needsUpdate = true;
+    }
+}
+
 
 
 export function createTravee() {
@@ -301,6 +329,35 @@ export function createTravee() {
     // .. ne pas oublier que cela modifie les scores VT des autres travées adjacentes.
 
 
-
     return wallsGrp;
+}
+
+
+
+export function deplacerTravee(nomTravee, direction) {
+
+    if (nbTravees <= 1) {
+        alerte("Vous devez avoir plus d'une travée dans votre projet.");
+        return;
+    }
+
+    if ((direction == 'haut' && tableauTravees[nomTravee]['decalee'] == 1) ||
+        (direction == 'bas' && tableauTravees[nomTravee]['decalee'] == -1)) {
+        alerte("Travée déjà décalée dans cette direction.");
+        return;
+    }
+
+    var travee = scene.getObjectByName(nomTravee);
+    var nbMurs = travee.children.length;
+
+    for (var i = 0; i < nbMurs - 1; i++) {
+        travee.children[i].visible = true;
+    };
+    if (direction == 'haut') {
+        travee.position.z += 36;
+        tableauTravees[nomTravee]['decalee']++;
+    } else {
+        travee.position.z -= 36;
+        tableauTravees[nomTravee]['decalee']--;
+    }
 }

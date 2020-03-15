@@ -22,7 +22,7 @@
         <!--        <script src="js/helpers.js" type="module"></script>-->
 
         <div class="infos">
-            <h3 id="objectDescription" class="normal"></h3>
+            <h3 id="messageInfo" class="normal"></h3>
         </div>
 
         <div id="contextualMenuDiv">
@@ -35,6 +35,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 72,
@@ -45,13 +46,10 @@
             var PRODUITS = new Array(8);
 
             var tableauTravees = new Array();
-            var nbTravees = nbFenetres = 0;
+            var nbTravees = 0;
             var objetsModifiables = new Array();
-            var facesSelectionnees = new Array(),
-                traveeSelectionnee, faceTraveeSelectionnee, objetSelectionne;
-
+            var facesSelectionnees = new Array();
+            var objetSelectionne;
         </script>
     </div>
-</body>
-
-</html>
+</body></html>

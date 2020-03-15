@@ -1,5 +1,7 @@
 import {
-    createTravee
+    createTravee,
+    deplacerTravee,
+    resizeToit
 } from "./objects.js"
 
 import {
@@ -11,7 +13,6 @@ from "./materials.js"
 
 import {
     recalculerCotes,
-    deplacerTravee,
     info,
     alerte,
     log
@@ -27,42 +28,6 @@ var indicePGAR = 5;
 var indiceRoof = 7;
 
 
-function resizeRoof(down = false) {
-    var factor;
-    if (down) factor = -(nbTravees + 1) / nbTravees;
-    else factor = nbTravees / (nbTravees - 1);
-
-    var leToit = scene.getObjectByName('Toit');
-    if (leToit) {
-        // On joue sur la taille du toit et on recalcule sa texture en fonction.
-        var newTexture = createToitTexture(nbTravees);
-        if (factor >= 0) {
-            leToit.scale.x *= factor;
-        } else
-            leToit.scale.x /= factor;
-        leToit.children[0].material.map = newTexture;
-        leToit.children[0].material.needsUpdate = true;
-    }
-
-    /*   On le garde.... pour l'exemple
-    scene.traverse(function (child) {
-        if (child instanceof THREE.Object3D) {
-            if (child.name == 'Toit') {
-
-                // On joue sur la taille du toit et on recalcule sa texture en fonction.
-                var newTexture = createToitTexture(nbTravees);
-                if (factor >= 0) {
-                    child.scale.x *= factor;
-                } else
-                    child.scale.x /= factor;
-                child.children[0].material.map = newTexture;
-                child.children[0].material.needsUpdate = true;
-                return;
-            }
-        }
-    });
-    */
-}
 
 
 function addMenu(menuTitle, isActive, action) {
@@ -91,8 +56,6 @@ export function unSelect() {
     if (objetSelectionne) {
         var objet = scene.getObjectByName(objetSelectionne);
 
-        log('objetSelectionne=' + objet);
-
         for (var i = 0; i < facesSelectionnees.length; i++) {
             if (objet.material[1]) { // Les murs
                 objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['crepi']);
@@ -101,10 +64,12 @@ export function unSelect() {
             }
         }
         objet.geometry.elementsNeedUpdate = true;
-        facesSelectionnees.length = 0;
-        objetSelectionne = '';
-        info(null);
     }
+    facesSelectionnees.length = 0;
+    objetSelectionne = '';
+
+    if ($("#messageInfo").prop("class") == "normal")
+        info(null);
 }
 
 
@@ -124,14 +89,16 @@ export function displayContextualMenu(objet, x, y) {
 
     if (facesSelectionnees.length > 1) return;
 
-    /*   -> parent = 'Travee X' et fils = 'front' ou 'back' => décaler la travée + rajouter ouverture
-         -> parent = 'Travee X' et fils = ''                => seulement rajouter une ouverture
-         -> parent <> 'Travee X' (donc une ouverture        => seulement supprimer l'ouverture                */
+    /*   -> ex : "Travee 1>AV"                       => décaler la travée + rajouter ouverture (si permis)
+         -> ex : "Travee 1>PDAV"                     => seulement rajouter une ouverture
+         -> ex : "Travee 1>AV>Ouverture F2>Vitre"    => seulement supprimer l'ouverture                */
 
     $('.liste-deroulante').empty();
 
-    if (objet.parent.name.includes('Travee')) {
-        if (objet.name == 'front' || objet.name == 'back') {
+    if (objet.name.includes('Ouverture'))
+        addMenu("Supprimer cette ouverture", true, 'deleteOpening');
+    else {
+        if (objet.name.includes('>AV') || objet.name.includes('>AR')) {
 
             var decalageActuel = tableauTravees[objet.parent.name]['decalee'];
             if (decalageActuel < 0) {
@@ -147,11 +114,9 @@ export function displayContextualMenu(objet, x, y) {
                     addMenu("Avancer cette travée", true, 'moveDownTravee');
                 }
             }
-
-
         } else addMenu("Ajouter une ouverture", true, 'addOpening');
-    } else
-        addMenu("Supprimer cette ouverture", true, 'deleteOpening');
+    }
+
 
     // Suivant la position du curseur, on place le menu à gauche ou à droite de cette dernière.
     var left = (x >= (window.innerWidth / 2)) ? (x + 30) + 'px' : (x - $("#contextualMenuDiv").width() - 30) + 'px';
@@ -186,7 +151,7 @@ export function displayGui() {
                     objetsModifiables.push(travee2);
                     scene.add(travee2);
                     recalculerCotes('largeur');
-                    resizeRoof();
+                    resizeToit();
                     break;
                 case 2:
                     var travee3 = createTravee();
@@ -202,7 +167,7 @@ export function displayGui() {
                     objetsModifiables.push(travee3);
                     scene.add(travee3);
                     recalculerCotes('largeur');
-                    resizeRoof();
+                    resizeToit();
                     break;
                 case 3:
                     var travee4 = createTravee();
@@ -220,7 +185,7 @@ export function displayGui() {
                     objetsModifiables.push(travee4);
                     scene.add(travee4);
                     recalculerCotes('largeur');
-                    resizeRoof();
+                    resizeToit();
                     break;
                 default:
                     alerte('Vous avez atteint le nombre maximum de travees (4).');
@@ -239,7 +204,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee2'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeRoof(DOWN);
+                    resizeToit(DOWN);
                     break;
                 case 3:
                     var travee3 = scene.getObjectByName('Travee 3');
@@ -253,7 +218,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee3'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeRoof(DOWN);
+                    resizeToit(DOWN);
                     break;
                 case 4:
                     var travee4 = scene.getObjectByName('Travee 4');
@@ -269,10 +234,10 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee4'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeRoof(DOWN);
+                    resizeToit(DOWN);
                     break;
                 default:
-                    alerte('Au moins une travée requise.');
+                    alerte("Au moins une travée requise.");
                     break;
             }
         }
