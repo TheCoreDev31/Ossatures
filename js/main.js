@@ -53,6 +53,7 @@ export function alerte(message) {
         $("#messageInfo").prop("class", "normal");
         $("#messageInfo").html("");
     }, 2000);
+    unSelect();
 }
 
 export function info(param) {
@@ -217,7 +218,7 @@ initialisationTableaux();
 var travee1 = creerTravee();
 scene.add(travee1);
 
-scene.add(creerToit());
+//scene.add(creerToit(travee1.name));
 
 var firstWindow = creerOuverture(travee1.name, 'AV', 'F2');
 scene.add(firstWindow);

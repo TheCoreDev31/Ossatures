@@ -1,7 +1,6 @@
 import {
     creerTravee,
-    deplacerTravee,
-    redimensionnerToit
+    deplacerTravee
 } from "./objects.js"
 
 import {
@@ -68,6 +67,7 @@ function addMenu(menuTitle, isActive, action) {
     if (action.match('moveFront')) liText += " class=\"moveFront";
     if (action.match('moveBack')) liText += " class=\"moveBack";
     if (action.match('add')) liText += " class=\"add";
+    if (action.match('delete')) liText += " class=\"delete";
     if (!isActive) liText += " disabled";
     liText += "\">" + menuTitle + "</li>";
 
@@ -101,7 +101,7 @@ export function displayContextualMenu(objet, x, y) {
     $('.liste-deroulante').empty();
 
     if (objet.name.includes('Ouverture'))
-        addMenu("Supprimer cette ouverture", true, 'supprimerOuverture');
+        addMenu("Supprimer cette ouverture", true, 'deleteOuverture');
     else {
         if (objet.name.includes('>AV') || objet.name.includes('>AR')) {
 
@@ -123,6 +123,8 @@ export function displayContextualMenu(objet, x, y) {
             }
         } else addMenu("Ajouter une ouverture", true, 'addOpening');
     }
+    addSeparator();
+    addMenu("Annuler la sélection", true, 'unselect');
 
 
     // Suivant la position du curseur, on place le menu à gauche ou à droite de cette dernière.
@@ -153,12 +155,12 @@ export function displayGui() {
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
                     travee1.children[indicePDAV].visible = false;
                     travee1.children[indicePDAR].visible = false;
-                    travee2.children[indicePGAV].visible = false;
-                    travee2.children[indicePGAR].visible = false;
+                    //                    travee2.children[indicePGAV].visible = false;
+                    //                    travee2.children[indicePGAR].visible = false;
                     objetsModifiables.push(travee2);
                     scene.add(travee2);
                     recalculerCotes('largeur');
-                    redimensionnerToit();
+                    scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
                     break;
                 case 2:
                     var travee3 = creerTravee();
@@ -174,7 +176,7 @@ export function displayGui() {
                     objetsModifiables.push(travee3);
                     scene.add(travee3);
                     recalculerCotes('largeur');
-                    redimensionnerToit();
+                    scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
                     break;
                 case 3:
                     var travee4 = creerTravee();
@@ -192,7 +194,7 @@ export function displayGui() {
                     objetsModifiables.push(travee4);
                     scene.add(travee4);
                     recalculerCotes('largeur');
-                    redimensionnerToit();
+                    scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
                     break;
                 default:
                     alerte('Vous avez atteint le nombre maximum de travees (4).');
@@ -211,7 +213,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee2'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    redimensionnerToit(DOWN);
+                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
                     break;
                 case 3:
                     var travee3 = scene.getObjectByName('Travee 3');
@@ -225,7 +227,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee3'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    redimensionnerToit(DOWN);
+                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
                     break;
                 case 4:
                     var travee4 = scene.getObjectByName('Travee 4');
@@ -241,7 +243,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee4'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    redimensionnerToit(DOWN);
+                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
                     break;
                 default:
                     alerte("Au moins une travée requise.");
@@ -260,29 +262,31 @@ export function displayGui() {
     var guiEnv = myGui.addFolder('Autres réglages');
 
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
-        var leToit = scene.getObjectByName('Toit');
-        if (!value) {
-            for (var i = 0; i < leToit.children.length; i++) {
-                leToit.children[i].material.wireframe = true;
-            }
-        } else {
-            for (var i = 0; i < leToit.children.length; i++) {
-                leToit.children[i].material.wireframe = false;
+
+        for (var j = 1; j <= nbTravees; j++) {
+            var leToit = scene.getObjectByName('Travee ' + j + '>Toit');
+            if (!value) {
+                for (var i = 0; i < leToit.children.length; i++) {
+                    leToit.children[i].material.wireframe = true;
+                }
+            } else {
+                for (var i = 0; i < leToit.children.length; i++) {
+                    leToit.children[i].material.wireframe = false;
+                }
             }
         }
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
-        var indicePlancher = 7;
         if (!value) {
             for (var i = 1; i <= nbTravees; i++) {
                 var travee = scene.getObjectByName('Travee ' + i);
-                travee.children[indicePlancher].visible = false;
+                travee.children[indiceRoof].visible = false;
             }
         } else {
             for (var i = 1; i <= nbTravees; i++) {
                 var travee = scene.getObjectByName('Travee ' + i);
-                travee.children[indicePlancher].visible = true;
+                travee.children[indiceRoof].visible = true;
             }
         }
     });

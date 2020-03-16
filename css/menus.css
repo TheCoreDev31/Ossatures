@@ -58,6 +58,12 @@ ul.liste-deroulante {
     margin-right: 8px;
 }
 
+.liste-deroulante li.delete::before {
+    font-family: "Glyphicons Halflings";
+    content: "\e020";
+    margin-right: 8px;
+}
+
 .liste-deroulante li.disabled {
     cursor: not-allowed;
 }

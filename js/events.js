@@ -35,7 +35,7 @@ $(".liste-deroulante").click(function (e) {
     var action = $(e.target).attr('data-action');
     if (DEBUG) log('Action menu contextuel = ' + action);
     switch (action) {
-        case 'supprimerOuverture':
+        case 'deleteOuverture':
             supprimerOuverture(objetSelectionne);
             break;
         case 'addOpening':
@@ -46,6 +46,9 @@ $(".liste-deroulante").click(function (e) {
             break;
         case 'moveBackTravee':
             deplacerTravee(extraireNomTravee(objetSelectionne), 'back');
+            break;
+        case 'unselect':
+            unSelect();
             break;
         default:
             alert('Autre action inconnue !');

@@ -31,7 +31,9 @@ export function supprimerOuverture(nomObjet) {
 
     var objet = scene.getObjectByName(nomObjet);
 
-    log('AVANT=' + tableauTravees[extraireNomTravee(nomObjet)]);
+    console.log(objet);
+
+
 
     // Il faut supprimer l'objet à l'IHM, recalculer les scores VT de la travée concernée et enfin, déselectionner l'objet.
     scene.remove(objet.parent);
@@ -186,22 +188,24 @@ export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
 
 
-export function creerToit() {
+export function creerToit(nomTravee) {
     var roofGrp = new THREE.Group();
     var texture = creerToitTexture();
-    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE + 2, LARGEUR_TRAVEE * 1.256, 0.2), new THREE.MeshLambertMaterial({
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, LARGEUR_TRAVEE * 1.256, 0.2), new THREE.MeshLambertMaterial({
         map: texture,
         color: COLOR_ARRAY['gris_clair']
     }));
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
+    frontPan.name = 'excluded';
     roofGrp.add(frontPan);
 
     var rearPan = frontPan.clone();
     rearPan.rotateX(2 * degrees_to_radians(55));
     rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 17.5);
     rearPan.castShadow = true;
+    rearPan.name = 'excluded';
     roofGrp.add(rearPan);
 
     var pignonGeometry = new THREE.Shape();
@@ -222,27 +226,8 @@ export function creerToit() {
     rightPignon.position.x = (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR;
     roofGrp.add(rightPignon);
 
-    roofGrp.name = 'Toit';
-
+    roofGrp.name = nomTravee + '>Toit';
     return roofGrp;
-}
-
-export function redimensionnerToit(down = false) {
-    var factor;
-    if (down) factor = -(nbTravees + 1) / nbTravees;
-    else factor = nbTravees / (nbTravees - 1);
-
-    var leToit = scene.getObjectByName('Toit');
-    if (leToit) {
-        // On joue sur la taille du toit et on recalcule sa texture en fonction.
-        var newTexture = creerToitTexture(nbTravees);
-        if (factor >= 0) {
-            leToit.scale.x *= factor;
-        } else
-            leToit.scale.x /= factor;
-        leToit.children[0].material.map = newTexture;
-        leToit.children[0].material.needsUpdate = true;
-    }
 }
 
 
@@ -333,6 +318,10 @@ export function creerTravee() {
     // .. ne pas oublier que cela modifie les scores VT des autres travées adjacentes.
 
 
+
+    var toit = creerToit(prefixe);
+    wallsGrp.add(toit);
+
     return wallsGrp;
 }
 
@@ -356,9 +345,6 @@ export function deplacerTravee(nomTravee, direction) {
     var travee = scene.getObjectByName(nomTravee);
     var nbMurs = travee.children.length;
 
-    for (var i = 0; i < nbMurs - 1; i++) {
-        travee.children[i].visible = true;
-    };
     if (direction == 'front') {
         travee.position.z += 36;
         tableauTravees[nomTravee]['decalee']++;
