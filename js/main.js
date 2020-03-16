@@ -209,6 +209,11 @@ export function extraireNomTravee(objet) {
     return objet.substr(0, objet.indexOf('>'));
 }
 
+export function extraireFace(objet) {
+    var face = objet.substr(objet.indexOf('>') + 1, objet.length);
+
+    return face.substr(0, face.indexOf('>'));
+}
 
 
 /*********************************************************************************************************************************/

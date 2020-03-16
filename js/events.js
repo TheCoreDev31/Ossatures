@@ -32,8 +32,8 @@ import {
 $(".liste-deroulante").click(function (e) {
 
     e.preventDefault();
+
     var action = $(e.target).attr('data-action');
-    if (DEBUG) log('Action menu contextuel = ' + action);
     switch (action) {
         case 'deleteOuverture':
             supprimerOuverture(objetSelectionne);
