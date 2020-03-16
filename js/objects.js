@@ -1,6 +1,6 @@
 import {
     COLOR_ARRAY,
-    createToitTexture,
+    creerToitTexture,
     glassMaterial,
     windowMaterial,
     doorMaterial,
@@ -12,7 +12,8 @@ import {
 
 import {
     log,
-    alerte
+    alerte,
+    extraireNomTravee
 } from "./main.js"
 
 import {
@@ -26,8 +27,11 @@ function degrees_to_radians(degrees) {
 }
 
 
-export function deleteOpening(nomObjet) {
+export function supprimerOuverture(nomObjet) {
+
     var objet = scene.getObjectByName(nomObjet);
+
+    log('AVANT=' + tableauTravees[extraireNomTravee(nomObjet)]);
 
     // Il faut supprimer l'objet à l'IHM, recalculer les scores VT de la travée concernée et enfin, déselectionner l'objet.
     scene.remove(objet.parent);
@@ -36,7 +40,7 @@ export function deleteOpening(nomObjet) {
     unSelect();
 }
 
-export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
+export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
     var windowGrp = new THREE.Group();
     var largeur, hauteur, epaisseur, elevation;
@@ -182,9 +186,9 @@ export function createOpening(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 
 
 
-export function createToit() {
+export function creerToit() {
     var roofGrp = new THREE.Group();
-    var texture = createToitTexture();
+    var texture = creerToitTexture();
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE + 2, LARGEUR_TRAVEE * 1.256, 0.2), new THREE.MeshLambertMaterial({
         map: texture,
         color: COLOR_ARRAY['gris_clair']
@@ -223,7 +227,7 @@ export function createToit() {
     return roofGrp;
 }
 
-export function resizeToit(down = false) {
+export function redimensionnerToit(down = false) {
     var factor;
     if (down) factor = -(nbTravees + 1) / nbTravees;
     else factor = nbTravees / (nbTravees - 1);
@@ -231,7 +235,7 @@ export function resizeToit(down = false) {
     var leToit = scene.getObjectByName('Toit');
     if (leToit) {
         // On joue sur la taille du toit et on recalcule sa texture en fonction.
-        var newTexture = createToitTexture(nbTravees);
+        var newTexture = creerToitTexture(nbTravees);
         if (factor >= 0) {
             leToit.scale.x *= factor;
         } else
@@ -243,7 +247,7 @@ export function resizeToit(down = false) {
 
 
 
-export function createTravee() {
+export function creerTravee() {
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face AV devant.
@@ -341,8 +345,10 @@ export function deplacerTravee(nomTravee, direction) {
         return;
     }
 
-    if ((direction == 'haut' && tableauTravees[nomTravee]['decalee'] == 1) ||
-        (direction == 'bas' && tableauTravees[nomTravee]['decalee'] == -1)) {
+    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalee']);
+
+    if ((direction == 'front' && tableauTravees[nomTravee]['decalee'] == 1) ||
+        (direction == 'back' && tableauTravees[nomTravee]['decalee'] == -1)) {
         alerte("Travée déjà décalée dans cette direction.");
         return;
     }
@@ -353,11 +359,12 @@ export function deplacerTravee(nomTravee, direction) {
     for (var i = 0; i < nbMurs - 1; i++) {
         travee.children[i].visible = true;
     };
-    if (direction == 'haut') {
+    if (direction == 'front') {
         travee.position.z += 36;
         tableauTravees[nomTravee]['decalee']++;
     } else {
         travee.position.z -= 36;
         tableauTravees[nomTravee]['decalee']--;
     }
+    unSelect();
 }

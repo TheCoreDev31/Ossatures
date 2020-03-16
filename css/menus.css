@@ -25,6 +25,7 @@
 
 ul.liste-deroulante {
     margin: 10px;
+    padding-left: 0px;
     border: 0px;
 }
 
@@ -39,13 +40,13 @@ ul.liste-deroulante {
     margin-right: 8px;
 }
 
-.liste-deroulante li.moveUp::before {
+.liste-deroulante li.moveBack::before {
     font-family: "Glyphicons Halflings";
     content: "\e093";
     margin-right: 8px;
 }
 
-.liste-deroulante li.moveDown::before {
+.liste-deroulante li.moveFront::before {
     font-family: "Glyphicons Halflings";
     content: "\e094";
     margin-right: 8px;

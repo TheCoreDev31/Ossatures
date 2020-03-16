@@ -1,11 +1,11 @@
 import {
-    createTravee,
+    creerTravee,
     deplacerTravee,
-    resizeToit
+    redimensionnerToit
 } from "./objects.js"
 
 import {
-    createToitTexture,
+    creerToitTexture,
     glassMaterial,
     COLOR_ARRAY
 }
@@ -27,21 +27,6 @@ var indicePGAV = 4;
 var indicePGAR = 5;
 var indiceRoof = 7;
 
-
-
-
-function addMenu(menuTitle, isActive, action) {
-
-    var liText = liText = "<li data-action='" + action + "'";
-
-    if (action.match('moveUp')) liText += " class=\"moveUp";
-    if (action.match('moveDown')) liText += " class=\"moveDown";
-    if (action.match('add')) liText += " class=\"add";
-    if (!isActive) liText += " disabled";
-    liText += "\">" + menuTitle + "</li>";
-
-    $('.liste-deroulante').append(liText);
-}
 
 
 
@@ -75,6 +60,26 @@ export function unSelect() {
 
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
+
+function addMenu(menuTitle, isActive, action) {
+
+    var liText = liText = "<li data-action='" + action + "'";
+
+    if (action.match('moveFront')) liText += " class=\"moveFront";
+    if (action.match('moveBack')) liText += " class=\"moveBack";
+    if (action.match('add')) liText += " class=\"add";
+    if (!isActive) liText += " disabled";
+    liText += "\">" + menuTitle + "</li>";
+
+    $('.liste-deroulante').append(liText);
+}
+
+function addSeparator() {
+    var liText = "<hr>";
+    $('.liste-deroulante').append(liText);
+}
+
+
 export function hideContextualMenu() {
     $("#contextualMenuDiv").css({
         opacity: 0,
@@ -96,23 +101,25 @@ export function displayContextualMenu(objet, x, y) {
     $('.liste-deroulante').empty();
 
     if (objet.name.includes('Ouverture'))
-        addMenu("Supprimer cette ouverture", true, 'deleteOpening');
+        addMenu("Supprimer cette ouverture", true, 'supprimerOuverture');
     else {
         if (objet.name.includes('>AV') || objet.name.includes('>AR')) {
 
             var decalageActuel = tableauTravees[objet.parent.name]['decalee'];
             if (decalageActuel < 0) {
-                addMenu("Reculer cette travée", false, 'moveUpTravee');
-                addMenu("Avancer cette travée", true, 'moveDownTravee');
+                addMenu("Reculer cette travée", false, 'moveBackTravee');
+                addMenu("Avancer cette travée", true, 'moveFrontTravee');
             } else {
                 if (decalageActuel > 0) {
-                    addMenu("Reculer cette travée", true, 'moveUpTravee');
-                    addMenu("Avancer cette travée", false, 'moveDownTravee');
+                    addMenu("Reculer cette travée", true, 'moveBackTravee');
+                    addMenu("Avancer cette travée", false, 'moveFrontTravee');
 
                 } else {
-                    addMenu("Reculer cette travée", true, 'moveUpTravee');
-                    addMenu("Avancer cette travée", true, 'moveDownTravee');
+                    addMenu("Reculer cette travée", true, 'moveBackTravee');
+                    addMenu("Avancer cette travée", true, 'moveFrontTravee');
                 }
+                addSeparator();
+                addMenu("Ajouter une ouverture", true, 'addOpening');
             }
         } else addMenu("Ajouter une ouverture", true, 'addOpening');
     }
@@ -140,7 +147,7 @@ export function displayGui() {
         Ajouter: function () {
             switch (nbTravees) {
                 case 1:
-                    var travee2 = createTravee();
+                    var travee2 = creerTravee();
                     travee2.translateX(LARGEUR_TRAVEE / 2);
                     var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
@@ -151,10 +158,10 @@ export function displayGui() {
                     objetsModifiables.push(travee2);
                     scene.add(travee2);
                     recalculerCotes('largeur');
-                    resizeToit();
+                    redimensionnerToit();
                     break;
                 case 2:
-                    var travee3 = createTravee();
+                    var travee3 = creerTravee();
                     travee3.translateX(LARGEUR_TRAVEE);
                     var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
@@ -167,10 +174,10 @@ export function displayGui() {
                     objetsModifiables.push(travee3);
                     scene.add(travee3);
                     recalculerCotes('largeur');
-                    resizeToit();
+                    redimensionnerToit();
                     break;
                 case 3:
-                    var travee4 = createTravee();
+                    var travee4 = creerTravee();
                     travee4.translateX(LARGEUR_TRAVEE * 1.5);
                     var travee1 = scene.getObjectByName('Travee 1');
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
@@ -185,7 +192,7 @@ export function displayGui() {
                     objetsModifiables.push(travee4);
                     scene.add(travee4);
                     recalculerCotes('largeur');
-                    resizeToit();
+                    redimensionnerToit();
                     break;
                 default:
                     alerte('Vous avez atteint le nombre maximum de travees (4).');
@@ -204,7 +211,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee2'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeToit(DOWN);
+                    redimensionnerToit(DOWN);
                     break;
                 case 3:
                     var travee3 = scene.getObjectByName('Travee 3');
@@ -218,7 +225,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee3'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeToit(DOWN);
+                    redimensionnerToit(DOWN);
                     break;
                 case 4:
                     var travee4 = scene.getObjectByName('Travee 4');
@@ -234,7 +241,7 @@ export function displayGui() {
                     objetsModifiables.splice(objetsModifiables.indexOf('travee4'), 1);
                     nbTravees--;
                     recalculerCotes('largeur');
-                    resizeToit(DOWN);
+                    redimensionnerToit(DOWN);
                     break;
                 default:
                     alerte("Au moins une travée requise.");
@@ -268,26 +275,14 @@ export function displayGui() {
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
         var indicePlancher = 7;
         if (!value) {
-            travee1.children[indicePlancher].visible = false;
-            if (travee2) {
-                travee2.children[indicePlancher].visible = false;
-            }
-            if (travee3) {
-                travee3.children[indicePlancher].visible = false;
-            }
-            if (travee4) {
-                travee4.children[indicePlancher].visible = false;
+            for (var i = 1; i <= nbTravees; i++) {
+                var travee = scene.getObjectByName('Travee ' + i);
+                travee.children[indicePlancher].visible = false;
             }
         } else {
-            travee1.children[indicePlancher].visible = true;
-            if (travee2) {
-                travee2.children[indicePlancher].visible = true;
-            }
-            if (travee3) {
-                travee3.children[indicePlancher].visible = true;
-            }
-            if (travee4) {
-                travee4.children[indicePlancher].visible = true;
+            for (var i = 1; i <= nbTravees; i++) {
+                var travee = scene.getObjectByName('Travee ' + i);
+                travee.children[indicePlancher].visible = true;
             }
         }
     });

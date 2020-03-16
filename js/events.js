@@ -12,7 +12,8 @@ import {
 import {
     info,
     alerte,
-    log
+    log,
+    extraireNomTravee
 } from "./main.js"
 
 import {
@@ -22,27 +23,29 @@ import {
 } from "./gui.js"
 
 import {
-    deleteOpening,
+    supprimerOuverture,
     deplacerTravee
 } from "./objects.js"
 
 
 /*******************************    Gestion du clic sur le menu déroulant    **************************************/
-$("#contextualMenuDiv").click(function () {
+$(".liste-deroulante").click(function (e) {
 
-    var action = $('#contextualMenuDiv li').attr('data-action');
+    e.preventDefault();
+    var action = $(e.target).attr('data-action');
+    if (DEBUG) log('Action menu contextuel = ' + action);
     switch (action) {
-        case 'deleteOpening':
-            deleteOpening(objetSelectionne);
+        case 'supprimerOuverture':
+            supprimerOuverture(objetSelectionne);
             break;
         case 'addOpening':
             alert('add');
             break;
-        case 'moveUpTravee':
-            deplacerTravee(objetSelectionne, 'haut');
+        case 'moveFrontTravee':
+            deplacerTravee(extraireNomTravee(objetSelectionne), 'front');
             break;
-        case 'moveDownTravee':
-            deplacerTravee(objetSelectionne, 'bas');
+        case 'moveBackTravee':
+            deplacerTravee(extraireNomTravee(objetSelectionne), 'back');
             break;
         default:
             alert('Autre action inconnue !');

@@ -16,9 +16,9 @@ import {
 } from "./gui.js"
 
 import {
-    createOpening,
-    createToit,
-    createTravee
+    creerOuverture,
+    creerToit,
+    creerTravee
 } from "./objects.js"
 
 import {
@@ -37,8 +37,8 @@ function animate() {
 function init() {
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = Math.PI * 0.5;
-    controls.minDistance = 20;
-    controls.maxDistance = 2000;
+    controls.minDistance = 1;
+    controls.maxDistance = 500;
 
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
@@ -203,25 +203,32 @@ function initialisationTableaux() {
 }
 
 
+
+export function extraireNomTravee(objet) {
+    return objet.substr(0, objet.indexOf('>'));
+}
+
+
+
 /*********************************************************************************************************************************/
 
 initialisationTableaux();
 
-var travee1 = createTravee();
+var travee1 = creerTravee();
 scene.add(travee1);
 
-scene.add(createToit());
+scene.add(creerToit());
 
-var firstWindow = createOpening(travee1.name, 'AV', 'F2');
+var firstWindow = creerOuverture(travee1.name, 'AV', 'F2');
 scene.add(firstWindow);
 
-var secondWindow = createOpening(travee1.name, 'PGAV', 'F1');
+var secondWindow = creerOuverture(travee1.name, 'PGAV', 'F1');
 scene.add(secondWindow);
 
-var firstDoor = createOpening(travee1.name, 'PDAR', 'PE');
+var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
 scene.add(firstDoor);
 
-var secondDoor = createOpening(travee1.name, 'PGAR', 'PF', 2);
+var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
 scene.add(secondDoor);
 
 
@@ -231,6 +238,7 @@ window.addEventListener('resize', onWindowResize, false);
 document.addEventListener('click', onMouseClick);
 document.addEventListener('mousemove', onMouseMove, false);
 //document.addEventListener('dblclick', onMouseDoubleClick);
+
 init();
 displayGui();
 animate();

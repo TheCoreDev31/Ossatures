@@ -18,8 +18,8 @@ renderer.gammaFactor = 2.2;
 
 
 // Camera
-export var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 400);
-camera.position.set(50, 20, 160);
+export var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 600);
+camera.position.set(60, 40, 160);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
 
@@ -35,7 +35,7 @@ ground.updateMatrix();
 scene.add(ground);
 
 scene.background = COLOR_ARRAY['bleu_ciel'];
-scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 600);
+scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 200, 1000);
 
 
 // Repère face avant

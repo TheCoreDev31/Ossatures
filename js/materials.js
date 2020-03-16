@@ -57,7 +57,7 @@ export var groundMaterial = new THREE.MeshLambertMaterial({
 
 
 // Toit
-export function createToitTexture(repeatX = 1) {
+export function creerToitTexture(repeatX = 1) {
     var roofTexture = new THREE.Texture();
     roofTexture = loader.load("img/ardoise.jpg");
     roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
