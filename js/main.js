@@ -45,7 +45,7 @@ function init() {
 }
 
 
-/***********************************************************************/
+/********************************   Gestion des messages d'info et des alertes   ***************************************/
 export function alerte(message) {
     $("#messageInfo").prop("class", "alerte");
     $("#messageInfo").html(message);
@@ -148,10 +148,7 @@ function initialisationTableaux() {
     var nbCaract = 5;
     PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
     PRODUITS['MU']['VT'] = 3;
-    PRODUITS['MU']['largeur'] = 0;
-    PRODUITS['MU']['hauteur'] = 0;
-    PRODUITS['MU']['epaisseur'] = 0;
-    PRODUITS['MU']['elevation'] = 0;
+    PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['epaisseur'] = PRODUITS['MU']['elevation'] = 0;
 
     PRODUITS['PE'] = new Array(nbCaract);
     PRODUITS['PE']['VT'] = 2;
@@ -205,6 +202,8 @@ function initialisationTableaux() {
 
 
 
+/*******************************************    Petites fonctions utiles   ********************************************/
+
 export function extraireNomTravee(objet) {
     return objet.substr(0, objet.indexOf('>'));
 }
@@ -216,6 +215,16 @@ export function extraireFace(objet) {
 }
 
 
+/******************   La grosse fonction pour déterminer si une ouverture peut être rajoutée ou non   *****************/
+export function verifierRajoutOuverture(nomTravee, face, typeOuverture) {
+
+    var typeConstruction = '';
+    var positionDansConstruction = '';
+
+    var contraintesVT = new Array();
+}
+
+
 /*********************************************************************************************************************************/
 
 initialisationTableaux();
@@ -223,20 +232,17 @@ initialisationTableaux();
 var travee1 = creerTravee();
 scene.add(travee1);
 
-//scene.add(creerToit(travee1.name));
-
 var firstWindow = creerOuverture(travee1.name, 'AV', 'F2');
 scene.add(firstWindow);
 
 var secondWindow = creerOuverture(travee1.name, 'PGAV', 'F1');
 scene.add(secondWindow);
 
-var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
-scene.add(firstDoor);
-
-var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
-scene.add(secondDoor);
-
+//var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
+//scene.add(firstDoor);
+//
+//var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
+//scene.add(secondDoor);
 
 incrusterCotes();
 

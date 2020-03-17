@@ -28,6 +28,17 @@ function degrees_to_radians(degrees) {
 }
 
 
+export function supprimerToutesOuvertures() {
+
+    objetsModifiables.traverse(function (objet) {
+
+        if (objet.name.match('Ouverture')) {
+            supprimerOuverture(objet.name);
+        }
+    });
+}
+
+
 export function supprimerOuverture(nomObjet) {
 
     var travee = extraireNomTravee(nomObjet);
@@ -37,23 +48,18 @@ export function supprimerOuverture(nomObjet) {
     // Il faut supprimer l'objet à l'IHM...
     scene.remove(objet.parent);
 
-    if (DEBUG) {
-        log('tableauTravee AVANT :');
-        log(tableauTravees);
-    }
     // recalculer les scores VT de la travée concernée...
-    tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
     tableauTravees[travee]['nb_ouvertures_' + face]--;
+    tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
 
     // et enfin, déselectionner l'objet.
     objetsModifiables.splice(objetsModifiables.indexOf(nomObjet), 1);
     objetSelectionne = '';
     unSelect();
     if (DEBUG) {
-        log('tableauTravee APRES :');
+        log('tableauTravee APRES supprimerOuverture :');
         log(tableauTravees);
     }
-
 }
 
 export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
@@ -129,12 +135,11 @@ export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
     windowGrp.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture;
     objetsModifiables.push(windowGrp);
 
-    // On calcule la position en fonction du type d'ouverture, de la face de la travée et de la position de la travée.
     var positionX = 0,
         positionY = 0,
         positionZ = 0;
     positionY = -(HAUTEUR_TRAVEE / 2) + (hauteur / 2) + elevation;
-
+    // On calcule la position en fonction du type d'ouverture, de la face de la travée et de la position de la travée.
     switch (face) {
         case 'AV':
             positionX = 0;
@@ -172,31 +177,40 @@ export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
     switch (face) {
         case 'AV':
-            if (tableauTravees[nomTravee]['nb_ouvertures_AV']++ == 0) tableauTravees[nomTravee]['vt_AV'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_AV'] == 0) tableauTravees[nomTravee]['vt_AV'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_AV']++;
             tableauTravees[nomTravee]['vt_AV'] += PRODUITS[typeOuverture]['VT'];
             break;
         case 'AR':
-            if (tableauTravees[nomTravee]['nb_ouvertures_AR']++ == 0) tableauTravees[nomTravee]['vt_AR'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_AR'] == 0) tableauTravees[nomTravee]['vt_AR'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_AR']++;
             tableauTravees[nomTravee]['vt_AR'] += PRODUITS[typeOuverture]['VT'];
             break;
         case 'PGAV':
-            if (tableauTravees[nomTravee]['nb_ouvertures_PGAV']++ == 0) tableauTravees[nomTravee]['vt_PGAV'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_PGAV'] == 0) tableauTravees[nomTravee]['vt_PGAV'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_PGAV']++;
             tableauTravees[nomTravee]['vt_PGAV'] += PRODUITS[typeOuverture]['VT'];
             break;
         case 'PGAR':
-            if (tableauTravees[nomTravee]['nb_ouvertures_PGAR']++ == 0) tableauTravees[nomTravee]['vt_PGAR'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_PGAR'] == 0) tableauTravees[nomTravee]['vt_PGAR'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_PGAR']++;
             tableauTravees[nomTravee]['vt_PGAR'] += PRODUITS[typeOuverture]['VT'];
             break;
         case 'PDAV':
-            if (tableauTravees[nomTravee]['nb_ouvertures_PDAV']++ == 0) tableauTravees[nomTravee]['vt_PDAV'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_PDAV'] == 0) tableauTravees[nomTravee]['vt_PDAV'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_PDAV']++;
             tableauTravees[nomTravee]['vt_PDAV'] += PRODUITS[typeOuverture]['VT'];
             break;
         case 'PDAR':
-            if (tableauTravees[nomTravee]['nb_ouvertures_PDAR']++ == 0) tableauTravees[nomTravee]['vt_PDAR'] = 0;
+            if (tableauTravees[nomTravee]['nb_ouvertures_PDAR'] == 0) tableauTravees[nomTravee]['vt_PDAR'] = 0;
+            tableauTravees[nomTravee]['nb_ouvertures_PDAR']++;
             tableauTravees[nomTravee]['vt_PDAR'] += PRODUITS[typeOuverture]['VT'];
             break;
     }
-
+    if (DEBUG) {
+        log('tableauTravee APRES creerOuverture :');
+        log(tableauTravees);
+    }
     return windowGrp;
 }
 
@@ -316,21 +330,20 @@ export function creerTravee() {
     tableauTravees['Travee ' + nbTravees] = new Array();
     tableauTravees['Travee ' + nbTravees]['nom'] = wallsGrp.name;
     tableauTravees['Travee ' + nbTravees]['decalee'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_AR'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_AR'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PDAR'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['vt_AR'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PDAR'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PDAV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['vt_PDAR'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PDAV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_AV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['vt_PDAV'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_AV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PGAV'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['vt_AV'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PGAV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PGAR'] = vtMur;
+    tableauTravees['Travee ' + nbTravees]['vt_PGAV'] = vtMur;
     tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PGAR'] = 0;
+    tableauTravees['Travee ' + nbTravees]['vt_PGAR'] = vtMur;
 
     // .. ne pas oublier que cela modifie les scores VT des travées adjacentes.
-
 
 
     var toit = creerToit(prefixe);

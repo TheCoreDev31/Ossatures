@@ -62,7 +62,7 @@ export function unSelect() {
 
 function addMenu(menuTitle, isActive, action) {
 
-    var liText = liText = "<li data-action='" + action + "'";
+    var liText = liText = "<li data-action=\"" + action + "\"";
 
     if (action.match('moveFront')) liText += " class=\"moveFront";
     if (action.match('moveBack')) liText += " class=\"moveBack";
