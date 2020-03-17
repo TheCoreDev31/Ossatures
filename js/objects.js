@@ -315,7 +315,9 @@ export function creerTravee() {
     wallPGAV.name = prefixe + '>PGAV';
     wallsGrp.add(wallPGAR);
     wallPGAR.name = prefixe + '>PGAR';
+    floor.name = 'excluded';
     wallsGrp.add(floor);
+    top.name = 'excluded';
     wallsGrp.add(top);
     wallsGrp.name = prefixe;
     objetsModifiables.push(wallsGrp);
@@ -393,14 +395,77 @@ export function deplacerTravee(nomTravee, direction) {
     }
 
     var travee = scene.getObjectByName(nomTravee);
-    var nbMurs = travee.children.length;
+    var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
+    var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
+    var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
+
+    var traveeGauche = scene.getObjectByName(nomTraveeGauche);
+    var traveeDroite = scene.getObjectByName(nomTraveeDroite);
 
     if (direction == 'front') {
-        travee.position.z += 36;
+
+        // On masque certains murs de la travée courante et également des travées adjacentes.
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalee'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalee'] + 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePGAV].visible = true;
+                travee.children[indicePGAR].visible = false;
+                traveeGauche.children[indicePDAV].visible = false;
+                traveeGauche.children[indicePDAR].visible = true;
+            }
+        }
+
+        if (traveeDroite) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalee'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalee'] + 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePDAV].visible = true;
+                travee.children[indicePDAR].visible = false;
+                traveeDroite.children[indicePGAV].visible = false;
+                traveeDroite.children[indicePGAR].visible = true;
+            }
+        }
+
+        travee.position.z += (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['decalee']++;
-    } else {
-        travee.position.z -= 36;
+
+    } else { // décalage vers le fond
+
+        // On masque certains murs de la travée courante et également des travées adjacentes.
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalee'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalee'] - 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePGAV].visible = false;
+                travee.children[indicePGAR].visible = true;
+                traveeGauche.children[indicePDAV].visible = true;
+                traveeGauche.children[indicePDAR].visible = false;
+            }
+        }
+
+        if (traveeDroite) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalee'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalee'] - 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePDAV].visible = false;
+                travee.children[indicePDAR].visible = true;
+                traveeDroite.children[indicePGAV].visible = true;
+                traveeDroite.children[indicePGAR].visible = false;
+            }
+        }
+
+        travee.position.z -= (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['decalee']--;
+
     }
     unSelect();
 }

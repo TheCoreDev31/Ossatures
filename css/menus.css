@@ -34,7 +34,7 @@ ul.liste-deroulante {
     cursor: pointer;
 }
 
-.liste-deroulante li::before {
+.liste-deroulante li:not(.blank)::before {
     font-family: "Glyphicons Halflings";
     content: "\e014";
     margin-right: 8px;
@@ -67,12 +67,6 @@ ul.liste-deroulante {
 .liste-deroulante li.disabled {
     cursor: not-allowed;
 }
-
-/*
-.liste-deroulante li:hover {
-    background-color: #25446a;
-}
-*/
 
 .liste-deroulante li.disabled:hover {
     background-color: #202020;

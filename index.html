@@ -27,7 +27,6 @@
 
         <div id="contextualMenuDiv">
             <ul class="liste-deroulante">
-                <!-- <hr> //-->
             </ul>
         </div>
 
@@ -42,6 +41,13 @@
                 HAUTEUR_TRAVEE = 25,
                 EPAISSEUR_MUR = 2;
             var DOWN = true;
+
+            // Quelques constantes pratiques pour repérer les faces
+            var indicePDAR = 1;
+            var indicePDAV = 2;
+            var indicePGAV = 4;
+            var indicePGAR = 5;
+            var indiceRoof = 7;
 
             var PRODUITS = new Array(8);
 

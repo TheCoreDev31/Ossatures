@@ -60,6 +60,10 @@ $(".liste-deroulante").click(function (e) {
 
 
 export function onMouseClick(event) {
+    var objetTouche, faceTouchee;
+    var _faceExterneMur = 10;
+    // Pour info, les faces
+
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -72,32 +76,49 @@ export function onMouseClick(event) {
         unSelect();
         return;
     }
+
+    // Pour éviter les intersections alors que le menu contextuel est affiché.
     if ($('#contextualMenuDiv').css('opacity') == 1) return;
 
-    var objet = intersects[0].object;
+    objetTouche = intersects[0].object;
+    faceTouchee = intersects[0].faceIndex;
 
     // On n'intercepte volontairement pas certains objets
-    if (objet.geometry.type == 'PlaneBufferGeometry') return; // Pour éviter les intersections avec le sol
-    if (objet.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
-    if (objet.name.includes('Travee') && !objet.parent.name.includes('>') && intersects[0].faceIndex < 10) return; // Façade != façade avant du mur
+    if (objetTouche.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
+    if (objetTouche.name.includes('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < _faceExterneMur) return; // Façade != façade avant du mur
+
+    // Pour le cas particulier du toit, qui doit laisser passer le raycast, on recherche le prochain objet ni transparent ni exclu.
+    var trouve = false;
+    if (objetTouche.name == 'transparent') {
+        for (var i = 1; i < intersects.length; i++) {
+            if (intersects[i].object.name != 'transparent' && intersects[i].object.name != 'excluded') {
+                objetTouche = intersects[i].object;
+                faceTouchee = intersects[i].faceIndex;
+                trouve = true;
+                break;
+            }
+        }
+        if (!trouve) return;
+    }
 
     // S'il existe déjà une précédente sélection, on l'efface.
     if (facesSelectionnees.length > 0) unSelect()
 
-    var face = Math.floor(intersects[0].faceIndex / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
+    var face = Math.floor(faceTouchee / 2); // Bidouille pour pouvoir sélectionner les 2 faces composant une façade.
+
     for (var j = 0; j < 2; j++) {
         var numFace = face * 2 + j;
-        if (objet.material[1]) { // Les murs
-            objet.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+        if (objetTouche.material[1]) { // Les murs
+            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
         } else { // Les ouvertures
-            objet.material = selectedGlassMaterial;
+            objetTouche.material = selectedGlassMaterial;
         }
-        objetSelectionne = objet.name;
+        objetSelectionne = objetTouche.name;
         facesSelectionnees.push(numFace);
-        info(objet);
-        displayContextualMenu(objet, mouse.left, mouse.top);
+        info(objetTouche);
+        displayContextualMenu(objetTouche, mouse.left, mouse.top);
     }
-    objet.geometry.elementsNeedUpdate = true;
+    objetTouche.geometry.elementsNeedUpdate = true;
 }
 
 

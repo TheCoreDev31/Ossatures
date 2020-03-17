@@ -19,16 +19,6 @@ import {
 
 
 
-// Quelques constantes pratiques pour repérer les faces
-var indicePDAR = 1;
-var indicePDAV = 2;
-var indicePGAV = 4;
-var indicePGAR = 5;
-var indiceRoof = 7;
-
-
-
-
 export function unSelect() {
 
     /* On masque le menu déroulant...
@@ -59,6 +49,12 @@ export function unSelect() {
 
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
+
+function addInfo(message) {
+    var liText = "<li class=\"blank\">" + message + "</li>";
+
+    $('.liste-deroulante').append(liText);
+}
 
 function addMenu(menuTitle, isActive, action) {
 
@@ -100,6 +96,8 @@ export function displayContextualMenu(objet, x, y) {
 
     $('.liste-deroulante').empty();
 
+    addInfo($("#messageInfo").html());
+    addSeparator();
     if (objet.name.includes('Ouverture'))
         addMenu("Supprimer cette ouverture", true, 'deleteOuverture');
     else {
@@ -155,8 +153,6 @@ export function displayGui() {
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
                     travee1.children[indicePDAV].visible = false;
                     travee1.children[indicePDAR].visible = false;
-                    //                    travee2.children[indicePGAV].visible = false;
-                    //                    travee2.children[indicePGAR].visible = false;
                     objetsModifiables.push(travee2);
                     scene.add(travee2);
                     recalculerCotes('largeur');
@@ -171,8 +167,6 @@ export function displayGui() {
                     travee2.translateX(-LARGEUR_TRAVEE / 2);
                     travee2.children[indicePDAV].visible = false;
                     travee2.children[indicePDAR].visible = false;
-                    travee3.children[indicePGAV].visible = false;
-                    travee3.children[indicePGAR].visible = false;
                     objetsModifiables.push(travee3);
                     scene.add(travee3);
                     recalculerCotes('largeur');
@@ -189,8 +183,6 @@ export function displayGui() {
                     travee3.translateX(-LARGEUR_TRAVEE / 2);
                     travee3.children[indicePDAV].visible = false;
                     travee3.children[indicePDAR].visible = false;
-                    travee4.children[indicePGAV].visible = false;
-                    travee4.children[indicePGAR].visible = false;
                     objetsModifiables.push(travee4);
                     scene.add(travee4);
                     recalculerCotes('largeur');
@@ -268,10 +260,12 @@ export function displayGui() {
             if (!value) {
                 for (var i = 0; i < leToit.children.length; i++) {
                     leToit.children[i].material.wireframe = true;
+                    leToit.children[i].name = 'transparent';
                 }
             } else {
                 for (var i = 0; i < leToit.children.length; i++) {
                     leToit.children[i].material.wireframe = false;
+                    leToit.children[i].name = 'excluded';
                 }
             }
         }
