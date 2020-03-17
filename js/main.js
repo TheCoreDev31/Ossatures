@@ -214,6 +214,14 @@ export function extraireFace(objet) {
     return face.substr(0, face.indexOf('>'));
 }
 
+export function rechercherConstruction(nomTravee) {
+    for (var i = 1; i < tableauConstructions.length; i++) {
+        if (tableauConstructions[i].includes(voisine)) {
+            tableauConstructions[i].push(prefixe);
+            break;
+        }
+    }
+}
 
 /******************   La grosse fonction pour déterminer si une ouverture peut être rajoutée ou non   *****************/
 export function verifierRajoutOuverture(nomTravee, face, typeOuverture) {

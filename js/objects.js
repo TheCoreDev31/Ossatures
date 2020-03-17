@@ -349,6 +349,29 @@ export function creerTravee() {
     var toit = creerToit(prefixe);
     wallsGrp.add(toit);
 
+    if (nbTravees == 1) {
+        nbConstructions = 1;
+        tableauConstructions[nbConstructions] = new Array();
+        tableauConstructions[nbConstructions].push(prefixe);
+    } else {
+        var voisine = 'Travee ' + (nbTravees - 1);
+        if (tableauTravees[voisine]['decalee'] != 0) {
+            nbConstructions++;
+            tableauConstructions[nbConstructions] = new Array();
+            tableauConstructions[nbConstructions].push(prefixe);
+        } else {
+
+            // Même construction, rajout de la travée
+
+            for (var i = 1; i < tableauConstructions.length; i++) {
+                if (tableauConstructions[i].includes(voisine)) {
+                    tableauConstructions[i].push(prefixe);
+                    break;
+                }
+            }
+        }
+    }
+
     return wallsGrp;
 }
 
