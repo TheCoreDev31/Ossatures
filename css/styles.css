@@ -33,6 +33,17 @@ body {
 }
 
 
+/*****************  Logo  *******************/
+
+.logo {
+    position: absolute;
+    bottom: 40px;
+    right: 50px;
+}
+
+.image {
+    filter: drop-shadow(5px 5px 5px black);
+}
 
 /************   GUI    *********/
 .dg.ac {
