@@ -12,7 +12,8 @@ import {
 
 import {
     displayGui,
-    hideContextualMenu
+    hideContextualMenu,
+    unSelect
 } from "./gui.js"
 
 import {
@@ -58,19 +59,20 @@ export function alerte(message) {
 
 export function info(param) {
     if (param == null) {
-        document.getElementById('messageInfo').className = 'normal';
-        document.getElementById('messageInfo').innerHTML = '';
+        $("#messageInfo").prop("class", "normal");
+        $("#messageInfo").html("");
         return;
     }
     if (typeof (param) == 'string') {
-        document.getElementById('messageInfo').innerHTML = param;
+        newMessage
+        $("#messageInfo").html(param);
         setTimeout(function () {
-            document.getElementById('messageInfo').innerHTML = '';
+            $("#messageInfo").html("");
         }, 2000);
     } else {
-        var newMessage = "Sélection : " + param.parent.name + " (VT = ???)";
-        document.getElementById('messageInfo').className = 'normal';
-        document.getElementById('messageInfo').innerHTML = newMessage;
+        var newMessage = "Sélection : " + param.name;
+        $("#messageInfo").prop("class", "normal");
+        $("#messageInfo").html(newMessage);
     }
 }
 
