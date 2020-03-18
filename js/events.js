@@ -121,12 +121,11 @@ export function onMouseClick(event) {
         } else { // Les ouvertures
             objetTouche.material = selectedGlassMaterial;
         }
-        objetSelectionne = objetTouche.name;
         facesSelectionnees.push(numFace);
+        objetSelectionne = objetTouche.name;
         info(objetTouche);
         displayContextualMenu(objetTouche, mouse.left, mouse.top);
     }
-    objetTouche.geometry.elementsNeedUpdate = true;
 }
 
 

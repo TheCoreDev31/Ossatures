@@ -258,11 +258,11 @@ scene.add(firstWindow);
 var secondWindow = creerOuverture(travee1.name, 'PGAV', 'F1');
 scene.add(secondWindow);
 
-//var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
-//scene.add(firstDoor);
-//
-//var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
-//scene.add(secondDoor);
+var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
+scene.add(firstDoor);
+
+var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
+scene.add(secondDoor);
 
 incrusterCotes();
 
