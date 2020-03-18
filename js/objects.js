@@ -61,8 +61,6 @@ export function supprimerOuverture(nomObjet) {
         log('tableauTravee APRES supprimerOuverture :');
         log(tableauTravees);
     }
-
-    log(objetsModifiables);
 }
 
 export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
@@ -265,6 +263,44 @@ export function creerToit(nomTravee) {
 
 export function creerTravee() {
 
+    var prefixe = 'Travee ' + (nbTravees + 1);
+
+    if ((nbTravees + 1) == 1) {
+        nbConstructions = 1;
+        tableauConstructions['Construction ' + nbConstructions] = new Array();
+        tableauConstructions['Construction ' + nbConstructions].push(prefixe);
+    } else {
+
+        // On compare par rapport à la travée de gauche, pour vérifier s'il existe un décalage avec celle-ci
+        var traveeGauche = 'Travee ' + nbTravees;
+        if (tableauTravees[traveeGauche]) {
+            if (tableauTravees[traveeGauche]['decalee'] != 0) {
+                nbConstructions++;
+                if (nbConstructions <= NBCONSTRUCTIONSMAXI) {
+                    tableauConstructions['Construction ' + nbConstructions] = new Array();
+                    tableauConstructions['Construction ' + nbConstructions].push(prefixe);
+                } else {
+                    alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NBCONSTRUCTIONSMAXI + ").");
+                    return;
+                }
+            } else {
+
+                // Même construction, rajout de la travée
+                tableauConstructions['Construction ' + nbConstructions].push(prefixe);
+
+                for (var i = 1; i < tableauConstructions.length; i++) {
+                    if (tableauConstructions[i].includes(traveeGauche)) {
+                        tableauConstructions[i].push(prefixe);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    log('tableauConstructions = ');
+    log(tableauConstructions);
+
+
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face AV devant.
     var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
@@ -306,7 +342,6 @@ export function creerTravee() {
     var wallsGrp = new THREE.Group();
     nbTravees++;
     wallsGrp.add(wallAR);
-    var prefixe = 'Travee ' + nbTravees;
     wallAR.name = prefixe + '>AR';
     wallsGrp.add(wallPDAR);
     wallPDAR.name = prefixe + '>PDAR';
@@ -354,28 +389,6 @@ export function creerTravee() {
     var toit = creerToit(prefixe);
     wallsGrp.add(toit);
 
-    if (nbTravees == 1) {
-        nbConstructions = 1;
-        tableauConstructions[nbConstructions] = new Array();
-        tableauConstructions[nbConstructions].push(prefixe);
-    } else {
-        var voisine = 'Travee ' + (nbTravees - 1);
-        if (tableauTravees[voisine]['decalee'] != 0) {
-            nbConstructions++;
-            tableauConstructions[nbConstructions] = new Array();
-            tableauConstructions[nbConstructions].push(prefixe);
-        } else {
-
-            // Même construction, rajout de la travée
-
-            for (var i = 1; i < tableauConstructions.length; i++) {
-                if (tableauConstructions[i].includes(voisine)) {
-                    tableauConstructions[i].push(prefixe);
-                    break;
-                }
-            }
-        }
-    }
 
     return wallsGrp;
 }
@@ -406,6 +419,7 @@ export function deplacerTravee(nomTravee, direction) {
     var traveeDroite = scene.getObjectByName(nomTraveeDroite);
 
     if (direction == 'front') {
+        // décalage vers l'avant
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeGauche) {

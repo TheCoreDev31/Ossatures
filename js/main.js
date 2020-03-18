@@ -216,13 +216,15 @@ export function extraireFace(objet) {
     return face.substr(0, face.indexOf('>'));
 }
 
+
+/*******************    A REVOIR     ****************************************/
 export function rechercherConstruction(nomTravee) {
     for (var i = 1; i < tableauConstructions.length; i++) {
-        if (tableauConstructions[i].includes(voisine)) {
-            tableauConstructions[i].push(prefixe);
-            break;
+        if (tableauConstructions[i].includes(nomTravee)) {
+            return 'Construction ' + i;
         }
     }
+    return null;
 }
 
 export function supprimerObjetModifiable(nomObjet) {

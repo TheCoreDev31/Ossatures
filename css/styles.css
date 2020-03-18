@@ -41,9 +41,49 @@ body {
     right: 50px;
 }
 
-.image {
+.imageLogo {
     filter: drop-shadow(5px 5px 5px black);
 }
+
+
+/*****************  Aide en ligne  *******************/
+
+.aide {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    align-content: center;
+    bottom: 200px;
+    right: 50px;
+    padding: 8px;
+
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 10px;
+    opacity: 80%;
+}
+
+.texteAide {
+    padding-left: 0px;
+    list-style: none;
+}
+
+.texteAide > li {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 14px;
+}
+
+.texteAide > li:before {
+    font-family: "Glyphicons Halflings";
+    content: "\e258";
+    margin-right: 8px;
+}
+
+.imageAide {
+    margin-left: 10px;
+}
+
+
 
 /************   GUI    *********/
 .dg.ac {

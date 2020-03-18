@@ -77,9 +77,6 @@ export function onMouseClick(event) {
         return;
     }
 
-    log('objetModifiables =');
-    log(objetsModifiables);
-
     if (DEBUG) {
         log('Vous avez cliqué sur : ');
         log(intersects);
