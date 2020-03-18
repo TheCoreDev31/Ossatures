@@ -34,7 +34,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse;
-            var DEBUG = true;
+            var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 72,
@@ -57,6 +57,7 @@
             var objetsModifiables = new Array();
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
+            var etapeActuelle = 1;
         </script>
 
         <div class="logo">

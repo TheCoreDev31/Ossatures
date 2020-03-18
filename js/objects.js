@@ -14,7 +14,8 @@ import {
     log,
     alerte,
     extraireNomTravee,
-    extraireFace
+    extraireFace,
+    supprimerObjetModifiable
 } from "./main.js"
 
 import {
@@ -53,13 +54,15 @@ export function supprimerOuverture(nomObjet) {
     tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
 
     // et enfin, déselectionner l'objet.
-    objetsModifiables.splice(objetsModifiables.indexOf(nomObjet), 1);
+    supprimerObjetModifiable(objet.parent.name);
     objetSelectionne = '';
     unSelect();
     if (DEBUG) {
         log('tableauTravee APRES supprimerOuverture :');
         log(tableauTravees);
     }
+
+    log(objetsModifiables);
 }
 
 export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {

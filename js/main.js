@@ -225,6 +225,16 @@ export function rechercherConstruction(nomTravee) {
     }
 }
 
+export function supprimerObjetModifiable(nomObjet) {
+    for (var i = 0; i < objetsModifiables.length; i++) {
+        if (objetsModifiables[i].name == nomObjet) {
+            objetsModifiables.splice(i, 1);
+            return;
+        }
+    }
+}
+
+
 /******************   La grosse fonction pour déterminer si une ouverture peut être rajoutée ou non   *****************/
 export function verifierRajoutOuverture(nomTravee, face, typeOuverture) {
 
@@ -257,9 +267,9 @@ scene.add(secondWindow);
 incrusterCotes();
 
 window.addEventListener('resize', onWindowResize, false);
-document.addEventListener('click', onMouseClick);
 document.addEventListener('mousemove', onMouseMove, false);
-//document.addEventListener('dblclick', onMouseDoubleClick);
+//document.addEventListener('click', onMouseClick);
+document.addEventListener('dblclick', onMouseClick);
 
 init();
 displayGui();

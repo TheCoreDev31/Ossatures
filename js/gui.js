@@ -14,7 +14,8 @@ import {
     recalculerCotes,
     info,
     alerte,
-    log
+    log,
+    supprimerObjetModifiable
 } from "./main.js"
 
 
@@ -153,7 +154,6 @@ export function displayGui() {
                     travee1.translateX(-LARGEUR_TRAVEE / 2);
                     travee1.children[indicePDAV].visible = false;
                     travee1.children[indicePDAR].visible = false;
-                    objetsModifiables.push(travee2);
                     scene.add(travee2);
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
@@ -167,7 +167,6 @@ export function displayGui() {
                     travee2.translateX(-LARGEUR_TRAVEE / 2);
                     travee2.children[indicePDAV].visible = false;
                     travee2.children[indicePDAR].visible = false;
-                    objetsModifiables.push(travee3);
                     scene.add(travee3);
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
@@ -183,7 +182,6 @@ export function displayGui() {
                     travee3.translateX(-LARGEUR_TRAVEE / 2);
                     travee3.children[indicePDAV].visible = false;
                     travee3.children[indicePDAR].visible = false;
-                    objetsModifiables.push(travee4);
                     scene.add(travee4);
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
@@ -192,6 +190,7 @@ export function displayGui() {
                     alerte('Vous avez atteint le nombre maximum de travees (4).');
                     break;
             }
+            log(objetsModifiables);
         },
         Supprimer: function () {
             switch (nbTravees) {
@@ -202,7 +201,7 @@ export function displayGui() {
                     travee1.translateX(LARGEUR_TRAVEE / 2)
                     travee1.children[indicePDAV].visible = true;
                     travee1.children[indicePDAR].visible = true;
-                    objetsModifiables.splice(objetsModifiables.indexOf('travee2'), 1);
+                    supprimerObjetModifiable('Travee 2');
                     nbTravees--;
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
@@ -216,7 +215,7 @@ export function displayGui() {
                     travee2.translateX(LARGEUR_TRAVEE / 2);
                     travee2.children[indicePDAV].visible = true;
                     travee2.children[indicePDAR].visible = true;
-                    objetsModifiables.splice(objetsModifiables.indexOf('travee3'), 1);
+                    supprimerObjetModifiable('Travee 3');
                     nbTravees--;
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
@@ -232,7 +231,7 @@ export function displayGui() {
                     travee3.translateX(LARGEUR_TRAVEE / 2);
                     travee3.children[indicePDAV].visible = true;
                     travee3.children[indicePDAR].visible = true;
-                    objetsModifiables.splice(objetsModifiables.indexOf('travee4'), 1);
+                    supprimerObjetModifiable('Travee 4');
                     nbTravees--;
                     recalculerCotes('largeur');
                     scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
