@@ -108,13 +108,14 @@ wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(2, 2);
 var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
+    color: COLOR_ARRAY['blanc'],
     vertexColors: true
 });
 
 var wallInMaterial = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['crepi'],
     emissive: COLOR_ARRAY['crepi'],
-    emissiveIntensity: 0.2
+    emissiveIntensity: 0.1
 });
 
 export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
