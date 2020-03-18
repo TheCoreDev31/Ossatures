@@ -42,7 +42,7 @@ export function unSelect() {
 
         for (var i = 0; i < facesSelectionnees.length; i++) {
             if (objet.material[1]) { // Les murs
-                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['crepi']);
+                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
             } else { // Les ouvertures
                 objet.material = glassMaterial;
             }

@@ -5,6 +5,7 @@ COLOR_ARRAY['blanc'] = (new THREE.Color(0xffffff).convertSRGBToLinear());
 COLOR_ARRAY['crepi'] = (new THREE.Color(0xf5f2e6).convertSRGBToLinear());
 COLOR_ARRAY['marron'] = (new THREE.Color(0x744b35).convertSRGBToLinear());
 COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
+COLOR_ARRAY['vert'] = (new THREE.Color(0x55a06d).convertSRGBToLinear());
 COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
 
 
@@ -44,15 +45,15 @@ export var boussoleMaterial = new THREE.MeshBasicMaterial({
 });
 
 // Sol gazonné
-var groundTexture = loader.load("img/gazon.jpg");
+var groundTexture = loader.load("img/gazon2.jpg");
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-groundTexture.repeat.set(50, 100);
+groundTexture.repeat.set(50, 50);
 groundTexture.encoding = THREE.sRGBEncoding;
 
 export var groundMaterial = new THREE.MeshLambertMaterial({
     map: groundTexture,
-    reflectivity: 0.3,
-    color: COLOR_ARRAY['gris_clair']
+    reflectivity: 0.2,
+    color: COLOR_ARRAY['vert']
 });
 
 
@@ -102,12 +103,11 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
 
 
 // Travee
-var wallOutTexture = loader.load("img/crepi.jpg");
+var wallOutTexture = loader.load("img/briques.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
-wallOutTexture.repeat.set(5, 5);
+wallOutTexture.repeat.set(2, 2);
 var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
-    color: COLOR_ARRAY['crepi'],
     vertexColors: true
 });
 
@@ -120,13 +120,12 @@ var wallInMaterial = new THREE.MeshLambertMaterial({
 export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
 
 
-var pignonTexture = loader.load("img/crepi.jpg");
+var pignonTexture = loader.load("img/briques.jpg");
 pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
-pignonTexture.repeat.set(0.15, 0.15);
+pignonTexture.repeat.set(0.08, 0.08);
 export var pignonMaterial = new THREE.MeshLambertMaterial({
     map: pignonTexture,
-    color: COLOR_ARRAY['crepi'],
-    side: THREE.DoubleSide
+    color: COLOR_ARRAY['blanc']
 });
 
 
