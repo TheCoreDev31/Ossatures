@@ -15,7 +15,10 @@ import {
     alerte,
     extraireNomTravee,
     extraireFace,
-    supprimerObjetModifiable
+    supprimerObjetModifiable,
+    calculerScoresVT,
+    determinerConstruction,
+    recalculerConstructions
 } from "./main.js"
 
 import {
@@ -263,46 +266,20 @@ export function creerToit(nomTravee) {
 
 export function creerTravee() {
 
-    var prefixe = 'Travee ' + (nbTravees + 1);
+    nbTravees++;
+    var prefixe = PREFIXE_TRAVEE + nbTravees;
 
-    if ((nbTravees + 1) == 1) {
-        nbConstructions = 1;
-        tableauConstructions['Construction ' + nbConstructions] = new Array();
-        tableauConstructions['Construction ' + nbConstructions].push(prefixe);
-    } else {
-
-        // On compare par rapport à la travée de gauche, pour vérifier s'il existe un décalage avec celle-ci
-        var traveeGauche = 'Travee ' + nbTravees;
-        if (tableauTravees[traveeGauche]) {
-            if (tableauTravees[traveeGauche]['decalee'] != 0) {
-                nbConstructions++;
-                if (nbConstructions <= NBCONSTRUCTIONSMAXI) {
-                    tableauConstructions['Construction ' + nbConstructions] = new Array();
-                    tableauConstructions['Construction ' + nbConstructions].push(prefixe);
-                } else {
-                    alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NBCONSTRUCTIONSMAXI + ").");
-                    return;
-                }
-            } else {
-
-                // Même construction, rajout de la travée
-                tableauConstructions['Construction ' + nbConstructions].push(prefixe);
-
-                for (var i = 1; i < tableauConstructions.length; i++) {
-                    if (tableauConstructions[i].includes(traveeGauche)) {
-                        tableauConstructions[i].push(prefixe);
-                        break;
-                    }
-                }
-            }
-        }
+    // On teste d'abord si la construction de la nouvelle travée est autorisée : si ce n'est pas le cas, inutile d'aller plus loin.
+    if (!determinerConstruction(prefixe)) {
+        if (nbConstructions == NB_CONSTRUCTIONS_MAXI)
+            alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+        else
+            alerte("Vous avez atteint le nombre maximal de travées autorisées pour votre construction (" + NB_TRAVEES_MAXI + ").");
+        return;
     }
-    log('tableauConstructions = ');
-    log(tableauConstructions);
-
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
-    // IMPORTANT : on crée les murs avec la face AV devant.
+    // IMPORTANT : on crée les murs avec la face avant DEVANT !!!!!!!!!!
     var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
 
@@ -340,7 +317,6 @@ export function creerTravee() {
     top.visible = false;
 
     var wallsGrp = new THREE.Group();
-    nbTravees++;
     wallsGrp.add(wallAR);
     wallAR.name = prefixe + '>AR';
     wallsGrp.add(wallPDAR);
@@ -360,36 +336,21 @@ export function creerTravee() {
     wallsGrp.name = prefixe;
     objetsModifiables.push(wallsGrp);
 
+    // Pour la gestion des ombres
     for (var i = 0; i < wallsGrp.children.length; i++) {
         wallsGrp.children[i].receiveShadow = false;
         wallsGrp.children[i].castShadow = true;
     }
 
-    // Initialisation du tableau d'infos sur la travée que l'on vient de créer...
-    var vtMur = PRODUITS['MU']['VT'];
-    tableauTravees['Travee ' + nbTravees] = new Array();
-    tableauTravees['Travee ' + nbTravees]['nom'] = wallsGrp.name;
-    tableauTravees['Travee ' + nbTravees]['decalee'] = 0;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_AR'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_AR'] = vtMur;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PDAR'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PDAR'] = vtMur;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PDAV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PDAV'] = vtMur;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_AV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_AV'] = vtMur;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PGAV'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PGAV'] = vtMur;
-    tableauTravees['Travee ' + nbTravees]['nb_ouvertures_PGAR'] = 0;
-    tableauTravees['Travee ' + nbTravees]['vt_PGAR'] = vtMur;
-
-    // .. ne pas oublier que cela modifie les scores VT des travées adjacentes.
-
-
     var toit = creerToit(prefixe);
     wallsGrp.add(toit);
 
+    calculerScoresVT(PREFIXE_TRAVEE + nbTravees);
 
+    if (DEBUG) {
+        log('tableauTravees dans creerTravee : ');
+        log(tableauTravees);
+    }
     return wallsGrp;
 }
 
@@ -402,10 +363,10 @@ export function deplacerTravee(nomTravee, direction) {
         return;
     }
 
-    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalee']);
+    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalage']);
 
-    if ((direction == 'front' && tableauTravees[nomTravee]['decalee'] == 1) ||
-        (direction == 'back' && tableauTravees[nomTravee]['decalee'] == -1)) {
+    if ((direction == 'front' && tableauTravees[nomTravee]['decalage'] == 1) ||
+        (direction == 'back' && tableauTravees[nomTravee]['decalage'] == -1)) {
         alerte("Travée déjà décalée dans cette direction.");
         return;
     }
@@ -423,8 +384,8 @@ export function deplacerTravee(nomTravee, direction) {
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalee'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalee'] + 1)) > 1) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
@@ -436,8 +397,8 @@ export function deplacerTravee(nomTravee, direction) {
         }
 
         if (traveeDroite) {
-            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalee'];
-            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalee'] + 1)) > 1) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
@@ -449,14 +410,14 @@ export function deplacerTravee(nomTravee, direction) {
         }
 
         travee.position.z += (LONGUEUR_TRAVEE / 2);
-        tableauTravees[nomTravee]['decalee']++;
+        tableauTravees[nomTravee]['decalage']++;
 
     } else { // décalage vers le fond
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalee'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalee'] - 1)) > 1) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
@@ -468,8 +429,8 @@ export function deplacerTravee(nomTravee, direction) {
         }
 
         if (traveeDroite) {
-            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalee'];
-            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalee'] - 1)) > 1) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
@@ -481,8 +442,9 @@ export function deplacerTravee(nomTravee, direction) {
         }
 
         travee.position.z -= (LONGUEUR_TRAVEE / 2);
-        tableauTravees[nomTravee]['decalee']--;
+        tableauTravees[nomTravee]['decalage']--;
 
     }
+    recalculerConstructions();
     unSelect();
 }

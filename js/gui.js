@@ -104,7 +104,7 @@ export function displayContextualMenu(objet, x, y) {
     else {
         if (objet.name.includes('>AV') || objet.name.includes('>AR')) {
 
-            var decalageActuel = tableauTravees[objet.parent.name]['decalee'];
+            var decalageActuel = tableauTravees[objet.parent.name]['decalage'];
             if (decalageActuel < 0) {
                 addMenu("Reculer cette travée", false, 'moveBackTravee');
                 addMenu("Avancer cette travée", true, 'moveFrontTravee');
@@ -148,25 +148,31 @@ export function displayGui() {
         Ajouter: function () {
 
             var travee = creerTravee();
-            travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
-            for (var i = nbTravees - 1; i > 0; i--) {
-                var traveePrecedente = scene.getObjectByName('Travee ' + i);
-                traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
+            if (travee) {
+                travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
+                for (var i = nbTravees - 1; i > 0; i--) {
+                    var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
+                    traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
 
-                if (i == (nbTravees - 1)) {
-                    traveePrecedente.children[indicePDAV].visible = false;
-                    traveePrecedente.children[indicePDAR].visible = false;
-                } else {
-                    traveePrecedente.children[indicePDAV].visible = false;
-                    traveePrecedente.children[indicePDAR].visible = false;
+                    if (i == (nbTravees - 1)) {
+                        traveePrecedente.children[indicePDAV].visible = false;
+                        traveePrecedente.children[indicePDAR].visible = false;
+                    } else {
+                        traveePrecedente.children[indicePDAV].visible = false;
+                        traveePrecedente.children[indicePDAR].visible = false;
+                    }
                 }
+                scene.add(travee);
+                recalculerCotes('largeur');
+                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
-            scene.add(travee);
-            recalculerCotes('largeur');
-            scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
 
         },
         Supprimer: function () {
+
+
+            /*     Utiliser PREFIXE_TRAVEE
+             */
             switch (nbTravees) {
                 case 2:
                     var travee2 = scene.getObjectByName('Travee 2');
@@ -229,7 +235,7 @@ export function displayGui() {
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
 
         for (var j = 1; j <= nbTravees; j++) {
-            var leToit = scene.getObjectByName('Travee ' + j + '>Toit');
+            var leToit = scene.getObjectByName(PREFIXE_TRAVEE + j + '>Toit');
             if (!value) {
                 for (var i = 0; i < leToit.children.length; i++) {
                     leToit.children[i].material.wireframe = true;
@@ -247,12 +253,12 @@ export function displayGui() {
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
         if (!value) {
             for (var i = 1; i <= nbTravees; i++) {
-                var travee = scene.getObjectByName('Travee ' + i);
+                var travee = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 travee.children[indiceRoof].visible = false;
             }
         } else {
             for (var i = 1; i <= nbTravees; i++) {
-                var travee = scene.getObjectByName('Travee ' + i);
+                var travee = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 travee.children[indiceRoof].visible = true;
             }
         }
