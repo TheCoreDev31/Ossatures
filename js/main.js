@@ -322,7 +322,7 @@ export function determinerConstruction(nomTravee) {
 
 export function recalculerConstructions() {
 
-    tableauConstructions = new Array();
+    tableauConstructions.length = 0;
     nbConstructions = 1;
     tableauConstructions[PREFIXE_CONSTRUCTION + 1] = new Array();
     tableauConstructions[PREFIXE_CONSTRUCTION + 1].push(PREFIXE_TRAVEE + 1);
