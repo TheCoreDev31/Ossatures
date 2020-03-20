@@ -271,8 +271,7 @@ export function calculerScoresVT(nomTravee) {
 
 
 
-/*******************    A REVOIR     ****************************************/
-export function rechercherConstruction(nomTravee) {
+function rechercherConstruction(nomTravee) {
 
     for (var i = 1; i <= tableauConstructions.length; i++) {
         if (tableauConstructions[PREFIXE_CONSTRUCTION + i].includes(nomTravee)) return i;
@@ -281,7 +280,7 @@ export function rechercherConstruction(nomTravee) {
 }
 
 
-export function determinerConstruction(nomTravee) {
+export function constructionAutorisee(nomTravee) {
 
     if (nbTravees === 1) {
         nbConstructions = 1;

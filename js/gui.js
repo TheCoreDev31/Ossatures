@@ -1,6 +1,7 @@
 import {
     creerTravee,
-    deplacerTravee
+    deplacerTravee,
+    supprimerToutesOuvertures
 } from "./objects.js"
 
 import {
@@ -147,27 +148,30 @@ export function displayGui() {
     var options = {
         Ajouter: function () {
 
-            var travee = creerTravee();
-            if (travee) {
-                travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
-                for (var i = nbTravees - 1; i > 0; i--) {
-                    var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
-                    traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
+            if (confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) {
+                supprimerToutesOuvertures();
+                var travee = creerTravee();
+                if (travee) {
+                    travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
+                    for (var i = nbTravees - 1; i > 0; i--) {
+                        var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
+                        traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
 
-                    if (i == (nbTravees - 1)) {
-                        traveePrecedente.children[indicePDAV].visible = false;
-                        traveePrecedente.children[indicePDAR].visible = false;
-                    } else {
-                        traveePrecedente.children[indicePDAV].visible = false;
-                        traveePrecedente.children[indicePDAR].visible = false;
+                        if (i == (nbTravees - 1)) {
+                            traveePrecedente.children[indicePDAV].visible = false;
+                            traveePrecedente.children[indicePDAR].visible = false;
+                        } else {
+                            traveePrecedente.children[indicePDAV].visible = false;
+                            traveePrecedente.children[indicePDAR].visible = false;
+                        }
                     }
+                    scene.add(travee);
+                    recalculerCotes('largeur');
+                    scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
                 }
-                scene.add(travee);
-                recalculerCotes('largeur');
-                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
-
         },
+
         Supprimer: function () {
 
 

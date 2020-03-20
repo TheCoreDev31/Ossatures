@@ -17,7 +17,7 @@ import {
     extraireFace,
     supprimerObjetModifiable,
     calculerScoresVT,
-    determinerConstruction,
+    constructionAutorisee,
     recalculerConstructions
 } from "./main.js"
 
@@ -34,12 +34,21 @@ function degrees_to_radians(degrees) {
 
 export function supprimerToutesOuvertures() {
 
-    objetsModifiables.traverse(function (objet) {
+    var nbObjets = objetsModifiables.length;
+    var aSupprimer = new Array();
+    for (var i = 0; i < nbObjets; i++) {
 
-        if (objet.name.match('Ouverture')) {
-            supprimerOuverture(objet.name);
+        log(objetsModifiables[i].name);
+
+        if (objetsModifiables[i].name.includes('Ouverture')) {
+            supprimerOuverture(objetsModifiables[i].name);
+            aSupprimer.push(objetsModifiables[i].name);
         }
-    });
+    }
+
+    for (var i = 0; i < aSupprimer.length; i++) {
+        supprimerObjetModifiable(aSupprimer[i]);
+    }
 }
 
 
@@ -270,7 +279,7 @@ export function creerTravee() {
     var prefixe = PREFIXE_TRAVEE + nbTravees;
 
     // On teste d'abord si la construction de la nouvelle travée est autorisée : si ce n'est pas le cas, inutile d'aller plus loin.
-    if (!determinerConstruction(prefixe)) {
+    if (!constructionAutorisee(prefixe)) {
         if (nbConstructions == NB_CONSTRUCTIONS_MAXI)
             alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
         else
