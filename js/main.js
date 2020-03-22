@@ -261,6 +261,8 @@ export function calculerScoresVT(nomTravee) {
     tableauTravees[nomTravee]['nb_ouvertures_PGAR'] = 0;
     tableauTravees[nomTravee]['vt_PGAR'] = vtMur;
 
+    recalculerConstructions();
+
     // .. ne pas oublier que cela modifie les scores VT des travées adjacentes.
 
     if (DEBUG) {
@@ -282,16 +284,11 @@ function rechercherConstruction(nomTravee) {
 
 export function constructionAutorisee(nomTravee) {
 
-    if (nbTravees === 1) {
-        nbConstructions = 1;
-        tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions] = new Array();
-        tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions].push(nomTravee);
-        tableauConstructions.length++;
-    } else {
-
+    if (nbTravees > 1) {
         //   On compare par rapport à la travée de gauche, pour vérifier s'il existe un décalage avec celle-ci
         //   (et donc qu'il s'agit d'une nouvelle construction).
-        var nomTraveeGauche = PREFIXE_TRAVEE + (nbTravees - 1);
+        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
+        var nomTraveeGauche = PREFIXE_TRAVEE + (numTravee - 1);
         if (tableauTravees[nomTraveeGauche]) {
 
             if (tableauTravees[nomTraveeGauche]['decalage'] != 0) {
@@ -310,10 +307,6 @@ export function constructionAutorisee(nomTravee) {
             }
         }
     }
-    if (DEBUG) {
-        log('tableauConstructions dans <constructionAutorisee> : ');
-        log(tableauConstructions);
-    }
 
     return true;
 }
@@ -321,23 +314,27 @@ export function constructionAutorisee(nomTravee) {
 
 export function recalculerConstructions() {
 
-    tableauConstructions.length = 0;
     nbConstructions = 1;
-    tableauConstructions[PREFIXE_CONSTRUCTION + 1] = new Array();
-    tableauConstructions[PREFIXE_CONSTRUCTION + 1].push(PREFIXE_TRAVEE + 1);
+    tableauTravees[PREFIXE_TRAVEE + 1]['construction'] = 1;
+    //    tableauConstructions.length = 0;
+    //    tableauConstructions[PREFIXE_CONSTRUCTION + 1] = new Array();
+    //    tableauConstructions[PREFIXE_CONSTRUCTION + 1].push(PREFIXE_TRAVEE + 1);
 
     for (var i = 2; i <= nbTravees; i++) {
+        log(i);
         if (tableauTravees[PREFIXE_TRAVEE + i]['decalage'] != tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['decalage']) {
             // Nouvelle construction
             nbConstructions++;
-            tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions] = new Array();
-            tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions].push(PREFIXE_TRAVEE + i);
+            tableauTravees[PREFIXE_TRAVEE + i]['construction'] = nbConstructions;
+            //            tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions] = new Array();
+            //            tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions].push(PREFIXE_TRAVEE + i);
         } else {
             // Même construction que la travée de gauche
+            tableauTravees[PREFIXE_TRAVEE + i]['construction'] = tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['construction'];
             tableauConstructions[PREFIXE_CONSTRUCTION + nbConstructions].push(PREFIXE_TRAVEE + i);
         }
     }
-    log(tableauConstructions);
+    log(tableauTravees);
 
 }
 
