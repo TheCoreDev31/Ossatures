@@ -16,7 +16,7 @@ import {
     info,
     alerte,
     log,
-    supprimerObjetModifiable
+    retirerObjetModifiable
 } from "./main.js"
 
 
@@ -148,82 +148,57 @@ export function displayGui() {
     var options = {
         Ajouter: function () {
 
-            if (confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) {
+            if (nbOuvertures > 0) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
                 supprimerToutesOuvertures();
-                var travee = creerTravee();
-                if (travee) {
-                    travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
-                    for (var i = nbTravees - 1; i > 0; i--) {
-                        var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
-                        traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
-
-                        if (i == (nbTravees - 1)) {
-                            traveePrecedente.children[indicePDAV].visible = false;
-                            traveePrecedente.children[indicePDAR].visible = false;
-                        } else {
-                            traveePrecedente.children[indicePDAV].visible = false;
-                            traveePrecedente.children[indicePDAR].visible = false;
-                        }
-                    }
-                    scene.add(travee);
-                    recalculerCotes('largeur');
-                    scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
-                }
             }
+
+            var travee = creerTravee();
+            if (travee) {
+                travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
+                for (var i = nbTravees - 1; i > 0; i--) {
+                    var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
+                    traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
+
+                    if (i == (nbTravees - 1)) {
+                        traveePrecedente.children[indicePDAV].visible = false;
+                        traveePrecedente.children[indicePDAR].visible = false;
+                    }
+                }
+                scene.add(travee);
+                recalculerCotes('largeur');
+                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
+            }
+            log(tableauTravees);
+            log(tableauTravees.length);
         },
 
         Supprimer: function () {
 
-
-            /*     Utiliser PREFIXE_TRAVEE
-             */
-            switch (nbTravees) {
-                case 2:
-                    var travee2 = scene.getObjectByName('Travee 2');
-                    scene.remove(travee2);
-                    var travee1 = scene.getObjectByName('Travee 1');
-                    travee1.translateX(LARGEUR_TRAVEE / 2)
-                    travee1.children[indicePDAV].visible = true;
-                    travee1.children[indicePDAR].visible = true;
-                    supprimerObjetModifiable('Travee 2');
-                    nbTravees--;
-                    recalculerCotes('largeur');
-                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
-                    break;
-                case 3:
-                    var travee3 = scene.getObjectByName('Travee 3');
-                    scene.remove(travee3);
-                    var travee1 = scene.getObjectByName('Travee 1');
-                    travee1.translateX(LARGEUR_TRAVEE / 2);
-                    var travee2 = scene.getObjectByName('Travee 2');
-                    travee2.translateX(LARGEUR_TRAVEE / 2);
-                    travee2.children[indicePDAV].visible = true;
-                    travee2.children[indicePDAR].visible = true;
-                    supprimerObjetModifiable('Travee 3');
-                    nbTravees--;
-                    recalculerCotes('largeur');
-                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
-                    break;
-                case 4:
-                    var travee4 = scene.getObjectByName('Travee 4');
-                    scene.remove(travee4);
-                    var travee1 = scene.getObjectByName('Travee 1');
-                    travee1.translateX(LARGEUR_TRAVEE / 2);
-                    var travee2 = scene.getObjectByName('Travee 2');
-                    travee2.translateX(LARGEUR_TRAVEE / 2);
-                    var travee3 = scene.getObjectByName('Travee 3');
-                    travee3.translateX(LARGEUR_TRAVEE / 2);
-                    travee3.children[indicePDAV].visible = true;
-                    travee3.children[indicePDAR].visible = true;
-                    supprimerObjetModifiable('Travee 4');
-                    nbTravees--;
-                    recalculerCotes('largeur');
-                    scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
-                    break;
-                default:
-                    alerte("Au moins une travée requise.");
-                    break;
+            if (nbTravees == 1) {
+                alerte("Au moins une travée requise.");
+                return;
             }
+
+            var nomTravee = PREFIXE_TRAVEE + nbTravees;
+            var travee = scene.getObjectByName(nomTravee);
+            scene.remove(travee);
+            delete tableauTravees[nomTravee];
+            tableauTravees.length--;
+
+            for (var i = nbTravees - 1; i > 0; i--) {
+                var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
+                traveePrecedente.translateX(LARGEUR_TRAVEE / 2);
+
+                if (i == (nbTravees - 1)) {
+                    traveePrecedente.children[indicePDAV].visible = true;
+                    traveePrecedente.children[indicePDAR].visible = true;
+                }
+            }
+            retirerObjetModifiable(nomTravee);
+            nbTravees--;
+            recalculerCotes('largeur');
+            scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
         }
     }
 

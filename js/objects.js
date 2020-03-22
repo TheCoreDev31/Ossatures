@@ -15,7 +15,7 @@ import {
     alerte,
     extraireNomTravee,
     extraireFace,
-    supprimerObjetModifiable,
+    retirerObjetModifiable,
     calculerScoresVT,
     constructionAutorisee,
     recalculerConstructions
@@ -37,9 +37,6 @@ export function supprimerToutesOuvertures() {
     var nbObjets = objetsModifiables.length;
     var aSupprimer = new Array();
     for (var i = 0; i < nbObjets; i++) {
-
-        log(objetsModifiables[i].name);
-
         if (objetsModifiables[i].name.includes('Ouverture')) {
             supprimerOuverture(objetsModifiables[i].name);
             aSupprimer.push(objetsModifiables[i].name);
@@ -47,7 +44,7 @@ export function supprimerToutesOuvertures() {
     }
 
     for (var i = 0; i < aSupprimer.length; i++) {
-        supprimerObjetModifiable(aSupprimer[i]);
+        retirerObjetModifiable(aSupprimer[i]);
     }
 }
 
@@ -60,13 +57,14 @@ export function supprimerOuverture(nomObjet) {
 
     // Il faut supprimer l'objet à l'IHM...
     scene.remove(objet.parent);
+    nbOuvertures--;
 
     // recalculer les scores VT de la travée concernée...
     tableauTravees[travee]['nb_ouvertures_' + face]--;
     tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
 
     // et enfin, déselectionner l'objet.
-    supprimerObjetModifiable(objet.parent.name);
+    retirerObjetModifiable(objet.parent.name);
     objetSelectionne = '';
     unSelect();
     if (DEBUG) {
@@ -220,6 +218,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
             tableauTravees[nomTravee]['vt_PDAR'] += PRODUITS[typeOuverture]['VT'];
             break;
     }
+    nbOuvertures++;
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');
         log(tableauTravees);
@@ -275,17 +274,21 @@ export function creerToit(nomTravee) {
 
 export function creerTravee() {
 
-    nbTravees++;
-    var prefixe = PREFIXE_TRAVEE + nbTravees;
+    var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
 
     // On teste d'abord si la construction de la nouvelle travée est autorisée : si ce n'est pas le cas, inutile d'aller plus loin.
     if (!constructionAutorisee(prefixe)) {
-        if (nbConstructions == NB_CONSTRUCTIONS_MAXI)
+        if (nbConstructions >= NB_CONSTRUCTIONS_MAXI)
             alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
-        else
-            alerte("Vous avez atteint le nombre maximal de travées autorisées pour votre construction (" + NB_TRAVEES_MAXI + ").");
+        else {
+            alerte("Vous avez atteint le nombre maximal de travées autorisées par construction (" + NB_TRAVEES_MAXI + ").");
+            if (confirm('Voulez-vous créer une nouvelle construction décalée ?')) {
+
+            }
+        }
         return;
     }
+    nbTravees++;
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face avant DEVANT !!!!!!!!!!
@@ -355,6 +358,7 @@ export function creerTravee() {
     wallsGrp.add(toit);
 
     calculerScoresVT(PREFIXE_TRAVEE + nbTravees);
+    recalculerConstructions();
 
     if (DEBUG) {
         log('tableauTravees dans creerTravee : ');
