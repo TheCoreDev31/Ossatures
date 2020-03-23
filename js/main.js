@@ -262,45 +262,6 @@ export function calculerScoresVT(nomTravee) {
     }
 }
 
-/*
-export function constructionAutorisee(nomTravee) {
-
-    if (nbTravees > 0) {
-
-        recalculerConstructions();
-
-        //   On compare par rapport à la travée de gauche, pour vérifier s'il existe un décalage avec celle-ci
-        //   (et donc qu'il s'agit d'une nouvelle construction).
-        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
-        var nomTraveeGauche = PREFIXE_TRAVEE + (numTravee - 1);
-        if (tableauTravees[nomTraveeGauche]) {
-
-            if (tableauTravees[nomTraveeGauche]['decalage'] != 0) {
-                if (nbConstructions == NB_CONSTRUCTIONS_MAXI) return false;
-
-                nbConstructions++;
-                tableauTravees[nomTravee]['numConstruction'] = nbConstructions;
-            } else {
-
-                // Même construction : on compte le nombre de travées déjà dans la construction.
-                var numConstructionVoisine = tableauTravees[nomTraveeGauche]['numConstruction'];
-                var cptTravees = 1;
-
-                for (var i = 1; i <= tableauTravees.length; i++) {
-                    if (tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] == numConstructionVoisine) cptTravees++;
-                }
-                log(cptTravees);
-                if (cptTravees > NB_TRAVEES_MAXI) {
-                    // Est-il possible de réaliser une nouvelle construction ?
-                    if (nbConstructions == NB_CONSTRUCTIONS_MAXI) return false;
-                }
-            }
-        }
-    }
-
-    return true;
-}
-*/
 
 export function recalculerConstructions() {
 

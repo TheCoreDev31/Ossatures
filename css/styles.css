@@ -51,10 +51,10 @@ body {
 .divAide {
     display: flex;
     position: absolute;
-    align-items: center;
+    align-items: flex-start;
     align-content: center;
     bottom: 200px;
-    right: -430px;
+    right: -620px;
     padding: 8px;
 
     background-color: white;
@@ -67,12 +67,18 @@ body {
 }
 
 .divAide:hover {
-    transform: translateX(-460px);
+    transform: translateX(-620px);
 }
 
 .texteAide {
     padding-left: 0px;
     list-style: none;
+}
+
+.texteAide > h3 {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .texteAide > li {
@@ -88,6 +94,7 @@ body {
 
 .imageAide {
     margin-right: 10px;
+    align-content: center;
 }
 
 
@@ -120,7 +127,7 @@ body {
     margin-left: 35vw;
 
     background-color: #5a5a5a;
-    border: 1px solid #bebebe;
+    border: 1px solid black;
     border-radius: 10px;
     transition: all .5s ease-in;
     box-shadow: 0 0 12px black;
