@@ -1,6 +1,6 @@
 import {
     creerTravee,
-    deplacerTravee,
+    decalerTravee,
     supprimerToutesOuvertures
 } from "./objects.js"
 
@@ -33,11 +33,10 @@ export function unSelect() {
         var objet = scene.getObjectByName(objetSelectionne);
 
         for (var i = 0; i < facesSelectionnees.length; i++) {
-            if (objet.material[1]) { // Les murs
-                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
-            } else { // Les ouvertures
+            if (objet.parent.name.includes('>'))
                 objet.material = glassMaterial;
-            }
+            else
+                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
         }
         objet.geometry.elementsNeedUpdate = true;
     }
@@ -153,24 +152,50 @@ export function displayGui() {
                 supprimerToutesOuvertures();
             }
 
+            /* Les cas où l'ajout est interdit sont :
+                1 - nb maxi de travées (au total) atteint (déjà géré dans creeTravee)
+                2 - on atteint le nb maxi de travées par construction
+            */
+            if (nbTravees > 1) {
+                var voisine = tableauTravees[PREFIXE_TRAVEE + nbTravees];
+                if (voisine['rangDansConstruction'] >= NB_TRAVEES_MAXI) {
+                    alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
+                    return;
+                }
+            }
+
             var travee = creerTravee();
             if (travee) {
+
+                // Rajout d'une travée -> on décale suivant X tout le monde vers la gauche.
                 travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
                 for (var i = nbTravees - 1; i > 0; i--) {
                     var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                     traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
 
-                    if (i == (nbTravees - 1)) {
-                        traveePrecedente.children[indicePDAV].visible = false;
-                        traveePrecedente.children[indicePDAR].visible = false;
-                    }
+                    //                    if (i == (nbTravees - 1)) {
+                    //                        traveePrecedente.children[indicePDAV].visible = false;
+                    //                        traveePrecedente.children[indicePDAR].visible = false;
+                    //                    }
                 }
                 scene.add(travee);
+
+                // La travée doit-elle être décalée suivant Z ?
+                var decalageVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
+                if (decalageVoisine != 0) {
+                    switch (decalageVoisine) {
+                        case 1:
+                            decalerTravee(travee.name, 'front');
+                            break;
+                        default:
+                            decalerTravee(travee.name, 'back');
+                            break;
+                    }
+                }
+
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
-            log(tableauTravees);
-            log(tableauTravees.length);
         },
 
         Supprimer: function () {
@@ -185,15 +210,15 @@ export function displayGui() {
             scene.remove(travee);
             delete tableauTravees[nomTravee];
             tableauTravees.length--;
-
+            // Suppression d'une travée -> on décale suivant X tout le monde vers la droite.
             for (var i = nbTravees - 1; i > 0; i--) {
                 var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 traveePrecedente.translateX(LARGEUR_TRAVEE / 2);
 
-                if (i == (nbTravees - 1)) {
-                    traveePrecedente.children[indicePDAV].visible = true;
-                    traveePrecedente.children[indicePDAR].visible = true;
-                }
+                //                if (i == (nbTravees - 1)) {
+                //                    traveePrecedente.children[indicePDAV].visible = true;
+                //                    traveePrecedente.children[indicePDAR].visible = true;
+                //                }
             }
             retirerObjetModifiable(nomTravee);
             nbTravees--;

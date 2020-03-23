@@ -4,7 +4,7 @@ import {
     glassMaterial,
     windowMaterial,
     doorMaterial,
-    wallMaterial,
+    wallOutMaterial,
     pignonMaterial,
     floorMaterial,
     topMaterial
@@ -17,7 +17,6 @@ import {
     extraireFace,
     retirerObjetModifiable,
     calculerScoresVT,
-    constructionAutorisee,
     recalculerConstructions
 } from "./main.js"
 
@@ -271,50 +270,176 @@ export function creerToit(nomTravee) {
 }
 
 
+export function decalerTravee(nomTravee, direction) {
+
+    if (nbTravees <= 1) {
+        alerte("Vous devez avoir plus d'une travée dans votre projet.");
+        return;
+    }
+
+    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalage']);
+
+    if ((direction == 'front' && tableauTravees[nomTravee]['decalage'] == 1) ||
+        (direction == 'back' && tableauTravees[nomTravee]['decalage'] == -1)) {
+        alerte("Travée déjà décalée dans cette direction.");
+        return;
+    }
+
+    var travee = scene.getObjectByName(nomTravee);
+    var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
+    var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
+    var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
+
+    var traveeGauche = scene.getObjectByName(nomTraveeGauche);
+    var traveeDroite = scene.getObjectByName(nomTraveeDroite);
+
+    if (direction == 'front') {
+        // décalage vers l'avant
+
+        // On masque certains murs de la travée courante et également des travées adjacentes.
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePGAV].visible = true;
+                //                travee.children[indicePGAR].visible = false;
+                //                traveeGauche.children[indicePDAV].visible = false;
+                traveeGauche.children[indicePDAR].visible = true;
+            }
+        }
+
+        if (traveeDroite) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                travee.children[indicePDAV].visible = true;
+                //                travee.children[indicePDAR].visible = false;
+                //                traveeDroite.children[indicePGAV].visible = false;
+                traveeDroite.children[indicePGAR].visible = true;
+            }
+        }
+
+        travee.position.z += (LONGUEUR_TRAVEE / 2);
+        tableauTravees[nomTravee]['decalage']++;
+
+    } else { // décalage vers le fond
+
+        // On masque certains murs de la travée courante et également des travées adjacentes.
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                //                travee.children[indicePGAV].visible = false;
+                travee.children[indicePGAR].visible = true;
+                traveeGauche.children[indicePDAV].visible = true;
+                //                traveeGauche.children[indicePDAR].visible = false;
+            }
+        }
+
+        if (traveeDroite) {
+            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
+            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                //                travee.children[indicePDAV].visible = false;
+                travee.children[indicePDAR].visible = true;
+                traveeDroite.children[indicePGAV].visible = true;
+                //                traveeDroite.children[indicePGAR].visible = false;
+            }
+        }
+
+        travee.position.z -= (LONGUEUR_TRAVEE / 2);
+        tableauTravees[nomTravee]['decalage']--;
+
+    }
+    recalculerConstructions();
+    unSelect();
+}
+
+/*
+function nouvelleConstructionDecalee(direction) {
+    event.preventDefault();
+    decalerTravee('Travee 4', direction);
+    $("#popup").hide();
+}
+
+function refusDecalage() {
+    event.preventDefault();
+    $("#popup").hide();
+}
+*/
 
 export function creerTravee() {
 
     var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
+    tableauTravees[prefixe] = new Array();
 
     // On teste d'abord si la construction de la nouvelle travée est autorisée : si ce n'est pas le cas, inutile d'aller plus loin.
-    if (!constructionAutorisee(prefixe)) {
-        if (nbConstructions >= NB_CONSTRUCTIONS_MAXI)
-            alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
-        else {
-            alerte("Vous avez atteint le nombre maximal de travées autorisées par construction (" + NB_TRAVEES_MAXI + ").");
-            if (confirm('Voulez-vous créer une nouvelle construction décalée ?')) {
+    recalculerConstructions();
 
-            }
-        }
+    if (nbTravees == (NB_TRAVEES_MAXI * NB_CONSTRUCTIONS_MAXI)) {
+        var message = "Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + " travées pour " + NB_CONSTRUCTIONS_MAXI + " constructions).";
+        alerte(message);
         return;
     }
+    //    if (!constructionAutorisee(prefixe)) {
+    //        if (nbTravees >= (NB_TRAVEES_MAXI * NB_CONSTRUCTIONS_MAXI)) {
+    //            alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
+    //            return;
+    //        }
+    //
+    //        if (nbConstructions >= NB_CONSTRUCTIONS_MAXI) {
+    //            alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+    //            return;
+    //        }
+    //
+    //        if (nbTravees >= NB_TRAVEES_MAXI) {
+    //            // On arrive ici dans le cas où le nombre de travées maxi ets atteint mais qu'il est possible de créer une
+    //            // autre construction en décalé.
+    //            $("#textePopup").html("Vous avez atteint le nombre maximal de travées autorisées pour cette construction (" + NB_TRAVEES_MAXI + ").<br><br>Voulez-vous créer une nouvelle construction décalée ?");
+    //            $("#bouton1").html("Oui, vers l'avant");
+    //            document.getElementById('bouton1').addEventListener('click', nouvelleConstructionDecalee('front'), false);
+    //            $("#bouton2").html("Oui, vers l'arrière");
+    //            document.getElementById('bouton2').addEventListener('click', nouvelleConstructionDecalee('back'), false);
+    //            $("#bouton3").html("Non, pas de décalage");
+    //            document.getElementById('bouton3').addEventListener('click', refusDecalage(), false);
+    //            $("#popup").show();
+    //        }
+    //    }
     nbTravees++;
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face avant DEVANT !!!!!!!!!!
-    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
 
-    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
     wallPDAR.position.x = ((-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2) - 0.01;
     wallPDAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
 
-    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallPDAV.rotation.y = -Math.PI / 2;
     wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
     wallPDAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallAV.rotation.y = Math.PI;
     wallAV.position.z = LARGEUR_TRAVEE - (EPAISSEUR_MUR / 2);
 
-    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallPGAV.rotation.y = Math.PI / 2;
     wallPGAV.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
     wallPGAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
+    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
     wallPGAR.rotation.y = Math.PI / 2;
     wallPGAR.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
     wallPGAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
@@ -357,107 +482,39 @@ export function creerTravee() {
     var toit = creerToit(prefixe);
     wallsGrp.add(toit);
 
+    // Initialisation de tableauTravees (qui contient les infos utilisées pour calculer le score VT notamment)
+    tableauTravees.length++;
+    tableauTravees[prefixe]['nom'] = prefixe;
+    tableauTravees[prefixe]['nb_ouvertures_AR'] = 0;
+    tableauTravees[prefixe]['nb_ouvertures_PDAR'] = 0;
+    tableauTravees[prefixe]['nb_ouvertures_PDAV'] = 0;
+    tableauTravees[prefixe]['nb_ouvertures_AV'] = 0;
+    tableauTravees[prefixe]['nb_ouvertures_PGAV'] = 0;
+    tableauTravees[prefixe]['nb_ouvertures_PGAR'] = 0;
+    tableauTravees[prefixe]['decalage'] = 0;
+
+    // Détermination du numéro de construction et du rang de la travée courante
+    if (nbTravees == 1) {
+        tableauTravees[prefixe]['numConstruction'] = 1;
+        tableauTravees[prefixe]['rangDansConstruction'] = 1;
+    } else {
+        var constructionVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['numConstruction'];
+        var rangVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['rangDansConstruction'];
+        if (rangVoisine == NB_TRAVEES_MAXI) {
+            nbConstructions++;
+            tableauTravees[prefixe]['numConstruction'] = nbConstructions;
+            tableauTravees[prefixe]['rangDansConstruction'] = 1;
+        } else {
+            tableauTravees[prefixe]['numConstruction'] = constructionVoisine;
+            tableauTravees[prefixe]['rangDansConstruction'] = rangVoisine + 1;
+        }
+    }
+
     calculerScoresVT(PREFIXE_TRAVEE + nbTravees);
-    recalculerConstructions();
 
     if (DEBUG) {
         log('tableauTravees dans creerTravee : ');
         log(tableauTravees);
     }
     return wallsGrp;
-}
-
-
-
-export function deplacerTravee(nomTravee, direction) {
-
-    if (nbTravees <= 1) {
-        alerte("Vous devez avoir plus d'une travée dans votre projet.");
-        return;
-    }
-
-    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalage']);
-
-    if ((direction == 'front' && tableauTravees[nomTravee]['decalage'] == 1) ||
-        (direction == 'back' && tableauTravees[nomTravee]['decalage'] == -1)) {
-        alerte("Travée déjà décalée dans cette direction.");
-        return;
-    }
-
-    var travee = scene.getObjectByName(nomTravee);
-    var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
-    var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
-    var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
-
-    var traveeGauche = scene.getObjectByName(nomTraveeGauche);
-    var traveeDroite = scene.getObjectByName(nomTraveeDroite);
-
-    if (direction == 'front') {
-        // décalage vers l'avant
-
-        // On masque certains murs de la travée courante et également des travées adjacentes.
-        if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                travee.children[indicePGAV].visible = true;
-                travee.children[indicePGAR].visible = false;
-                traveeGauche.children[indicePDAV].visible = false;
-                traveeGauche.children[indicePDAR].visible = true;
-            }
-        }
-
-        if (traveeDroite) {
-            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
-            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                travee.children[indicePDAV].visible = true;
-                travee.children[indicePDAR].visible = false;
-                traveeDroite.children[indicePGAV].visible = false;
-                traveeDroite.children[indicePGAR].visible = true;
-            }
-        }
-
-        travee.position.z += (LONGUEUR_TRAVEE / 2);
-        tableauTravees[nomTravee]['decalage']++;
-
-    } else { // décalage vers le fond
-
-        // On masque certains murs de la travée courante et également des travées adjacentes.
-        if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                travee.children[indicePGAV].visible = false;
-                travee.children[indicePGAR].visible = true;
-                traveeGauche.children[indicePDAV].visible = true;
-                traveeGauche.children[indicePDAR].visible = false;
-            }
-        }
-
-        if (traveeDroite) {
-            var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
-            if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                travee.children[indicePDAV].visible = false;
-                travee.children[indicePDAR].visible = true;
-                traveeDroite.children[indicePGAV].visible = true;
-                traveeDroite.children[indicePGAR].visible = false;
-            }
-        }
-
-        travee.position.z -= (LONGUEUR_TRAVEE / 2);
-        tableauTravees[nomTravee]['decalage']--;
-
-    }
-    recalculerConstructions();
-    unSelect();
 }

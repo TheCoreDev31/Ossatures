@@ -106,19 +106,19 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
 var wallOutTexture = loader.load("img/briques.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(2, 2);
-var wallOutMaterial = new THREE.MeshLambertMaterial({
+export var wallOutMaterial = new THREE.MeshLambertMaterial({
     map: wallOutTexture,
     color: COLOR_ARRAY['blanc'],
     vertexColors: true
 });
 
-var wallInMaterial = new THREE.MeshLambertMaterial({
-    color: COLOR_ARRAY['crepi'],
-    emissive: COLOR_ARRAY['crepi'],
-    emissiveIntensity: 0.1
-});
+//var wallInMaterial = new THREE.MeshLambertMaterial({
+//    color: COLOR_ARRAY['crepi'],
+//    emissive: COLOR_ARRAY['crepi'],
+//    emissiveIntensity: 0.1
+//});
 
-export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
+//export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
 
 
 var pignonTexture = loader.load("img/briques.jpg");

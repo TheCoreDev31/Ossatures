@@ -24,7 +24,7 @@ import {
 
 import {
     supprimerOuverture,
-    deplacerTravee
+    decalerTravee
 } from "./objects.js"
 
 
@@ -42,10 +42,10 @@ $(".liste-deroulante").click(function (e) {
             alert('add');
             break;
         case 'moveFrontTravee':
-            deplacerTravee(extraireNomTravee(objetSelectionne), 'front');
+            decalerTravee(extraireNomTravee(objetSelectionne), 'front');
             break;
         case 'moveBackTravee':
-            deplacerTravee(extraireNomTravee(objetSelectionne), 'back');
+            decalerTravee(extraireNomTravee(objetSelectionne), 'back');
             break;
         case 'unselect':
             unSelect();
@@ -113,11 +113,12 @@ export function onMouseClick(event) {
 
     for (var j = 0; j < 2; j++) {
         var numFace = face * 2 + j;
-        if (objetTouche.material[1]) { // Les murs
-            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-        } else { // Les ouvertures
+        if (objetTouche.parent.name.includes('>'))
             objetTouche.material = selectedGlassMaterial;
-        }
+        else
+            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+
+        objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
         objetSelectionne = objetTouche.name;
         info(objetTouche);
