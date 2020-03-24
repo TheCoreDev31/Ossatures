@@ -39,7 +39,8 @@ $(".liste-deroulante").click(function (e) {
             supprimerOuverture(objetSelectionne);
             break;
         case 'addOpening':
-            alert('add');
+            var typeOuverture = 'F2';
+            verifierRajoutOuverture(objetSelectionne, faceSelectionnee, typeOuverture);
             break;
         case 'moveFrontTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'front');
@@ -83,7 +84,7 @@ export function onMouseClick(event) {
     }
 
     // Pour éviter les intersections alors que le menu contextuel est affiché.
-    if ($('#contextualMenuDiv').css('opacity') == 1) return;
+    if ($('#div-menu-contextuel').css('opacity') == 1) return;
 
     objetTouche = intersects[0].object;
     faceTouchee = intersects[0].faceIndex;

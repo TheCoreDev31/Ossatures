@@ -22,10 +22,10 @@
         <!--        <script src="js/helpers.js" type="module"></script>-->
 
         <div class="infos">
-            <h3 id="messageInfo" class="normal"></h3>
+            <h3 id="message-info" class="normal"></h3>
         </div>
 
-        <div id="contextualMenuDiv">
+        <div id="div-menu-contextuel">
             <ul class="liste-deroulante">
             </ul>
         </div>
@@ -63,9 +63,9 @@
             var etapeActuelle = 1;
         </script>
 
-        <div class="divAide">
-            <img src="img/aide.png" class="imageAide">
-            <ul class="texteAide">
+        <div class="div-aide">
+            <img src="img/aide.png" class="image-aide">
+            <ul class="texte-aide">
                 <h3>Manipulation d'objets</h3>
                 <li>Pour sélectionner un élément, double-cliquez sur celui-ci.</li>
                 <li>Le bouton "Ajouter" permet de créer une nouvelle travée sur la droite de votre construction.</li>
@@ -76,17 +76,38 @@
         </div>
 
         <div class="logo">
-            <img src="img/logo.png" class="imageLogo">
+            <img src="img/logo.png" class="image-logo">
         </div>
 
-        <div id="popup">
-            <span id="textePopup">Message d'info</span>
-            <div class="boutonsPopup">
-                <button type="button" class="btn btn-primary" id="bouton1">Action 1</button>
-                <button type="button" class="btn btn-primary" id="bouton2">Action 2</button>
-                <button type="button" class="btn btn-danger">Non</button>
+        <!--
+        <div id="popup-alert">
+            <span id="titre-popup">Message d'info</span>
+            <div class="boutons-popup">
+                <button type="button" class="btn btn-primary" id="popup-alerte-bouton1">Action 1</button>
+                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
             </div>
         </div>
+-->
+
+        <div id="popup-ouverture">
+            <span id="titre-popup">Choisissez votre ouverture</span>
+            <div class="container-images">
+                <figure><img src="img/Ouvertures/F1.png" class="popup-ouverture-image" alt="Fenêtre 45x65" />
+                    <figcaption>Fenêtre<br>45x65</figcaption>
+                </figure>
+                <figure><img src="img/Ouvertures/F2.png" class="popup-ouverture-image" alt="Fenêtre 105x115" />
+                    <figcaption>Fenêtre<br>105x115</figcaption>
+                </figure>
+                <figure><img src="img/Ouvertures/PE.png" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
+                    <figcaption>Porte entrée<br>90x215</figcaption>
+                </figure>
+                <figure><img src="img/Ouvertures/PF.png" class="popup-ouverture-image" alt="Porte fenêtre 180x215" />
+                    <figcaption>Porte fenêtre<br>180x215</figcaption>
+                </figure>
+            </div>
+            <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
+        </div>
+
 
     </div>
 </body></html>

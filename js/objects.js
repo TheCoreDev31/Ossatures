@@ -16,7 +16,7 @@ import {
     extraireNomTravee,
     extraireFace,
     retirerObjetModifiable,
-    calculerScoresVT,
+    initialiserScoresVT,
     recalculerConstructions
 } from "./main.js"
 
@@ -46,7 +46,6 @@ export function supprimerToutesOuvertures() {
         retirerObjetModifiable(aSupprimer[i]);
     }
 }
-
 
 export function supprimerOuverture(nomObjet) {
 
@@ -413,6 +412,8 @@ export function creerTravee() {
     //            $("#popup").show();
     //        }
     //    }
+
+
     nbTravees++;
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
@@ -510,7 +511,7 @@ export function creerTravee() {
         }
     }
 
-    calculerScoresVT(PREFIXE_TRAVEE + nbTravees);
+    initialiserScoresVT(PREFIXE_TRAVEE + nbTravees);
 
     if (DEBUG) {
         log('tableauTravees dans creerTravee : ');

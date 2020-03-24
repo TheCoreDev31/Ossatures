@@ -51,7 +51,7 @@ scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.3));
 // Un lampe derrière pour l'ombre des bâtiments
 const reference = 200;
 
-export var rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], .6);
+export var rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], 0.6);
 rearLight.position.set(reference, reference, -reference / 2);
 rearLight.castShadow = true;
 rearLight.shadow.mapSize.width = reference;
@@ -68,12 +68,12 @@ frontLight.position.set(10, HAUTEUR_TRAVEE, 300);
 frontLight.castShadow = false;
 scene.add(frontLight);
 
-export var leftLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+export var leftLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.1);
 leftLight.position.set(-300, HAUTEUR_TRAVEE, 0);
 leftLight.castShadow = false;
 scene.add(leftLight);
 
-export var rightLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.3);
+export var rightLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.05);
 rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
 rightLight.castShadow = false;
 scene.add(rightLight);

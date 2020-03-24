@@ -43,7 +43,7 @@ export function unSelect() {
     facesSelectionnees.length = 0;
     objetSelectionne = '';
 
-    if ($("#messageInfo").prop("class") == "normal")
+    if ($("#message-info").prop("class") == "normal")
         info(null);
 }
 
@@ -57,7 +57,7 @@ function addInfo(message) {
     $('.liste-deroulante').append(liText);
 }
 
-function addMenu(menuTitle, isActive, action) {
+function addMenu(menuTitle, action, isActive = true) {
 
     var liText = liText = "<li data-action=\"" + action + "\"";
 
@@ -76,9 +76,8 @@ function addSeparator() {
     $('.liste-deroulante').append(liText);
 }
 
-
 export function hideContextualMenu() {
-    $("#contextualMenuDiv").css({
+    $("#div-menu-contextuel").css({
         opacity: 0,
         left: -300, // Obligé sinon le menu était encore cliquable, même invisible.
         top: -300
@@ -97,41 +96,41 @@ export function displayContextualMenu(objet, x, y) {
 
     $('.liste-deroulante').empty();
 
-    addInfo($("#messageInfo").html());
+    addInfo($("#message-info").html());
     addSeparator();
     if (objet.name.includes('Ouverture'))
-        addMenu("Supprimer cette ouverture", true, 'deleteOuverture');
+        addMenu("Supprimer cette ouverture", 'deleteOuverture');
     else {
         if (objet.name.includes('>AV') || objet.name.includes('>AR')) {
 
             var decalageActuel = tableauTravees[objet.parent.name]['decalage'];
             if (decalageActuel < 0) {
-                addMenu("Reculer cette travée", false, 'moveBackTravee');
-                addMenu("Avancer cette travée", true, 'moveFrontTravee');
+                addMenu("Reculer cette travée", 'moveBackTravee', false);
+                addMenu("Avancer cette travée", 'moveFrontTravee');
             } else {
                 if (decalageActuel > 0) {
-                    addMenu("Reculer cette travée", true, 'moveBackTravee');
-                    addMenu("Avancer cette travée", false, 'moveFrontTravee');
+                    addMenu("Reculer cette travée", 'moveBackTravee');
+                    addMenu("Avancer cette travée", 'moveFrontTravee', false);
 
                 } else {
-                    addMenu("Reculer cette travée", true, 'moveBackTravee');
-                    addMenu("Avancer cette travée", true, 'moveFrontTravee');
+                    addMenu("Reculer cette travée", 'moveBackTravee');
+                    addMenu("Avancer cette travée", 'moveFrontTravee');
                 }
                 addSeparator();
-                addMenu("Ajouter une ouverture", true, 'addOpening');
+                addMenu("Ajouter une ouverture", 'addOpening');
             }
-        } else addMenu("Ajouter une ouverture", true, 'addOpening');
+        } else addMenu("Ajouter une ouverture", 'addOpening');
     }
     addSeparator();
-    addMenu("Annuler la sélection", true, 'unselect');
+    addMenu("Annuler la sélection", 'unselect');
 
 
     // Suivant la position du curseur, on place le menu à gauche ou à droite de cette dernière.
-    var left = (x >= (window.innerWidth / 2)) ? (x + 30) + 'px' : (x - $("#contextualMenuDiv").width() - 30) + 'px';
-    $("#contextualMenuDiv").css({
+    var left = (x >= (window.innerWidth / 2)) ? (x + 30) + 'px' : (x - $("#div-menu-contextuel").width() - 30) + 'px';
+    $("#div-menu-contextuel").css({
         opacity: 1,
         left: left,
-        top: y - ($("#contextualMenuDiv").height() / 2) + 'px'
+        top: y - ($("#div-menu-contextuel").height() / 2) + 'px'
     });
 }
 

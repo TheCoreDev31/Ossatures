@@ -51,31 +51,31 @@ var PREFIXE_CONSTRUCTION = 'Construction ';
 
 /********************************   Gestion des messages d'info et des alertes   ***************************************/
 export function alerte(message) {
-    $("#messageInfo").prop("class", "alerte");
-    $("#messageInfo").html(message);
+    $("#message-info").prop("class", "alerte");
+    $("#message-info").html(message);
     setTimeout(function () {
-        $("#messageInfo").prop("class", "normal");
-        $("#messageInfo").html("");
+        $("#message-info").prop("class", "normal");
+        $("#message-info").html("");
     }, 4000);
     unSelect();
 }
 
 export function info(param) {
     if (param == null) {
-        $("#messageInfo").prop("class", "normal");
-        $("#messageInfo").html("");
+        $("#message-info").prop("class", "normal");
+        $("#message-info").html("");
         return;
     }
     if (typeof (param) == 'string') {
         newMessage
-        $("#messageInfo").html(param);
+        $("#message-info").html(param);
         setTimeout(function () {
-            $("#messageInfo").html("");
+            $("#message-info").html("");
         }, 2000);
     } else {
         var newMessage = "Sélection : " + param.name;
-        $("#messageInfo").prop("class", "normal");
-        $("#messageInfo").html(newMessage);
+        $("#message-info").prop("class", "normal");
+        $("#message-info").html(newMessage);
     }
 }
 
@@ -242,7 +242,7 @@ export function verifierRajoutOuverture(nomTravee, face, typeOuverture) {
 }
 
 
-export function calculerScoresVT(nomTravee) {
+export function initialiserScoresVT(nomTravee) {
 
     var vtMur = PRODUITS['MU']['VT'];
 
@@ -315,12 +315,11 @@ $(document).ready(function () {
 
     var secondWindow = creerOuverture(travee1.name, 'PGAV', 'F1');
     scene.add(secondWindow); //
-    //    var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
-    //    scene.add(firstDoor);
-    //
-    //    var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
-    //    scene.add(secondDoor);
+    var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
+    scene.add(firstDoor);
 
+    var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
+    scene.add(secondDoor);
     incrusterCotes();
 
     window.addEventListener('resize', onWindowResize, false);

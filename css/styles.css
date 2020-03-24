@@ -17,7 +17,7 @@ body {
     display: block;
 }
 
-#messageInfo {
+#message-info {
     font-family: "Avenir Next", "Avenir", sans-serif;
     font-size: 20px;
 }
@@ -41,21 +41,22 @@ body {
     right: 50px;
 }
 
-.imageLogo {
+.image-logo {
     filter: drop-shadow(5px 5px 5px black);
 }
 
 
 /*****************  Aide en ligne  *******************/
 
-.divAide {
+.div-aide {
     display: flex;
     position: absolute;
     align-items: flex-start;
     align-content: center;
-    bottom: 200px;
+    top: 180px;
     right: -620px;
     padding: 8px;
+    z-index: 300;
 
     background-color: white;
     border: 1px solid #4d5ee0;
@@ -66,33 +67,33 @@ body {
     box-shadow: 0 0 12px black;
 }
 
-.divAide:hover {
+.div-aide:hover {
     transform: translateX(-620px);
 }
 
-.texteAide {
+.texte-aide {
     padding-left: 0px;
     list-style: none;
 }
 
-.texteAide > h3 {
+.texte-aide > h3 {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 16px;
     font-weight: bold;
 }
 
-.texteAide > li {
+.texte-aide > li {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 14px;
 }
 
-.texteAide > li:before {
+.texte-aide > li:before {
     font-family: "Glyphicons Halflings";
     content: "\e258";
     margin-right: 8px;
 }
 
-.imageAide {
+.image-aide {
     margin-right: 10px;
     align-content: center;
 }
@@ -101,14 +102,14 @@ body {
 /************   DAT.GUI    *********/
 
 .dg.ac {
-    margin-top: 30px;
-    margin-right: 30px;
+    margin-top: 28px;
+    margin-right: 38px;
     z-index: 200;
 }
 
 
-/************   Popup de choix    *********/
-#popup {
+/************   Popup d'alerte    *********/
+#popup-alert {
     display: grid;
     grid-template-areas:
         'titre'
@@ -126,24 +127,90 @@ body {
     margin-top: 5vh;
     margin-left: 35vw;
 
-    background-color: #5a5a5a;
+    background-color: #e6e6e6;
     border: 1px solid black;
     border-radius: 10px;
     transition: all .5s ease-in;
     box-shadow: 0 0 12px black;
 }
 
-#popup > span {
+#popup-alert #titre-popup {
     grid: texte;
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 16px;
-    color: white;
-    margin: 0px 8px;
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-#popup button {
+#popup-alert button {
     grid: bouton;
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 14px;
     margin-right: 10px;
+}
+
+
+/************   Popup de choix d'une ouverture   *********/
+#popup-ouverture {
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    width: 600px;
+    height: auto;
+    padding: 20px;
+    margin-top: 15vh;
+    margin-left: 30vw;
+
+    background-color: #e6e6e6;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all .5s ease-in;
+    box-shadow: 0 0 12px black;
+}
+
+#popup-ouverture #titre-popup {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 18px;
+    color: black;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#popup-ouverture .container-images {
+    display: flex;
+    width: 90%;
+    align-items: flex-end;
+    text-align: center;
+    justify-content: space-between;
+}
+
+#popup-ouverture .container-images figure {
+
+    justify-content: center;
+}
+
+#popup-ouverture .popup-ouverture-image {
+    width: 60px;
+    height: auto;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+#popup-ouverture .container-images figcaption {
+    text-align: center;
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 14px;
+    line-height: 1em;
+    margin-top: 10px;
+}
+
+#popup-ouverture button {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 30px;
 }
