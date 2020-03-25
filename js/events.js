@@ -13,7 +13,8 @@ import {
     info,
     alerte,
     log,
-    extraireNomTravee
+    extraireNomTravee,
+    verifierContraintes
 } from "./main.js"
 
 import {
@@ -34,13 +35,20 @@ $(".liste-deroulante").click(function (e) {
     e.preventDefault();
 
     var action = $(e.target).attr('data-action');
+    var autorise = $(e.target).attr('class');
+
+    if (autorise && autorise.indexOf('disabled') > -1) {
+        alerte("Opération non autorisée : ouverture déjà présente sur ce mur.");
+        return;
+    }
+
     switch (action) {
         case 'deleteOuverture':
             supprimerOuverture(objetSelectionne);
             break;
         case 'addOpening':
-            var typeOuverture = 'F2';
-            verifierRajoutOuverture(objetSelectionne, faceSelectionnee, typeOuverture);
+            verifierContraintes(objetSelectionne);
+            //            $("#popup-ouverture").show();
             break;
         case 'moveFrontTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'front');

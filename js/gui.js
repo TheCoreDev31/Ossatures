@@ -1,5 +1,6 @@
 import {
     creerTravee,
+    creerOuverture,
     decalerTravee,
     supprimerToutesOuvertures
 } from "./objects.js"
@@ -16,7 +17,9 @@ import {
     info,
     alerte,
     log,
-    retirerObjetModifiable
+    retirerObjetModifiable,
+    extraireFace,
+    extraireNomTravee
 } from "./main.js"
 
 
@@ -116,10 +119,16 @@ export function displayContextualMenu(objet, x, y) {
                     addMenu("Reculer cette travée", 'moveBackTravee');
                     addMenu("Avancer cette travée", 'moveFrontTravee');
                 }
-                addSeparator();
-                addMenu("Ajouter une ouverture", 'addOpening');
             }
-        } else addMenu("Ajouter une ouverture", 'addOpening');
+            addSeparator();
+        }
+        var nomFace = extraireFace(objet.name);
+        // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
+        if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
+            addMenu("Ajouter une ouverture", 'addOpening', false);
+        else
+            addMenu("Ajouter une ouverture", 'addOpening');
+
     }
     addSeparator();
     addMenu("Annuler la sélection", 'unselect');
@@ -171,11 +180,6 @@ export function displayGui() {
                 for (var i = nbTravees - 1; i > 0; i--) {
                     var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                     traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
-
-                    //                    if (i == (nbTravees - 1)) {
-                    //                        traveePrecedente.children[indicePDAV].visible = false;
-                    //                        traveePrecedente.children[indicePDAR].visible = false;
-                    //                    }
                 }
                 scene.add(travee);
 
@@ -195,6 +199,26 @@ export function displayGui() {
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
+
+            /******************************    A VIRER    ************************************/
+
+            var pg = creerOuverture('Travee 1', 'AV', 'PE');
+            scene.add(pg);
+            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
+            scene.add(pg);
+            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
+            scene.add(pg);
+            var pg = creerOuverture('Travee 1', 'PDAV', 'PF');
+            scene.add(pg);
+
+            var pg = creerOuverture('Travee 2', 'AR', 'PF');
+            scene.add(pg);
+            var pg = creerOuverture('Travee 2', 'PDAR', 'PF');
+            scene.add(pg);
+            var pg = creerOuverture('Travee 2', 'AV', 'F2');
+            scene.add(pg);
+
+
         },
 
         Supprimer: function () {
@@ -213,11 +237,6 @@ export function displayGui() {
             for (var i = nbTravees - 1; i > 0; i--) {
                 var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 traveePrecedente.translateX(LARGEUR_TRAVEE / 2);
-
-                //                if (i == (nbTravees - 1)) {
-                //                    traveePrecedente.children[indicePDAV].visible = true;
-                //                    traveePrecedente.children[indicePDAR].visible = true;
-                //                }
             }
             retirerObjetModifiable(nomTravee);
             nbTravees--;

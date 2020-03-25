@@ -189,9 +189,14 @@ body {
 }
 
 #popup-ouverture .container-images figure {
-
+    cursor: pointer;
     justify-content: center;
 }
+
+#popup-ouverture .container-images figure .disabled {
+    cursor: not-allowed;
+}
+
 
 #popup-ouverture .popup-ouverture-image {
     width: 60px;
