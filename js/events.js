@@ -19,7 +19,9 @@ import {
 
 import {
     displayContextualMenu,
-    unSelect
+    displayOpenings,
+    unSelect,
+    griserOuverturesIncompatibles
 } from "./gui.js"
 
 import {
@@ -46,8 +48,7 @@ $(".liste-deroulante").click(function (e) {
             supprimerOuverture(objetSelectionne);
             break;
         case 'addOpening':
-            verifierContraintes(objetSelectionne);
-            //            $("#popup-ouverture").show();
+            displayOpenings(objetSelectionne);
             break;
         case 'moveFrontTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'front');
@@ -66,6 +67,15 @@ $(".liste-deroulante").click(function (e) {
 });
 
 
+/*******************************  Gestion des clics dans la popup des ouvertures  *********************************/
+$("#popup-ouverture").click(function (e) {
+    e.preventDefault();
+
+    if ($(e.target).attr('id') == 'popup-alerte-annuler') {
+        $("#popup-ouverture").hide();
+    }
+});
+
 
 export function onMouseClick(event) {
     var objetTouche, faceTouchee;
@@ -75,6 +85,9 @@ export function onMouseClick(event) {
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.left = event.pageX;
+    mouse.top = event.pageY;
+
     raycaster.setFromCamera(mouse, camera);
 
     // Il faut penser à rajouter les objets sur lesquels on veut pouvoir cliquer dans objetsModifiables[]

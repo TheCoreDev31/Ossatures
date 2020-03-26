@@ -172,11 +172,9 @@ body {
     justify-content: center;
     flex-wrap: wrap;
 
-    width: 600px;
+    width: 800px;
     height: auto;
     padding: 20px;
-    margin-top: 15vh;
-    margin-left: 30vw;
 
     background-color: #e6e6e6;
     border: 1px solid black;
@@ -207,8 +205,10 @@ body {
     justify-content: center;
 }
 
-#popup-ouverture .container-images figure .disabled {
+#popup-ouverture .container-images figure.disabled {
     cursor: not-allowed;
+    color: red;
+    opacity: 30%;
 }
 
 
@@ -225,6 +225,13 @@ body {
     font-size: 14px;
     line-height: 1em;
     margin-top: 10px;
+}
+
+#popup-ouverture .popup-ouverture-texte {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    margin: 20px 0;
 }
 
 #popup-ouverture button {

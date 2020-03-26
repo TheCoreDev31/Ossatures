@@ -19,7 +19,8 @@ import {
     log,
     retirerObjetModifiable,
     extraireFace,
-    extraireNomTravee
+    extraireNomTravee,
+    verifierContraintes
 } from "./main.js"
 
 
@@ -79,6 +80,17 @@ function addSeparator() {
     $('.liste-deroulante').append(liText);
 }
 
+
+export function displayOpenings(traveeSelectionnee) {
+
+    griserOuverturesIncompatibles(verifierContraintes(traveeSelectionnee));
+
+    $("#popup-ouverture").css({
+        left: (window.innerWidth / 2) - ($("#popup-ouverture").width() / 2) + 'px',
+        top: (window.innerHeight / 2) - ($("#popup-ouverture").height() / 2) + 'px'
+    });
+    $("#popup-ouverture").show();
+}
 
 export function displayContextualMenu(objet, x, y) {
 
@@ -287,6 +299,19 @@ export function displayGui() {
         } else {
             if (cotesX) cotesX.visible = true;
             if (cotesY) cotesY.visible = true;
+        }
+    });
+}
+
+
+export function griserOuverturesIncompatibles(tableauOuverturesAutorisees) {
+
+    $('.popup-ouverture-image').each(function (i) {
+
+        if (!tableauOuverturesAutorisees.includes($(this).parent().attr('id'))) {
+            //            $(this).parent().hide();
+            $(this).parent().addClass("disabled");
+
         }
     });
 }

@@ -545,29 +545,7 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     }
 
     // 4 - Calculer du score actuel (hors mur que l'on souhaite remplacer)
-    switch (nomFaceAbsolue) {
-        case 'AV':
-            scoreActuel = totalVtAV;
-            break;
-        case 'AR':
-            scoreActuel = totalVtAR;
-            break;
-        case 'PG':
-            scoreActuel = totalVtPG;
-            break;
-        case 'PD':
-            scoreActuel = totalVtPD;
-            break;
-        case 'R1':
-            scoreActuel = totalVtR1;
-            break;
-        case 'R2':
-            scoreActuel = totalVtR2;
-            break;
-        case 'R3':
-            scoreActuel = totalVtR3;
-            break;
-    }
+    scoreActuel = parseFloat(eval('totalVt' + nomFaceAbsolue));
     scoreActuel -= PRODUITS['MU']['VT'];
 
     // Pour vider un peu la mémoire
@@ -585,7 +563,7 @@ export function verifierContraintes(objet) {
     var coteFace = 'exterieur';
     var numConstruction = tableauTravees[nomTravee]['numConstruction'];
     var traveesMemeConstruction = new Array();
-    var typeOuverturesAutorisees = new Array();
+    var typesOuverturesAutorisees = new Array();
     var nomPignon;
 
     if (nomFace.indexOf('PG') > -1) nomPignon = 'PG';
@@ -602,7 +580,7 @@ export function verifierContraintes(objet) {
     }
 
 
-    // On calcule si la face est une face intérieure ou extérieure (pour pouvoir filtre le type d'ouvertures proposées),
+    // On calcule si la face est une face intérieure ou extérieure (pour pouvoir filtrer les types d'ouvertures proposées),
     // et on détermine le score minimum pour la face concernée.
     var delta = 0;
 
@@ -610,34 +588,28 @@ export function verifierContraintes(objet) {
         case 1:
             delta = matrice_1[nomPignon];
             break;
-        case 2:
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 1 && nomFace.includes('PD')) coteFace = 'interieur';
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('PG')) coteFace = 'interieur';
-            break;
         case 3:
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 1 && nomFace.includes('PD')) coteFace = 'interieur';
             if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 3 && nomFace.includes('PG')) coteFace = 'interieur';
             break;
         case 4:
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 1 && nomFace.includes('PD')) coteFace = 'interieur';
             if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
             if (tableauTravees[nomTravee]['rangDansConstruction'] == 3 && nomFace.includes('P')) coteFace = 'interieur';
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 4 && nomFace.includes('PG')) coteFace = 'interieur';
             break;
     }
-    if (traveesMemeConstruction.length > 1)
+    if (traveesMemeConstruction.length > 1) {
+        if (tableauTravees[nomTravee]['rangDansConstruction'] == 1 && nomFace.includes('PD')) coteFace = 'interieur';
+        if (tableauTravees[nomTravee]['rangDansConstruction'] == traveesMemeConstruction.length && nomFace.includes('PG')) coteFace = 'interieur';
+
         delta = selectionnerMatrices(traveesMemeConstruction, tableauTravees[nomTravee]['rangDansConstruction'], nomFace);
+    }
+    typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
 
-    typeOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
-
-    DEBUG = true;
     if (DEBUG) {
         log('Delta entre score actuel du pignon et minimum = ' + delta);
         log('Types d\'ouvertures autorisées = ' + typeOuverturesAutorisees);
     }
 
-    return typeOuverturesAutorisees;
+    return typesOuverturesAutorisees;
 }
 
 
@@ -726,8 +698,8 @@ $(document).ready(function () {
     animate();
 
     window.addEventListener('resize', onWindowResize, false);
-    document.addEventListener('mousemove', onMouseMove, false);
     document.addEventListener('dblclick', onMouseClick);
+    //    document.addEventListener('mousemove', onMouseMove, false);
     //document.addEventListener('click', onMouseClick);
 
 });
