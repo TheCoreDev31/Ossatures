@@ -1,6 +1,6 @@
 #div-menu-contextuel {
     display: flex;
-    z-index: 1000;
+    z-index: 200;
     position: absolute;
 
     border-radius: 12px;
@@ -11,11 +11,11 @@
     font-size: 18x;
     font-weight: normal;
 
-    opacity: 0;
-    -webkit-transition: opacity 200ms;
-    -moz-transition: opacity 200ms;
-    -o-transition: opacity 200ms;
-    -ms-transition: opacity 200ms;
+    opacity: 95%;
+    -webkit-transition: opacity 500ms;
+    -moz-transition: opacity 500ms;
+    -o-transition: opacity 500ms;
+    -ms-transition: opacity 500ms;
 }
 
 .liste-deroulante {

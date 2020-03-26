@@ -12,7 +12,6 @@ import {
 
 import {
     displayGui,
-    hideContextualMenu,
     unSelect
 } from "./gui.js"
 
@@ -698,6 +697,7 @@ export function recalculerConstructions() {
 $(document).ready(function () {
 
     $("#popup-ouverture").hide();
+    $("#div-menu-contextuel").hide();
 
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();

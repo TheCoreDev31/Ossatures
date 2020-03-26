@@ -19,7 +19,6 @@ import {
 
 import {
     displayContextualMenu,
-    hideContextualMenu,
     unSelect
 } from "./gui.js"
 
@@ -63,7 +62,7 @@ $(".liste-deroulante").click(function (e) {
             alert('Autre action inconnue !');
             break;
     }
-    hideContextualMenu();
+    $("#div-menu-contextuel").hide();
 });
 
 

@@ -30,7 +30,7 @@ export function unSelect() {
        on déselectionne tous les objets à l'IHM,
        puis on vide les variables  */
 
-    hideContextualMenu();
+    $("#div-menu-contextuel").hide();
 
     if (objetSelectionne) {
         var objet = scene.getObjectByName(objetSelectionne);
@@ -77,15 +77,6 @@ function addMenu(menuTitle, action, isActive = true) {
 function addSeparator() {
     var liText = "<hr>";
     $('.liste-deroulante').append(liText);
-}
-
-export function hideContextualMenu() {
-    $("#div-menu-contextuel").css({
-        opacity: 0,
-        left: -300, // Obligé sinon le menu était encore cliquable, même invisible.
-        top: -300
-    });
-
 }
 
 
@@ -137,10 +128,10 @@ export function displayContextualMenu(objet, x, y) {
     // Suivant la position du curseur, on place le menu à gauche ou à droite de cette dernière.
     var left = (x >= (window.innerWidth / 2)) ? (x + 30) + 'px' : (x - $("#div-menu-contextuel").width() - 30) + 'px';
     $("#div-menu-contextuel").css({
-        opacity: 1,
         left: left,
         top: y - ($("#div-menu-contextuel").height() / 2) + 'px'
     });
+    $("#div-menu-contextuel").show();
 }
 
 
