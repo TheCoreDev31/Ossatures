@@ -669,6 +669,7 @@ export function recalculerConstructions() {
 $(document).ready(function () {
 
     $("#popup-ouverture").hide();
+    $("#overlay").hide();
     $("#div-menu-contextuel").hide();
 
     initCaracteristiquesOuvertures();

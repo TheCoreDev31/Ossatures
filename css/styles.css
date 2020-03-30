@@ -63,8 +63,8 @@ body {
     border-radius: 10px;
     opacity: 80%;
 
-    transition: all .5s ease-out;
-    box-shadow: 0 0 12px black;
+    transition: all .5s ease-in;
+    box-shadow: -6px 6px 20px black;
 }
 
 .div-aide:hover {
@@ -153,22 +153,23 @@ body {
 
 /************   Popup de choix d'une ouverture   *********/
 
+/* Masque semi-transparent sous la popup des ouvertures */
 #overlay {
-    display: none;
+    display: block;
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     background-color: black;
-    opacity: 0.5;
-    z-index: 1000;
+    opacity: 0.8;
+    z-index: 250;
 }
-
 
 #popup-ouverture {
     display: flex;
     position: fixed;
+    z-index: 300;
     justify-content: center;
     flex-wrap: wrap;
 
@@ -229,6 +230,7 @@ body {
 
 #popup-ouverture .popup-ouverture-texte {
     font-family: "Avenir next", "Avenir", sans-serif;
+    width: 100%;
     font-size: 14px;
     font-style: italic;
     margin: 20px 0;
@@ -238,5 +240,4 @@ body {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 14px;
     text-align: center;
-    margin-top: 30px;
 }

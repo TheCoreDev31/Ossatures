@@ -73,6 +73,8 @@ $("#popup-ouverture").click(function (e) {
 
     if ($(e.target).attr('id') == 'popup-alerte-annuler') {
         $("#popup-ouverture").hide();
+        $("#overlay").hide();
+        unSelect();
     }
 });
 

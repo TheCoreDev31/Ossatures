@@ -90,6 +90,7 @@ export function displayOpenings(traveeSelectionnee) {
         top: (window.innerHeight / 2) - ($("#popup-ouverture").height() / 2) + 'px'
     });
     $("#popup-ouverture").show();
+    $("#overlay").show();
 }
 
 export function displayContextualMenu(objet, x, y) {
