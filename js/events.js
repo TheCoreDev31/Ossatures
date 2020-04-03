@@ -80,12 +80,14 @@ $("#popup-ouverture").click(function (e) {
         return;
     }
 
-    var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
-    var nomFace = extraireFace($("#traveeSelectionnee").val());
-    scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
-    $("#popup-ouverture").hide();
-    $("#overlay").hide();
-    unSelect();
+    if (!$(e.target).parent().hasClass('disabled')) {
+        var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
+        var nomFace = extraireFace($("#traveeSelectionnee").val());
+        scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+        $("#popup-ouverture").hide();
+        $("#overlay").hide();
+        unSelect();
+    }
 });
 
 

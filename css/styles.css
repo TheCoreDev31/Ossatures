@@ -206,21 +206,29 @@ body {
     justify-content: center;
     color: black;
     opacity: 100%;
+    transition: all .2s ease-in-out;
+}
+
+#popup-ouverture .container-images figure:hover {
+    transform: scale(1.2);
 }
 
 #popup-ouverture .container-images figure.disabled {
     cursor: not-allowed;
-    color: red;
-    opacity: 30%;
+    color: gray;
+    opacity: 40%;
+    transform: none;
 }
 
 
 #popup-ouverture .popup-ouverture-image {
     width: 60px;
     height: auto;
-    border: 1px solid black;
+    border: 0px solid black;
     border-radius: 3px;
+    box-shadow: 2px 2px 5px;
 }
+
 
 #popup-ouverture .container-images figcaption {
     text-align: center;
@@ -235,7 +243,7 @@ body {
     width: 100%;
     font-size: 14px;
     font-style: italic;
-    margin: 20px 0;
+    margin: 20px 20px;
 }
 
 #popup-ouverture button {
