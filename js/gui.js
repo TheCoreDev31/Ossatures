@@ -81,6 +81,11 @@ function addSeparator() {
 
 export function displayOpenings(traveeSelectionnee) {
 
+    // RAZ des figures
+    $('.popup-ouverture-image').each(function (i) {
+        $(this).parent().removeClass();
+        $(this).parent().addClass("normal");
+    });
     griserOuverturesIncompatibles(verifierContraintes(traveeSelectionnee));
 
     $("#popup-ouverture").css({
@@ -89,6 +94,16 @@ export function displayOpenings(traveeSelectionnee) {
     });
     $("#popup-ouverture").show();
     $("#overlay").show();
+}
+
+export function griserOuverturesIncompatibles(tableauOuverturesAutorisees) {
+
+    $('.popup-ouverture-image').each(function (i) {
+
+        if (!tableauOuverturesAutorisees.includes($(this).parent().attr('id'))) {
+            $(this).parent().toggleClass("disabled");
+        }
+    });
 }
 
 export function displayContextualMenu(objet, x, y) {
@@ -205,9 +220,9 @@ export function displayGui() {
             /******************************    A VIRER    ************************************/
 
             //            var pg = creerOuverture('Travee 1', 'AV', 'PE');
-            //            scene.add(pg);            //            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
             //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
+            //            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
+            //            scene.add(pg);            //            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
             //            scene.add(pg);
             //            var pg = creerOuverture('Travee 1', 'PDAV', 'PF');
             //            scene.add(pg);
@@ -295,19 +310,6 @@ export function displayGui() {
         } else {
             if (cotesX) cotesX.visible = true;
             if (cotesY) cotesY.visible = true;
-        }
-    });
-}
-
-
-export function griserOuverturesIncompatibles(tableauOuverturesAutorisees) {
-
-    $('.popup-ouverture-image').each(function (i) {
-
-        if (!tableauOuverturesAutorisees.includes($(this).parent().attr('id'))) {
-            //            $(this).parent().hide();
-            $(this).parent().addClass("disabled");
-
         }
     });
 }

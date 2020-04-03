@@ -201,9 +201,11 @@ body {
     justify-content: space-between;
 }
 
-#popup-ouverture .container-images figure {
+#popup-ouverture .container-images figure.normal {
     cursor: pointer;
     justify-content: center;
+    color: black;
+    opacity: 100%;
 }
 
 #popup-ouverture .container-images figure.disabled {

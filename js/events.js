@@ -20,8 +20,7 @@ import {
 import {
     displayContextualMenu,
     displayOpenings,
-    unSelect,
-    griserOuverturesIncompatibles
+    unSelect
 } from "./gui.js"
 
 import {

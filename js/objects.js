@@ -368,32 +368,6 @@ export function creerTravee() {
         alerte(message);
         return;
     }
-    //    if (!constructionAutorisee(prefixe)) {
-    //        if (nbTravees >= (NB_TRAVEES_MAXI * NB_CONSTRUCTIONS_MAXI)) {
-    //            alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
-    //            return;
-    //        }
-    //
-    //        if (nbConstructions >= NB_CONSTRUCTIONS_MAXI) {
-    //            alerte("Vous avez atteint le nombre maximal de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
-    //            return;
-    //        }
-    //
-    //        if (nbTravees >= NB_TRAVEES_MAXI) {
-    //            // On arrive ici dans le cas où le nombre de travées maxi ets atteint mais qu'il est possible de créer une
-    //            // autre construction en décalé.
-    //            $("#textePopup").html("Vous avez atteint le nombre maximal de travées autorisées pour cette construction (" + NB_TRAVEES_MAXI + ").<br><br>Voulez-vous créer une nouvelle construction décalée ?");
-    //            $("#bouton1").html("Oui, vers l'avant");
-    //            document.getElementById('bouton1').addEventListener('click', nouvelleConstructionDecalee('front'), false);
-    //            $("#bouton2").html("Oui, vers l'arrière");
-    //            document.getElementById('bouton2').addEventListener('click', nouvelleConstructionDecalee('back'), false);
-    //            $("#bouton3").html("Non, pas de décalage");
-    //            document.getElementById('bouton3').addEventListener('click', refusDecalage(), false);
-    //            $("#popup").show();
-    //        }
-    //    }
-
-
     nbTravees++;
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond

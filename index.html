@@ -19,7 +19,7 @@
         <script src="js/threex.domevents.js"></script>
         <script src="js/dat.gui.min.js" type="text/javascript"></script>
         <script src="js/main.js" type="module"></script>
-        <script src="js/helpers.js" type="module"></script>
+        <!--        <script src="js/helpers.js" type="module"></script>-->
 
         <div class="infos">
             <h3 id="message-info" class="normal"></h3>
@@ -34,7 +34,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 72,
@@ -92,26 +92,25 @@
         <div id="popup-ouverture">
             <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
             <div class="container-images">
-                <figure id="F1"><img src="img/Ouvertures/F1.png" class="popup-ouverture-image" alt="Fenêtre 45x65" />
+                <figure id="F1" class="normal"><img src="img/Ouvertures/F1.png" class="popup-ouverture-image" alt="Fenêtre 45x65" />
                     <figcaption>Fenêtre<br>45x65</figcaption>
                 </figure>
-                <figure id="F2"><img src="img/Ouvertures/F2.png" class="popup-ouverture-image" alt="Fenêtre 105x115" />
+                <figure id="F2" class="normal"><img src="img/Ouvertures/F2.png" class="popup-ouverture-image" alt="Fenêtre 105x115" />
                     <figcaption>Fenêtre<br>105x115</figcaption>
                 </figure>
-                <figure id="PE"><img src="img/Ouvertures/PE.png" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
+                <figure id="PE" class="normal"><img src="img/Ouvertures/PE.png" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
                     <figcaption>Porte entrée<br>90x215</figcaption>
                 </figure>
-                <figure id="PF"><img src="img/Ouvertures/PF.png" class="popup-ouverture-image" alt="Porte fenêtre 180x215" />
+                <figure id="PF" class="normal"><img src="img/Ouvertures/PF.png" class="popup-ouverture-image" alt="Porte fenêtre 180x215" />
                     <figcaption>Porte fenêtre<br>180x215</figcaption>
                 </figure>
-                <br>
-                <figure id="PG"><img src="img/Ouvertures/PG.png" class="popup-ouverture-image" alt="Porte de garage 240x200" />
+                <figure id="PG" class="normal"><img src="img/Ouvertures/PG.png" class="popup-ouverture-image" alt="Porte de garage 240x200" />
                     <figcaption>Porte garage<br>240x200</figcaption>
                 </figure>
-                <figure id="PO"><img src="img/Ouvertures/PO.png" class="popup-ouverture-image" alt="Portique intérieur" />
+                <figure id="PO" class="normal"><img src="img/Ouvertures/PO.png" class="popup-ouverture-image" alt="Portique intérieur" />
                     <figcaption>Portique<br>intérieur</figcaption>
                 </figure>
-                <figure id="PE+F1"><img src="img/Ouvertures/PE.png" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
+                <figure id="PE+F1" class="normal"><img src="img/Ouvertures/PE.png" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
                     <figcaption>Porte entrée<br>+ fenêtre</figcaption>
                 </figure>
             </div>

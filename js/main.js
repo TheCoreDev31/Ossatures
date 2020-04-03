@@ -388,7 +388,6 @@ export function retirerObjetModifiable(nomObjet) {
     for (var i = 0; i < objetsModifiables.length; i++) {
         if (objetsModifiables[i].name == nomObjet) {
             var objet = scene.getObjectByName(nomObjet);
-            //            scene.remove(objet);
             objetsModifiables.splice(i, 1);
             return;
         }
@@ -406,6 +405,7 @@ function chercherOuverturesCandidates(scoreMinimum, murInterieur = false) {
 
     return typeOuverturesAutorisees;
 }
+
 
 
 function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
@@ -606,7 +606,7 @@ export function verifierContraintes(objet) {
 
     if (DEBUG) {
         log('Delta entre score actuel du pignon et minimum = ' + delta);
-        log('Types d\'ouvertures autorisées = ' + typeOuverturesAutorisees);
+        log('Types d\'ouvertures autorisées = ' + typesOuverturesAutorisees);
     }
 
     return typesOuverturesAutorisees;
