@@ -45,7 +45,8 @@ $(".liste-deroulante").click(function (e) {
 
     switch (action) {
         case 'deleteOuverture':
-            supprimerOuverture(objetSelectionne);
+            var parent = scene.getObjectByName(objetSelectionne).parent.name;
+            supprimerOuverture(parent);
             break;
         case 'addOpening':
             displayOpenings(objetSelectionne);

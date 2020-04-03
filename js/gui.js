@@ -24,7 +24,6 @@ import {
 } from "./main.js"
 
 
-
 export function unSelect() {
 
     /* On masque le menu déroulant...
@@ -50,7 +49,6 @@ export function unSelect() {
     if ($("#message-info").prop("class") == "normal")
         info(null);
 }
-
 
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
@@ -163,11 +161,9 @@ export function displayGui() {
                 if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
                 supprimerToutesOuvertures();
             }
-
             /* Les cas où l'ajout est interdit sont :
                 1 - nb maxi de travées (au total) atteint (déjà géré dans creeTravee)
-                2 - on atteint le nb maxi de travées par construction
-            */
+                2 - on atteint le nb maxi de travées par construction */
             if (nbTravees > 1) {
                 var voisine = tableauTravees[PREFIXE_TRAVEE + nbTravees];
                 if (voisine['rangDansConstruction'] >= NB_TRAVEES_MAXI) {
@@ -180,10 +176,12 @@ export function displayGui() {
             if (travee) {
 
                 // Rajout d'une travée -> on décale suivant X tout le monde vers la gauche.
-                travee.translateX(LARGEUR_TRAVEE * 0.5 * (nbTravees - 1));
+                travee.translateX(LARGEUR_TRAVEE / 2 * (nbTravees - 1));
+                tableauTravees[travee.name]['positionX'] += (LARGEUR_TRAVEE / 2 * (nbTravees - 1));
                 for (var i = nbTravees - 1; i > 0; i--) {
                     var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                     traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
+                    tableauTravees[traveePrecedente.name]['positionX'] -= LARGEUR_TRAVEE / 2;
                 }
                 scene.add(travee);
 
@@ -206,23 +204,19 @@ export function displayGui() {
 
             /******************************    A VIRER    ************************************/
 
-            var pg = creerOuverture('Travee 1', 'AV', 'PE');
-            scene.add(pg);
-            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
-            scene.add(pg);
-            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
-            scene.add(pg);
-            var pg = creerOuverture('Travee 1', 'PDAV', 'PF');
-            scene.add(pg);
-
-            var pg = creerOuverture('Travee 2', 'AR', 'PF');
-            scene.add(pg);
-            var pg = creerOuverture('Travee 2', 'PDAR', 'PF');
-            scene.add(pg);
-            var pg = creerOuverture('Travee 2', 'AV', 'F2');
-            scene.add(pg);
-
-
+            //            var pg = creerOuverture('Travee 1', 'AV', 'PE');
+            //            scene.add(pg);            //            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
+            //            scene.add(pg);
+            //            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
+            //            scene.add(pg);
+            //            var pg = creerOuverture('Travee 1', 'PDAV', 'PF');
+            //            scene.add(pg);
+            //            var pg = creerOuverture('Travee 2', 'AR', 'PF');
+            //            scene.add(pg);
+            //            var pg = creerOuverture('Travee 2', 'PDAR', 'PF');
+            //            scene.add(pg);
+            //            var pg = creerOuverture('Travee 2', 'AV', 'F2');
+            //            scene.add(pg);
         },
 
         Supprimer: function () {
@@ -241,6 +235,7 @@ export function displayGui() {
             for (var i = nbTravees - 1; i > 0; i--) {
                 var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 traveePrecedente.translateX(LARGEUR_TRAVEE / 2);
+                tableauTravees[traveePrecedente.name]['positionX'] += LARGEUR_TRAVEE / 2;
             }
             retirerObjetModifiable(nomTravee);
             nbTravees--;

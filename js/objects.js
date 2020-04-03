@@ -34,16 +34,15 @@ function degrees_to_radians(degrees) {
 export function supprimerToutesOuvertures() {
 
     var nbObjets = objetsModifiables.length;
+
     var aSupprimer = new Array();
     for (var i = 0; i < nbObjets; i++) {
         if (objetsModifiables[i].name.includes('Ouverture')) {
-            supprimerOuverture(objetsModifiables[i].name);
             aSupprimer.push(objetsModifiables[i].name);
         }
     }
-
     for (var i = 0; i < aSupprimer.length; i++) {
-        retirerObjetModifiable(aSupprimer[i]);
+        supprimerOuverture(aSupprimer[i]);
     }
 }
 
@@ -54,7 +53,7 @@ export function supprimerOuverture(nomObjet) {
     var objet = scene.getObjectByName(nomObjet);
 
     // Il faut supprimer l'objet à l'IHM...
-    scene.remove(objet.parent);
+    scene.remove(objet);
     nbOuvertures--;
 
     // recalculer les scores VT de la travée concernée...
@@ -62,7 +61,7 @@ export function supprimerOuverture(nomObjet) {
     tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
 
     // et enfin, déselectionner l'objet.
-    retirerObjetModifiable(objet.parent.name);
+    retirerObjetModifiable(objet.name);
     objetSelectionne = '';
     unSelect();
     if (DEBUG) {
@@ -225,7 +224,6 @@ export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
 }
 
 
-
 export function creerToit(nomTravee) {
     var roofGrp = new THREE.Group();
     var texture = creerToitTexture();
@@ -303,8 +301,6 @@ export function decalerTravee(nomTravee, direction) {
                 return;
             } else {
                 travee.children[indicePGAV].visible = true;
-                //                travee.children[indicePGAR].visible = false;
-                //                traveeGauche.children[indicePDAV].visible = false;
                 traveeGauche.children[indicePDAR].visible = true;
             }
         }
@@ -316,13 +312,12 @@ export function decalerTravee(nomTravee, direction) {
                 return;
             } else {
                 travee.children[indicePDAV].visible = true;
-                //                travee.children[indicePDAR].visible = false;
-                //                traveeDroite.children[indicePGAV].visible = false;
                 traveeDroite.children[indicePGAR].visible = true;
             }
         }
 
         travee.position.z += (LONGUEUR_TRAVEE / 2);
+        tableauTravees[nomTravee]['positionZ'] += (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['decalage']++;
 
     } else { // décalage vers le fond
@@ -334,10 +329,8 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                //                travee.children[indicePGAV].visible = false;
                 travee.children[indicePGAR].visible = true;
                 traveeGauche.children[indicePDAV].visible = true;
-                //                traveeGauche.children[indicePDAR].visible = false;
             }
         }
 
@@ -347,14 +340,13 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                //                travee.children[indicePDAV].visible = false;
                 travee.children[indicePDAR].visible = true;
                 traveeDroite.children[indicePGAV].visible = true;
-                //                traveeDroite.children[indicePGAR].visible = false;
             }
         }
 
         travee.position.z -= (LONGUEUR_TRAVEE / 2);
+        tableauTravees[nomTravee]['positionZ'] -= (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['decalage']--;
 
     }
@@ -362,18 +354,6 @@ export function decalerTravee(nomTravee, direction) {
     unSelect();
 }
 
-/*
-function nouvelleConstructionDecalee(direction) {
-    event.preventDefault();
-    decalerTravee('Travee 4', direction);
-    $("#popup").hide();
-}
-
-function refusDecalage() {
-    event.preventDefault();
-    $("#popup").hide();
-}
-*/
 
 export function creerTravee() {
 
@@ -493,6 +473,8 @@ export function creerTravee() {
     tableauTravees[prefixe]['nb_ouvertures_PGAV'] = 0;
     tableauTravees[prefixe]['nb_ouvertures_PGAR'] = 0;
     tableauTravees[prefixe]['decalage'] = 0;
+    tableauTravees[prefixe]['positionX'] = 0;
+    tableauTravees[prefixe]['positionZ'] = 0;
 
     // Détermination du numéro de construction et du rang de la travée courante
     if (nbTravees == 1) {

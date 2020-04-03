@@ -28,7 +28,7 @@ import {
 
 
 // Fonctions communes
-function animate() {
+export function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 };
@@ -388,7 +388,7 @@ export function retirerObjetModifiable(nomObjet) {
     for (var i = 0; i < objetsModifiables.length; i++) {
         if (objetsModifiables[i].name == nomObjet) {
             var objet = scene.getObjectByName(nomObjet);
-            scene.remove(objet);
+            //            scene.remove(objet);
             objetsModifiables.splice(i, 1);
             return;
         }
@@ -700,7 +700,7 @@ $(document).ready(function () {
 
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('dblclick', onMouseClick);
-    //    document.addEventListener('mousemove', onMouseMove, false);
+    //document.addEventListener('mousemove', onMouseMove, false);
     //document.addEventListener('click', onMouseClick);
 
 });
