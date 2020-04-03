@@ -92,6 +92,7 @@ export function displayOpenings(traveeSelectionnee) {
         left: (window.innerWidth / 2) - ($("#popup-ouverture").width() / 2) + 'px',
         top: (window.innerHeight / 2) - ($("#popup-ouverture").height() / 2) + 'px'
     });
+    $("#traveeSelectionnee").val(traveeSelectionnee);
     $("#popup-ouverture").show();
     $("#overlay").show();
 }
@@ -113,7 +114,6 @@ export function displayContextualMenu(objet, x, y) {
     /*   -> ex : "Travee 1>AV"                       => décaler la travée + rajouter ouverture (si permis)
          -> ex : "Travee 1>PDAV"                     => seulement rajouter une ouverture
          -> ex : "Travee 1>AV>Ouverture F2>Vitre"    => seulement supprimer l'ouverture                */
-
     $('.liste-deroulante').empty();
 
     addInfo($("#message-info").html());
@@ -216,22 +216,6 @@ export function displayGui() {
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
-
-            /******************************    A VIRER    ************************************/
-
-            //            var pg = creerOuverture('Travee 1', 'AV', 'PE');
-            //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 1', 'PGAR', 'F2');
-            //            scene.add(pg);            //            var pg = creerOuverture('Travee 1', 'PDAR', 'PO');
-            //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 1', 'PDAV', 'PF');
-            //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 2', 'AR', 'PF');
-            //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 2', 'PDAR', 'PF');
-            //            scene.add(pg);
-            //            var pg = creerOuverture('Travee 2', 'AV', 'F2');
-            //            scene.add(pg);
         },
 
         Supprimer: function () {
@@ -284,6 +268,7 @@ export function displayGui() {
                 }
             }
         }
+        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
@@ -298,6 +283,7 @@ export function displayGui() {
                 travee.children[indiceRoof].visible = true;
             }
         }
+        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherCotes').onChange(function (value) {
@@ -311,5 +297,6 @@ export function displayGui() {
             if (cotesX) cotesX.visible = true;
             if (cotesY) cotesY.visible = true;
         }
+        guiEnv.close();
     });
 }

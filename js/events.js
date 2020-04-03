@@ -14,6 +14,7 @@ import {
     alerte,
     log,
     extraireNomTravee,
+    extraireFace,
     verifierContraintes
 } from "./main.js"
 
@@ -25,7 +26,8 @@ import {
 
 import {
     supprimerOuverture,
-    decalerTravee
+    decalerTravee,
+    creerOuverture
 } from "./objects.js"
 
 
@@ -75,7 +77,15 @@ $("#popup-ouverture").click(function (e) {
         $("#popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();
+        return;
     }
+
+    var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
+    var nomFace = extraireFace($("#traveeSelectionnee").val());
+    scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+    $("#popup-ouverture").hide();
+    $("#overlay").hide();
+    unSelect();
 });
 
 

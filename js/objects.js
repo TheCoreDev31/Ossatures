@@ -70,16 +70,19 @@ export function supprimerOuverture(nomObjet) {
     }
 }
 
-export function creerOuverture(nomTravee, face, typeOuverture, nbPanneaux = 1) {
+export function creerOuverture(nomTravee, face, typeOuverture) {
 
     var windowGrp = new THREE.Group();
     var largeur, hauteur, epaisseur, elevation;
+    var nbPanneaux = 1;
 
     // On récupère d'abord les caractéristiques de l'ouverture à créer
     largeur = PRODUITS[typeOuverture]['largeur'];
     hauteur = PRODUITS[typeOuverture]['hauteur'];
     epaisseur = PRODUITS[typeOuverture]['epaisseur'];
     elevation = PRODUITS[typeOuverture]['elevation'];
+
+    if (typeOuverture === 'F2' || typeOuverture === 'PF') nbPanneaux = 2;
 
     // On constitue en premier le chassis
     var windowGeometry = new THREE.Shape();

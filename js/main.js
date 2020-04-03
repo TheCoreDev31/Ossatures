@@ -496,7 +496,8 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
             totalVtR3 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PDAV'] + tableauTravees[nomsTravees[2]]['vt_PDAR']);
             break;
     }
-    log('AV=' + totalVtAV + '/AR=' + totalVtAR + '/PG=' + totalVtPG + '/PD=' + totalVtPD + '/R1=' + totalVtR1 + '/R2=' + totalVtR2 + '/R3=' + totalVtR3);
+    if (DEBUG)
+        log('Liste des scores VT actuels : AV=' + totalVtAV + '/AR=' + totalVtAR + '/PG=' + totalVtPG + '/PD=' + totalVtPD + '/R1=' + totalVtR1 + '/R2=' + totalVtR2 + '/R3=' + totalVtR3);
 
 
     // 2 - On parcourt le tableau des matrices pour ne conserver que celles qui respectent les scores VT actuels.
@@ -505,7 +506,9 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
         for (var matrice in tableauMatricesMinimums) {
             if (tableauMatricesMinimums[matrice][nomFaceAbsolue] == valeur) {
 
-                // Pour les faces AV et AR, on regarde juste la face opposée.
+                // Pour les faces AV et AR, on regarde juste la face opposée mais ATTENTION, le score VT minimum est valable sur
+                // la somme de toutes les faces AV (ou AR) de la même construction et non pas pour chaque face (AV ou AR) de la construction
+                // (ex. d'une construction à 2 travées au même niveau : le VT minimum pour TOUTE la facade AV est de 3 ou 2.5, pas 3+3)
                 if (nomFaceAbsolue == 'AV') {
                     if (totalVtAR < tableauMatricesMinimums[matrice]['AR'])
                         delete tableauMatricesMinimums[matrice];
@@ -586,7 +589,20 @@ export function verifierContraintes(objet) {
 
     switch (traveesMemeConstruction.length) {
         case 1:
-            delta = matrice_1[nomPignon];
+            var scoreActuel = 0;
+            switch (nomPignon) {
+                case 'PG':
+                    scoreActuel = tableauTravees[nomTravee]['vt_PGAV'] + tableauTravees[nomTravee]['vt_PGAR'];
+                    break;
+                case 'PD':
+                    scoreActuel = tableauTravees[nomTravee]['vt_PDAV'] + tableauTravees[nomTravee]['vt_PDAR'];
+                    break;
+                default:
+                    scoreActuel = tableauTravees[nomTravee][nomPignon];
+                    break;
+            }
+            scoreActuel -= PRODUITS['MU']['VT'];;
+            delta = Math.abs(matrice_1[nomPignon] - scoreActuel);
             break;
         case 3:
             if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
@@ -678,20 +694,18 @@ $(document).ready(function () {
     var travee1 = creerTravee();
     scene.add(travee1);
 
-    //    var firstWindow = creerOuverture(travee1.name, 'AV', 'F2');
+    //    var firstWindow = creerOuverture(travee1.name, 'PDAV', 'PE');
     //    scene.add(firstWindow);
-
-    //    var secondWindow = creerOuverture(travee1.name, 'PGAV', 'F1');
+    //
+    //    var secondWindow = creerOuverture(travee1.name, 'PDAR', 'PF');
     //    scene.add(secondWindow); //
     //
-    //    var firstDoor = creerOuverture(travee1.name, 'PDAR', 'PE');
+    //    var firstDoor = creerOuverture(travee1.name, 'PGAV', 'F1');
     //    scene.add(firstDoor);
     //
     //    var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
-    //    scene.add(secondDoor);
-    //
-    //    var porteGarage = creerOuverture(travee1.name, 'AR', 'PG');
-    //    scene.add(porteGarage);
+    //    scene.add(secondDoor); //
+
     incrusterCotes();
 
     init();
