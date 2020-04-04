@@ -4,6 +4,7 @@ import {
     glassMaterial,
     windowMaterial,
     doorMaterial,
+    garageDoorMaterial,
     wallOutMaterial,
     pignonMaterial,
     floorMaterial,
@@ -137,7 +138,10 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
         windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
         windowGrp.add(windowGlass);
     } else {
-        var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
+        if (typeOuverture == 'PG')
+            var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
+        else
+            var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
         windowDoor.position.set(.5, .5, 0);
         windowDoor.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Porte';
         windowGrp.add(windowDoor);

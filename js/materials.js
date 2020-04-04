@@ -92,7 +92,7 @@ export var selectedGlassMaterial = new THREE.MeshPhongMaterial({
 });
 
 
-// Porte ou porte-fenêtre ou porte de garage
+// Porte ou porte-fenêtre
 export var doorMaterial = new THREE.MeshPhongMaterial({
     color: COLOR_ARRAY['ral7016'],
     shininess: 50,
@@ -100,11 +100,14 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
     refractionRatio: 0.6
 });
 
-export var doorMaterial = new THREE.MeshPhongMaterial({
-    color: COLOR_ARRAY['ral7016'],
-    shininess: 50,
-    specular: COLOR_ARRAY['ral7016'],
-    refractionRatio: 0.6
+// Porte de garage
+var garageDoorTexture = new THREE.Texture();
+garageDoorTexture = loader.load("img/porte_garage.jpg");
+//garageDoorTexture.wrapS = garageDoorTexture.wrapT = THREE.RepeatWrapping;
+//garageDoorTexture.repeat.set(1, 1);
+export var garageDoorMaterial = new THREE.MeshLambertMaterial({
+    map: garageDoorTexture,
+    color: COLOR_ARRAY['ral7016']
 });
 
 
