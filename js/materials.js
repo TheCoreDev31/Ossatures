@@ -100,6 +100,13 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
     refractionRatio: 0.6
 });
 
+export var doorMaterial = new THREE.MeshPhongMaterial({
+    color: COLOR_ARRAY['ral7016'],
+    shininess: 50,
+    specular: COLOR_ARRAY['ral7016'],
+    refractionRatio: 0.6
+});
+
 
 
 // Travee
@@ -112,15 +119,6 @@ export var wallOutMaterial = new THREE.MeshLambertMaterial({
     vertexColors: true
 });
 
-//var wallInMaterial = new THREE.MeshLambertMaterial({
-//    color: COLOR_ARRAY['crepi'],
-//    emissive: COLOR_ARRAY['crepi'],
-//    emissiveIntensity: 0.1
-//});
-
-//export var wallMaterial = [wallOutMaterial, wallOutMaterial, wallInMaterial, wallInMaterial, wallInMaterial, wallOutMaterial]; // Left, right, top, bottom, front, back
-
-
 var pignonTexture = loader.load("img/briques.jpg");
 pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
 pignonTexture.repeat.set(0.08, 0.08);
@@ -128,8 +126,6 @@ export var pignonMaterial = new THREE.MeshLambertMaterial({
     map: pignonTexture,
     color: COLOR_ARRAY['blanc']
 });
-
-
 
 var floorTexture = loader.load("img/carrelage.jpg");
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
