@@ -598,11 +598,11 @@ export function verifierContraintes(objet) {
                     scoreActuel = tableauTravees[nomTravee]['vt_PDAV'] + tableauTravees[nomTravee]['vt_PDAR'];
                     break;
                 default:
-                    scoreActuel = tableauTravees[nomTravee][nomPignon];
+                    scoreActuel = tableauTravees[nomTravee]['vt_' + nomPignon];
                     break;
             }
             scoreActuel -= PRODUITS['MU']['VT'];;
-            delta = Math.abs(matrice_1[nomPignon] - scoreActuel);
+            delta = parseFloat(matrice_1[nomPignon]) - parseFloat(scoreActuel);
             break;
         case 3:
             if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
@@ -621,7 +621,7 @@ export function verifierContraintes(objet) {
     typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
 
     if (DEBUG) {
-        log('Delta entre score actuel du pignon et minimum = ' + delta);
+        log('Score actuel du pignon complet = ' + scoreActuel + ' / Delta = ' + delta);
         log('Types d\'ouvertures autorisées = ' + typesOuverturesAutorisees);
     }
 
