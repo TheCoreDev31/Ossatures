@@ -83,7 +83,10 @@ $("#popup-ouverture").click(function (e) {
     if (!$(e.target).parent().hasClass('disabled')) {
         var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
         var nomFace = extraireFace($("#traveeSelectionnee").val());
-        scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+        if ($(e.target).parent().attr('id') == 'PE+F1') {
+            scene.add(creerOuverture(nomTravee, nomFace, 'PE'));
+            scene.add(creerOuverture(nomTravee, nomFace, 'F1'));
+        } else scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
         $("#popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();

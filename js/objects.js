@@ -186,6 +186,8 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             positionZ = -(LONGUEUR_TRAVEE / 4);
             break;
     }
+    positionX += tableauTravees[nomTravee]['positionX'];
+    positionZ += tableauTravees[nomTravee]['positionZ'];
     windowGrp.position.set(positionX, positionY, positionZ);
 
 

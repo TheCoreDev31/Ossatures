@@ -36,7 +36,7 @@ export function createText(texte) {
 
 
 // Boussole
-var boussoleTexture = loader.load("img/boussole.png");
+var boussoleTexture = loader.load("icons/boussole.png");
 boussoleTexture.encoding = THREE.sRGBEncoding;
 export var boussoleMaterial = new THREE.MeshBasicMaterial({
     map: boussoleTexture,
@@ -45,7 +45,7 @@ export var boussoleMaterial = new THREE.MeshBasicMaterial({
 });
 
 // Sol gazonné
-var groundTexture = loader.load("img/gazon2.jpg");
+var groundTexture = loader.load("img/textures/gazon2.jpg");
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set(50, 50);
 groundTexture.encoding = THREE.sRGBEncoding;
@@ -60,7 +60,7 @@ export var groundMaterial = new THREE.MeshLambertMaterial({
 // Toit
 export function creerToitTexture(repeatX = 1) {
     var roofTexture = new THREE.Texture();
-    roofTexture = loader.load("img/ardoise.jpg");
+    roofTexture = loader.load("img/textures/ardoise.jpg");
     roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
     roofTexture.repeat.set(5 * repeatX, 5);
 
@@ -102,9 +102,7 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
 
 // Porte de garage
 var garageDoorTexture = new THREE.Texture();
-garageDoorTexture = loader.load("img/porte_garage.jpg");
-//garageDoorTexture.wrapS = garageDoorTexture.wrapT = THREE.RepeatWrapping;
-//garageDoorTexture.repeat.set(1, 1);
+garageDoorTexture = loader.load("img/textures/porte_garage.jpg");
 export var garageDoorMaterial = new THREE.MeshLambertMaterial({
     map: garageDoorTexture,
     color: COLOR_ARRAY['ral7016']
@@ -113,7 +111,7 @@ export var garageDoorMaterial = new THREE.MeshLambertMaterial({
 
 
 // Travee
-var wallOutTexture = loader.load("img/briques.jpg");
+var wallOutTexture = loader.load("img/textures/briques.jpg");
 wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
 wallOutTexture.repeat.set(2, 2);
 export var wallOutMaterial = new THREE.MeshLambertMaterial({
@@ -122,7 +120,7 @@ export var wallOutMaterial = new THREE.MeshLambertMaterial({
     vertexColors: true
 });
 
-var pignonTexture = loader.load("img/briques.jpg");
+var pignonTexture = loader.load("img/textures/briques.jpg");
 pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
 pignonTexture.repeat.set(0.08, 0.08);
 export var pignonMaterial = new THREE.MeshLambertMaterial({
@@ -130,7 +128,7 @@ export var pignonMaterial = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['blanc']
 });
 
-var floorTexture = loader.load("img/carrelage.jpg");
+var floorTexture = loader.load("img/textures/carrelage.jpg");
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(10, 20);
 export var floorMaterial = new THREE.MeshBasicMaterial({
