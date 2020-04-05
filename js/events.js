@@ -15,7 +15,9 @@ import {
     log,
     extraireNomTravee,
     extraireFace,
-    verifierContraintes
+    verifierContraintes,
+    mergeGroups,
+    retirerObjetModifiable
 } from "./main.js"
 
 import {
@@ -83,10 +85,30 @@ $("#popup-ouverture").click(function (e) {
     if (!$(e.target).parent().hasClass('disabled')) {
         var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
         var nomFace = extraireFace($("#traveeSelectionnee").val());
-        if ($(e.target).parent().attr('id') == 'PE+F1') {
-            scene.add(creerOuverture(nomTravee, nomFace, 'PE'));
-            scene.add(creerOuverture(nomTravee, nomFace, 'F1'));
-        } else scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+
+        if ($(e.target).parent().attr('id') != 'PE+F1') {
+            scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+        } else {
+
+            // Cas particulier du combo PE + F1 :
+            // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
+            var porte = creerOuverture(nomTravee, nomFace, 'PE');
+            var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
+
+            var nouveauGroupe = new THREE.Group();
+            nouveauGroupe = mergeGroups(porte, fenetre);
+            nouveauGroupe.name = nomTravee + '>' + nomFace + '>Ouverture ' + 'PE+F1';
+            objetsModifiables.push(nouveauGroupe);
+            tableauTravees[nomTravee]['nb_ouvertures_' + nomFace]--;
+            tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
+            nbOuvertures--;
+
+            scene.add(nouveauGroupe);
+            scene.remove(porte);
+            retirerObjetModifiable(porte.name);
+            scene.remove(fenetre);
+            retirerObjetModifiable(fenetre.name);
+        }
         $("#popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();

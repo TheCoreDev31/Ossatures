@@ -87,7 +87,6 @@ export function log(message) {
 
 
 /************************   Gestion des cotes affichées sur le plan   ***********************************************/
-
 export function recalculerCotes(direction = 'largeur') {
 
     if (direction == 'largeur') {
@@ -148,6 +147,46 @@ function incrusterCotes() {
     scene.add(cotesGrp);
 }
 
+
+export function mergeGroups(porte, fenetre) {
+    var newGroup = new THREE.Group();
+    var rotationX, rotationY, rotationZ, positionX, positionY, positionZ;
+
+    rotationX = porte.rotation.x;
+    rotationY = porte.rotation.y;
+    rotationZ = porte.rotation.z;
+    positionX = porte.position.x;
+    positionY = porte.position.y;
+    positionZ = porte.position.z;
+
+    porte.children.forEach(function (child) {
+        var clone = child.clone();
+        newGroup.add(clone);
+    });
+    newGroup.children[0].position.x += 7;
+    newGroup.children[1].position.x += 7;
+
+    fenetre.children.forEach(function (child) {
+        var clone = child.clone();
+        newGroup.add(clone);
+    });
+    newGroup.children[2].position.x -= 7;
+    newGroup.children[3].position.x -= 7;
+    newGroup.children[2].position.y += 8;
+    newGroup.children[3].position.y += 8;
+
+    newGroup.rotation.x = rotationX;
+    newGroup.rotation.y = rotationY;
+    newGroup.rotation.z = rotationZ;
+    newGroup.position.x = positionX;
+    newGroup.position.y = positionY;
+    newGroup.position.z = positionZ;
+
+    return newGroup;
+}
+
+
+/************************   Initialisation de tableaux utiles   ***********************************************/
 
 function initCaracteristiquesOuvertures() {
 
@@ -221,7 +260,6 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['interieur'] = true;
     PRODUITS['PO']['exterieur'] = false;
 }
-
 
 function initMatricesScoreVT() {
     matrice_1 = new Array();
@@ -368,7 +406,6 @@ function initMatricesScoreVT() {
 }
 
 
-
 /*******************************************    Petites fonctions utiles   ********************************************/
 
 export function extraireNomTravee(objet) {
@@ -405,7 +442,6 @@ function chercherOuverturesCandidates(scoreMinimum, murInterieur = false) {
 
     return typeOuverturesAutorisees;
 }
-
 
 
 function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
@@ -558,6 +594,7 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     // 5 - On renvoie le delta entre score actuel et minimum (donc le score VT que l'ouverture doit dépasser).
     return Math.abs(minimumRetenu - scoreActuel);
 }
+
 
 export function verifierContraintes(objet) {
 
