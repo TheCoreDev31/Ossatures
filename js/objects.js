@@ -76,12 +76,20 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
     var windowGrp = new THREE.Group();
     var largeur, hauteur, epaisseur, elevation;
     var nbPanneaux = 1;
+    var murInterieur = false;
 
     // On récupère d'abord les caractéristiques de l'ouverture à créer
     largeur = PRODUITS[typeOuverture]['largeur'];
     hauteur = PRODUITS[typeOuverture]['hauteur'];
-    epaisseur = PRODUITS[typeOuverture]['epaisseur'];
     elevation = PRODUITS[typeOuverture]['elevation'];
+    epaisseur = PRODUITS[typeOuverture]['epaisseur'];
+
+    var dernierRang = 2;
+    if ((face.includes('PG') && tableauTravees[nomTravee]['rangDansConstruction'] != 1) ||
+        (face.includes('PD') && tableauTravees[nomTravee]['rangDansConstruction'] != dernierRang)) {
+        murInterieur = true;
+        epaisseur *= 2;
+    }
 
     if (typeOuverture === 'F2' || typeOuverture === 'PF') nbPanneaux = 2;
 
@@ -155,6 +163,7 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
         positionZ = 0;
     positionY = -(HAUTEUR_TRAVEE / 2) + (hauteur / 2) + elevation;
     // On calcule la position en fonction du type d'ouverture, de la face de la travée et de la position de la travée.
+    // Pour rappel, l'ouverture est créée face à soi.
     switch (face) {
         case 'AV':
             positionX = 0;
@@ -186,6 +195,12 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             positionZ = -(LONGUEUR_TRAVEE / 4);
             break;
     }
+    if (murInterieur) {
+        //...
+    }
+
+
+
     positionX += tableauTravees[nomTravee]['positionX'];
     positionZ += tableauTravees[nomTravee]['positionZ'];
     windowGrp.position.set(positionX, positionY, positionZ);
@@ -290,6 +305,10 @@ export function decalerTravee(nomTravee, direction) {
         alerte("Travée déjà décalée dans cette direction.");
         return;
     }
+    if (nbOuvertures > 0) {
+        if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+        supprimerToutesOuvertures();
+    }
 
     var travee = scene.getObjectByName(nomTravee);
     var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
@@ -309,8 +328,13 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                travee.children[indicePGAV].visible = true;
-                traveeGauche.children[indicePDAR].visible = true;
+                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = false;
+                } else {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                }
             }
         }
 
@@ -320,8 +344,13 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                travee.children[indicePDAV].visible = true;
-                traveeDroite.children[indicePGAR].visible = true;
+                if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
+                    traveeDroite.children[indicePGAV].visible = travee.children[indicePGAR].visible = travee.children[indicePDAV].visible = true;
+                    travee.children[indicePDAR].visible = false;
+                } else {
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
+                    travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
+                }
             }
         }
 
@@ -338,8 +367,13 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                travee.children[indicePGAR].visible = true;
-                traveeGauche.children[indicePDAV].visible = true;
+                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
+                    traveeGauche.children[indicePDAR].visible = false;
+                } else {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                }
             }
         }
 
@@ -349,8 +383,13 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
-                travee.children[indicePDAR].visible = true;
-                traveeDroite.children[indicePGAV].visible = true;
+                if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
+                    travee.children[indicePDAR].visible = traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
+                    travee.children[indicePDAV].visible = false;
+                } else {
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
+                    travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
+                }
             }
         }
 

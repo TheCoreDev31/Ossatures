@@ -172,8 +172,8 @@ export function mergeGroups(porte, fenetre) {
     });
     newGroup.children[2].position.x -= 7;
     newGroup.children[3].position.x -= 7;
-    newGroup.children[2].position.y += 8;
-    newGroup.children[3].position.y += 8;
+    newGroup.children[2].position.y += 7.8;
+    newGroup.children[3].position.y += 7.8;
 
     newGroup.rotation.x = rotationX;
     newGroup.rotation.y = rotationY;
@@ -194,8 +194,9 @@ function initCaracteristiquesOuvertures() {
     var nbCaract = 7;
     PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
     PRODUITS['MU']['VT'] = 3;
-    PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['epaisseur'] = PRODUITS['MU']['elevation'] = 0;
+    PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['elevation'] = 0;
     PRODUITS['MU']['interieur'] = PRODUITS['MU']['exterieur'] = true;
+    PRODUITS['MU']['epaisseur'] = 2;
 
     PRODUITS['PE'] = new Array(nbCaract);
     PRODUITS['PE']['VT'] = 2;
