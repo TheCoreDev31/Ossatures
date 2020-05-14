@@ -200,7 +200,7 @@ export function displayGui() {
                 }
                 scene.add(travee);
 
-                // La travée doit-elle être décalée suivant Z ?
+                // La travée doit-elle être décalée suivant Z, car une nouvelle travée aura toujours le même décalage que sa voisine de gauche.
                 var decalageVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
                 if (decalageVoisine != 0) {
                     switch (decalageVoisine) {
@@ -213,6 +213,10 @@ export function displayGui() {
                     }
                 }
 
+                // On masque les cloisons de la travée de gauche
+                var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
+                voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = false;
+
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
@@ -224,12 +228,16 @@ export function displayGui() {
                 alerte("Au moins une travée requise.");
                 return;
             }
-
+            if (nbOuvertures > 0) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+                supprimerToutesOuvertures();
+            }
             var nomTravee = PREFIXE_TRAVEE + nbTravees;
             var travee = scene.getObjectByName(nomTravee);
             scene.remove(travee);
             delete tableauTravees[nomTravee];
             tableauTravees.length--;
+
             // Suppression d'une travée -> on décale suivant X tout le monde vers la droite.
             for (var i = nbTravees - 1; i > 0; i--) {
                 var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
@@ -238,6 +246,11 @@ export function displayGui() {
             }
             retirerObjetModifiable(nomTravee);
             nbTravees--;
+
+            // On raffiche les cloisons de la travée de gauche
+            var voisine = scene.getObjectByName(PREFIXE_TRAVEE + nbTravees);
+            voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = true;
+
             recalculerCotes('largeur');
             scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
         }
@@ -268,7 +281,7 @@ export function displayGui() {
                 }
             }
         }
-        guiEnv.close();
+        //        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
