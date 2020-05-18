@@ -305,6 +305,7 @@ export function decalerTravee(nomTravee, direction) {
         alerte("Travée déjà décalée dans cette direction.");
         return;
     }
+
     if (nbOuvertures > 0) {
         if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
         supprimerToutesOuvertures();
@@ -318,8 +319,24 @@ export function decalerTravee(nomTravee, direction) {
     var traveeGauche = scene.getObjectByName(nomTraveeGauche);
     var traveeDroite = scene.getObjectByName(nomTraveeDroite);
 
-    if (direction == 'front') {
-        // décalage vers l'avant
+    // Si ce décalage déclenche la création d'une 3° construction, alors stop.
+    // On simule le recalcul des constructions...
+    var tableauDecalages = [];
+    for (var item in tableauTravees) {
+        if (tableauTravees.hasOwnProperty(item)) {
+            var laTravee = tableauTravees[item];
+            tableauDecalages.push(laTravee['decalage']);
+        }
+    }
+
+    if (direction == 'front') { // décalage vers l'avant
+
+        tableauDecalages[numTravee - 1] += 1;
+        var nbConstructionSimule = recalculerConstructions(tableauDecalages);
+        if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
+            alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+            return;
+        }
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeGauche) {
@@ -359,6 +376,13 @@ export function decalerTravee(nomTravee, direction) {
         tableauTravees[nomTravee]['decalage']++;
 
     } else { // décalage vers le fond
+
+        tableauDecalages[numTravee - 1] -= 1;
+        var nbConstructionSimule = recalculerConstructions(tableauDecalages);
+        if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
+            alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+            return;
+        }
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeGauche) {

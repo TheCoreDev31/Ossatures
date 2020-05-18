@@ -680,36 +680,47 @@ export function initialiserScoresVT(nomTravee) {
 }
 
 
-export function recalculerConstructions() {
+export function recalculerConstructions(tableauDecalages = null) {
 
     if (nbTravees > 0) {
 
-        // On recalcule tout en partant de la première travée, qui sera la construction 1.
-        var traveesParConstruction = 1;
-        nbConstructions = 1;
-        tableauTravees[PREFIXE_TRAVEE + 1]['numConstruction'] = 1;
-        tableauTravees[PREFIXE_TRAVEE + 1]['rangDansConstruction'] = 1;
+        // Mode "simulation"
+        if (tableauDecalages != null) {
+            var resultatSimulation = 1;
+            for (var i = 1; i < tableauDecalages.length; i++) {
+                if (tableauDecalages[i] != tableauDecalages[i - 1]) resultatSimulation++;
+            }
+            return resultatSimulation;
 
-        for (var i = 2; i <= nbTravees; i++) {
+        } else {
 
-            if (tableauTravees[PREFIXE_TRAVEE + i]['decalage'] != tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['decalage']) {
-                // Nouvelle construction
-                nbConstructions++;
-                traveesParConstruction = 1;
-                tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructions;
-                tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = 1;
-            } else {
+            // On recalcule tout en partant de la première travée, qui sera la construction 1.
+            var traveesParConstruction = 1;
+            nbConstructions = 1;
+            tableauTravees[PREFIXE_TRAVEE + 1]['numConstruction'] = 1;
+            tableauTravees[PREFIXE_TRAVEE + 1]['rangDansConstruction'] = 1;
 
-                // Même décalage que la travée de gauche
-                traveesParConstruction++;
-                if (traveesParConstruction > NB_TRAVEES_MAXI) {
+            for (var i = 2; i <= nbTravees; i++) {
+
+                if (tableauTravees[PREFIXE_TRAVEE + i]['decalage'] != tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['decalage']) {
+                    // Nouvelle construction
                     nbConstructions++;
                     traveesParConstruction = 1;
                     tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructions;
                     tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = 1;
                 } else {
-                    tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['numConstruction'];
-                    tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = traveesParConstruction;
+
+                    // Même décalage que la travée de gauche
+                    traveesParConstruction++;
+                    if (traveesParConstruction > NB_TRAVEES_MAXI) {
+                        nbConstructions++;
+                        traveesParConstruction = 1;
+                        tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructions;
+                        tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = 1;
+                    } else {
+                        tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['numConstruction'];
+                        tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = traveesParConstruction;
+                    }
                 }
             }
         }

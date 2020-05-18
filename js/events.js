@@ -42,7 +42,10 @@ $(".liste-deroulante").click(function (e) {
     var autorise = $(e.target).attr('class');
 
     if (autorise && autorise.indexOf('disabled') > -1) {
-        alerte("Opération non autorisée : ouverture déjà présente sur ce mur.");
+        var message = "Opération non autorisée : ";
+        if (action == 'addOpening') message += "une ouverture est déjà présente sur ce mur.";
+        if (action.startsWith('move')) message += "décalage impossible dans votre configuration.";
+        alerte(message);
         return;
     }
 
