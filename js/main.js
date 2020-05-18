@@ -256,8 +256,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['VT'] = 0;
     PRODUITS['PO']['largeur'] = 36;
     PRODUITS['PO']['hauteur'] = 25;
-    PRODUITS['PO']['epaisseur'] = 0;
-    PRODUITS['PO']['elevation'] = 0;
+    PRODUITS['PO']['epaisseur'] = 3;
+    PRODUITS['PO']['elevation'] = 10.5;
     PRODUITS['PO']['interieur'] = true;
     PRODUITS['PO']['exterieur'] = false;
 }
@@ -437,8 +437,7 @@ function chercherOuverturesCandidates(scoreMinimum, murInterieur = false) {
 
     var typeOuverturesAutorisees = new Array();
     for (var produit in PRODUITS) {
-        if ((produit != 'MU') && PRODUITS[produit]['VT'] >= scoreMinimum && PRODUITS[produit][murInterieur])
-            typeOuverturesAutorisees.push(produit);
+        if ((produit != 'MU') && (PRODUITS[produit]['VT'] >= scoreMinimum) && (PRODUITS[produit][murInterieur])) typeOuverturesAutorisees.push(produit);
     }
 
     return typeOuverturesAutorisees;
@@ -523,14 +522,18 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     }
     totalVtPG = parseFloat(tableauTravees[nomsTravees[0]]['vt_PGAV'] + tableauTravees[nomsTravees[0]]['vt_PGAR']);
     totalVtPD = parseFloat(tableauTravees[nomsTravees[(nbTraveesCourant - 1)]]['vt_PDAV'] + tableauTravees[nomsTravees[(nbTraveesCourant - 1)]]['vt_PDAR']);
-    totalVtR1 = parseFloat(tableauTravees[nomsTravees[0]]['vt_PDAV'] + tableauTravees[nomsTravees[0]]['vt_PDAR']);
+
+    // Attention : sur les murs intérieurs, c'est la travée PG qui porte les scores VT.
     switch (nbTraveesCourant) {
+        case 2:
+            totalVtR1 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PGAV'] + tableauTravees[nomsTravees[1]]['vt_PGAR']);
+            break;
         case 3:
-            totalVtR2 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PDAV'] + tableauTravees[nomsTravees[1]]['vt_PDAR']);
+            totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
             break;
         case 4:
-            totalVtR2 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PDAV'] + tableauTravees[nomsTravees[1]]['vt_PDAR']);
-            totalVtR3 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PDAV'] + tableauTravees[nomsTravees[2]]['vt_PDAR']);
+            totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
+            totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
             break;
     }
     if (DEBUG)
@@ -543,9 +546,9 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
         for (var matrice in tableauMatricesMinimums) {
             if (tableauMatricesMinimums[matrice][nomFaceAbsolue] == valeur) {
 
-                // Pour les faces AV et AR, on regarde juste la face opposée mais ATTENTION, le score VT minimum est valable sur
-                // la somme de toutes les faces AV (ou AR) de la même construction et non pas pour chaque face (AV ou AR) de la construction
-                // (ex. d'une construction à 2 travées au même niveau : le VT minimum pour TOUTE la facade AV est de 3 ou 2.5, pas 3+3)
+                /*
+                Pour les faces AV et AR, on regarde juste la face opposée mais ATTENTION, le score VT minimum est valable sur la somme de toutes les faces AV (ou AR) de la même construction et non pas pour chaque face (AV ou AR) de la construction (ex. d'une construction à 2 travées au même niveau : le VT minimum pour TOUTE la facade AV est de 3 ou 2.5, pas 3+3)
+                */
                 if (nomFaceAbsolue == 'AV') {
                     if (totalVtAR < tableauMatricesMinimums[matrice]['AR'])
                         delete tableauMatricesMinimums[matrice];
@@ -556,19 +559,20 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
                     } else {
                         // Pour une des faces PG, PD ou Rx, on regarde si les 2 autres faces respectent les valeurs, pour chaque matrice.
                         var aSupprimer = false;
-                        if (nomFaceAbsolue == 'PG') {
-                            if (totalVtPD < parseFloat(tableauMatricesMinimums[matrice]['PD'])) aSupprimer = aSupprimer || true;
-                            if (totalVtR1 < parseFloat(tableauMatricesMinimums[matrice]['R1'])) aSupprimer = aSupprimer || true;
-                            switch (nbTraveesCourant) {
-                                case 3:
-                                    if (totalVtR2 < parseFloat(tableauMatricesMinimums[matrice]['R2'])) aSupprimer = aSupprimer || true;
-                                    break;
-                                case 4:
-                                    if (totalVtR2 < parseFloat(tableauMatricesMinimums[matrice]['R2'])) aSupprimer = aSupprimer || true;
-                                    if (totalVtR3 < parseFloat(tableauMatricesMinimums[matrice]['R3'])) aSupprimer = aSupprimer || true;
-                                    break;
-                            }
+                        //                        if (nomFaceAbsolue == 'PG') {
+                        if (totalVtPG < parseFloat(tableauMatricesMinimums[matrice]['PG'])) aSupprimer = aSupprimer || true;
+                        if (totalVtPD < parseFloat(tableauMatricesMinimums[matrice]['PD'])) aSupprimer = aSupprimer || true;
+                        if (totalVtR1 < parseFloat(tableauMatricesMinimums[matrice]['R1'])) aSupprimer = aSupprimer || true;
+                        switch (nbTraveesCourant) {
+                            case 3:
+                                if (totalVtR2 < parseFloat(tableauMatricesMinimums[matrice]['R2'])) aSupprimer = aSupprimer || true;
+                                break;
+                            case 4:
+                                if (totalVtR2 < parseFloat(tableauMatricesMinimums[matrice]['R2'])) aSupprimer = aSupprimer || true;
+                                if (totalVtR3 < parseFloat(tableauMatricesMinimums[matrice]['R3'])) aSupprimer = aSupprimer || true;
+                                break;
                         }
+                        //                        }
                         if (aSupprimer)
                             delete tableauMatricesMinimums[matrice];
                     }
@@ -593,7 +597,34 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     tableauMatricesMinimums.length = 0;
 
     // 5 - On renvoie le delta entre score actuel et minimum (donc le score VT que l'ouverture doit dépasser).
-    return Math.abs(minimumRetenu - scoreActuel);
+    //    return Math.abs(minimumRetenu - scoreActuel);
+    return (minimumRetenu - scoreActuel);
+}
+
+
+export function faceInterieureOuExterieure(objetSelectionne) {
+
+    var travee = extraireNomTravee(objetSelectionne);
+    var face = extraireFace(objetSelectionne);
+    var numConstruction = tableauTravees[travee]['numConstruction'];
+    var traveesMemeConstruction = new Array();
+    var resultat = 'exterieur';
+
+    // On parcourt toutes les travées pour connaitre celles qui sont dans la même construction que la travée courante.
+    for (var travee in tableauTravees) {
+        if (tableauTravees[travee]['numConstruction'] == numConstruction) {
+            traveesMemeConstruction.push(travee);
+        }
+    }
+
+    if (nbTravees == 1 || face == "AV" || face == "AR") return 'exterieur';
+
+    resultat = 'interieur';
+    if ((tableauTravees[travee]['rangDansConstruction'] == 1 && face.includes('PG')) ||
+        (tableauTravees[travee]['rangDansConstruction'] == traveesMemeConstruction.length && face.includes('PD')))
+        resultat = 'exterieur';
+
+    return resultat;
 }
 
 
@@ -625,35 +656,25 @@ export function verifierContraintes(objet) {
     // et on détermine le score minimum pour la face concernée.
     var delta = 0;
 
-    switch (traveesMemeConstruction.length) {
-        case 1:
-            var scoreActuel = 0;
-            switch (nomPignon) {
-                case 'PG':
-                    scoreActuel = tableauTravees[nomTravee]['vt_PGAV'] + tableauTravees[nomTravee]['vt_PGAR'];
-                    break;
-                case 'PD':
-                    scoreActuel = tableauTravees[nomTravee]['vt_PDAV'] + tableauTravees[nomTravee]['vt_PDAR'];
-                    break;
-                default:
-                    scoreActuel = tableauTravees[nomTravee]['vt_' + nomPignon];
-                    break;
-            }
-            scoreActuel -= PRODUITS['MU']['VT'];;
-            delta = parseFloat(matrice_1[nomPignon]) - parseFloat(scoreActuel);
-            break;
-        case 3:
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
-            break;
-        case 4:
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 2 && nomFace.includes('P')) coteFace = 'interieur';
-            if (tableauTravees[nomTravee]['rangDansConstruction'] == 3 && nomFace.includes('P')) coteFace = 'interieur';
-            break;
+    if (traveesMemeConstruction.length == 1) {
+        var scoreActuel = 0;
+        switch (nomPignon) {
+            case 'PG':
+                scoreActuel = tableauTravees[nomTravee]['vt_PGAV'] + tableauTravees[nomTravee]['vt_PGAR'];
+                break;
+            case 'PD':
+                scoreActuel = tableauTravees[nomTravee]['vt_PDAV'] + tableauTravees[nomTravee]['vt_PDAR'];
+                break;
+            default:
+                scoreActuel = tableauTravees[nomTravee]['vt_' + nomPignon];
+                break;
+        }
+        scoreActuel -= PRODUITS['MU']['VT'];;
+        delta = parseFloat(matrice_1[nomPignon]) - parseFloat(scoreActuel);
     }
-    if (traveesMemeConstruction.length > 1) {
-        if (tableauTravees[nomTravee]['rangDansConstruction'] == 1 && nomFace.includes('PD')) coteFace = 'interieur';
-        if (tableauTravees[nomTravee]['rangDansConstruction'] == traveesMemeConstruction.length && nomFace.includes('PG')) coteFace = 'interieur';
 
+    if (traveesMemeConstruction.length > 1) {
+        coteFace = faceInterieureOuExterieure(objet);
         delta = selectionnerMatrices(traveesMemeConstruction, tableauTravees[nomTravee]['rangDansConstruction'], nomFace);
     }
     typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
@@ -733,7 +754,7 @@ export function recalculerConstructions(tableauDecalages = null) {
 
 $(document).ready(function () {
 
-    $("#popup-ouverture").hide();
+    $(".popup-ouverture").hide();
     $("#overlay").hide();
     $("#div-menu-contextuel").hide();
 

@@ -35,7 +35,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 72,
@@ -90,12 +90,13 @@
         </div>
 -->
 
-        <div id="popup-ouverture">
-            <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
+        <div class="popup-ouverture" id="popup-ouverture-out">
+            <span id="titre-popup">Quel type d'ouverture extérieure voulez-vous ajouter ?</span>
             <div class="container-images">
                 <figure id="F1" class="normal"><img src="img/openings/F1.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65" />
                     <figcaption>Fenêtre<br>45x65</figcaption>
                 </figure>
+
                 <figure id="F2" class="normal"><img src="img/openings/F2.jpg" class="popup-ouverture-image" alt="Fenêtre 105x115" />
                     <figcaption>Fenêtre<br>105x115</figcaption>
                 </figure>
@@ -108,9 +109,6 @@
                 <figure id="PG" class="normal"><img src="img/openings/PG.jpg" class="popup-ouverture-image" alt="Porte de garage 240x200" />
                     <figcaption>Porte garage<br>240x200</figcaption>
                 </figure>
-                <figure id="PO" class="normal"><img src="img/openings/PO.jpg" class="popup-ouverture-image" alt="Portique intérieur" />
-                    <figcaption>Portique<br>intérieur</figcaption>
-                </figure>
                 <figure id="PE+F1" class="normal"><img src="img/openings/PE+F1.jpg" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
                     <figcaption>Porte entrée<br>+ fenêtre</figcaption>
                 </figure>
@@ -121,6 +119,24 @@
             </div>
             <input type="hidden" id="traveeSelectionnee">
         </div>
+
+        <div class="popup-ouverture" id="popup-ouverture-in">
+            <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
+            <div class="container-images">
+                <figure id="PE" class="normal"><img src="img/openings/PE.jpg" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
+                    <figcaption>Porte de service<br>90x215</figcaption>
+                </figure>
+                <figure id="PO" class="normal"><img src="img/openings/PO.jpg" class="popup-ouverture-image" alt="Portique intérieur" />
+                    <figcaption>Portique<br>intérieur</figcaption>
+                </figure>
+            </div>
+            <span class="popup-ouverture-texte">* Les éléments grisés ne sont pas disponibles pour des raisons de contrainte technique.</span>
+            <div class="boutons-popup">
+                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
+            </div>
+            <input type="hidden" id="traveeSelectionnee">
+        </div>
+
         <div id="overlay"></div>
 
     </div>

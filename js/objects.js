@@ -53,6 +53,12 @@ export function supprimerOuverture(nomObjet) {
     var face = extraireFace(nomObjet);
     var objet = scene.getObjectByName(nomObjet);
 
+    // Pour le cas particulier du portique intérieur, on raffiche la cloison précédemment masquée.
+    if (nomObjet.includes("PO")) {
+        var portique = scene.getObjectByName(extraireNomTravee(nomObjet) + ">" + extraireFace(nomObjet));
+        portique.visible = true;
+    }
+
     // Il faut supprimer l'objet à l'IHM...
     scene.remove(objet);
     nbOuvertures--;
@@ -88,71 +94,81 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
     if ((face.includes('PG') && tableauTravees[nomTravee]['rangDansConstruction'] != 1) ||
         (face.includes('PD') && tableauTravees[nomTravee]['rangDansConstruction'] != dernierRang)) {
         murInterieur = true;
-        epaisseur *= 2;
     }
 
-    if (typeOuverture === 'F2' || typeOuverture === 'PF') nbPanneaux = 2;
+    // Le portique intérieur est un cas bien particulier : on supprime la cloison et on la remplace pour une ouverture ayant le même matériel qu'un mur.
+    if (typeOuverture == 'PO') {
+        var facade = scene.getObjectByName(nomTravee + ">" + face);
+        facade.visible = false;
+        var portionMur = new THREE.Mesh(new THREE.BoxGeometry((LONGUEUR_TRAVEE / 2), 4, EPAISSEUR_MUR), wallOutMaterial);
+        portionMur.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Portique';
+        windowGrp.add(portionMur);
 
-    // On constitue en premier le chassis
-    var windowGeometry = new THREE.Shape();
-    windowGeometry.moveTo(0, 0);
-    windowGeometry.lineTo(0, hauteur);
-    windowGeometry.lineTo(largeur, hauteur);
-    windowGeometry.lineTo(largeur, 0);
-    windowGeometry.lineTo(0, 0);
-    switch (nbPanneaux) {
-        case 1:
-            var windowHole = new THREE.Shape();
-            windowHole.moveTo(.5, .5);
-            windowHole.lineTo(.5, hauteur - .5);
-            windowHole.lineTo(largeur - .4, hauteur - .5);
-            windowHole.lineTo(largeur - .4, .5);
-            windowHole.lineTo(.5, .5);
-            windowGeometry.holes.push(windowHole);
-            break;
-        default: // Normalement 2
-            var windowHole1 = new THREE.Shape();
-            windowHole1.moveTo(.5, .5);
-            windowHole1.lineTo(.5, hauteur - .5);
-            windowHole1.lineTo((largeur / 2) - .2, hauteur - .5);
-            windowHole1.lineTo((largeur / 2) - .2, .5);
-            windowHole1.lineTo(.5, .5);
-            windowGeometry.holes.push(windowHole1);
-            var windowHole2 = new THREE.Shape();
-            windowHole2.moveTo((largeur / 2) + .2, 0.5);
-            windowHole2.lineTo((largeur / 2) + .2, hauteur - .5);
-            windowHole2.lineTo(largeur - .5, hauteur - .5);
-            windowHole2.lineTo(largeur - .5, 0.5);
-            windowHole2.lineTo((largeur / 2) + .2, 0.5);
-            windowGeometry.holes.push(windowHole2);
-            break;
-    }
+    } else { // Ouvertures "classiques"
 
-    var extrudeSettings = {
-        steps: 4,
-        depth: epaisseur,
-        bevelEnabled: false
-    };
-    var windowFrame = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(windowGeometry, extrudeSettings), windowMaterial);
-    windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -(epaisseur / 2));
-    windowFrame.name = 'excluded';
-    windowGrp.add(windowFrame);
+        if (typeOuverture === 'F2' || typeOuverture === 'PF') nbPanneaux = 2;
+
+        // On constitue en premier le chassis
+        var windowGeometry = new THREE.Shape();
+        windowGeometry.moveTo(0, 0);
+        windowGeometry.lineTo(0, hauteur);
+        windowGeometry.lineTo(largeur, hauteur);
+        windowGeometry.lineTo(largeur, 0);
+        windowGeometry.lineTo(0, 0);
+        switch (nbPanneaux) {
+            case 1:
+                var windowHole = new THREE.Shape();
+                windowHole.moveTo(.5, .5);
+                windowHole.lineTo(.5, hauteur - .5);
+                windowHole.lineTo(largeur - .4, hauteur - .5);
+                windowHole.lineTo(largeur - .4, .5);
+                windowHole.lineTo(.5, .5);
+                windowGeometry.holes.push(windowHole);
+                break;
+            default: // Normalement 2
+                var windowHole1 = new THREE.Shape();
+                windowHole1.moveTo(.5, .5);
+                windowHole1.lineTo(.5, hauteur - .5);
+                windowHole1.lineTo((largeur / 2) - .2, hauteur - .5);
+                windowHole1.lineTo((largeur / 2) - .2, .5);
+                windowHole1.lineTo(.5, .5);
+                windowGeometry.holes.push(windowHole1);
+                var windowHole2 = new THREE.Shape();
+                windowHole2.moveTo((largeur / 2) + .2, 0.5);
+                windowHole2.lineTo((largeur / 2) + .2, hauteur - .5);
+                windowHole2.lineTo(largeur - .5, hauteur - .5);
+                windowHole2.lineTo(largeur - .5, 0.5);
+                windowHole2.lineTo((largeur / 2) + .2, 0.5);
+                windowGeometry.holes.push(windowHole2);
+                break;
+        }
+
+        var extrudeSettings = {
+            steps: 4,
+            depth: epaisseur,
+            bevelEnabled: false
+        };
+        var windowFrame = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(windowGeometry, extrudeSettings), windowMaterial);
+        windowFrame.position.set(-(largeur / 2) + .5, -(hauteur / 2) + .5, -(epaisseur / 2));
+        windowFrame.name = 'excluded';
+        windowGrp.add(windowFrame);
 
 
-    // Eventuellement, une vitre
-    if (typeOuverture == 'F1' || typeOuverture == 'F2' || typeOuverture == 'PF') {
-        var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
-        windowGlass.position.set(.5, .5, 0);
-        windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
-        windowGrp.add(windowGlass);
-    } else {
-        if (typeOuverture == 'PG')
-            var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
-        else
-            var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
-        windowDoor.position.set(.5, .5, 0);
-        windowDoor.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Porte';
-        windowGrp.add(windowDoor);
+        // Eventuellement, une vitre
+        if (typeOuverture == 'F1' || typeOuverture == 'F2' || typeOuverture == 'PF') {
+            var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
+            windowGlass.position.set(.5, .5, 0);
+            windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
+            windowGrp.add(windowGlass);
+        } else {
+            if (typeOuverture == 'PG')
+                var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
+            else
+                var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
+            windowDoor.position.set(.5, .5, 0);
+            windowDoor.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Porte';
+            windowGrp.add(windowDoor);
+        }
     }
 
     windowGrp.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture;
@@ -195,16 +211,10 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             positionZ = -(LONGUEUR_TRAVEE / 4);
             break;
     }
-    if (murInterieur) {
-        //...
-    }
-
-
 
     positionX += tableauTravees[nomTravee]['positionX'];
     positionZ += tableauTravees[nomTravee]['positionZ'];
     windowGrp.position.set(positionX, positionY, positionZ);
-
 
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
     switch (face) {

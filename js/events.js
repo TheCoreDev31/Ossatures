@@ -17,7 +17,8 @@ import {
     extraireFace,
     verifierContraintes,
     mergeGroups,
-    retirerObjetModifiable
+    retirerObjetModifiable,
+    faceInterieureOuExterieure
 } from "./main.js"
 
 import {
@@ -44,7 +45,7 @@ $(".liste-deroulante").click(function (e) {
     if (autorise && autorise.indexOf('disabled') > -1) {
         var message = "Opération non autorisée : ";
         if (action == 'addOpening') message += "une ouverture est déjà présente sur ce mur.";
-        if (action.startsWith('move')) message += "décalage impossible dans votre configuration.";
+        if (action.startsWith('move')) message += "décalage impossible dans cette configuration.";
         alerte(message);
         return;
     }
@@ -55,7 +56,8 @@ $(".liste-deroulante").click(function (e) {
             supprimerOuverture(parent);
             break;
         case 'addOpening':
-            displayOpenings(objetSelectionne);
+            var face = faceInterieureOuExterieure(objetSelectionne)
+            displayOpenings(objetSelectionne, face);
             break;
         case 'moveFrontTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'front');
@@ -75,11 +77,11 @@ $(".liste-deroulante").click(function (e) {
 
 
 /*******************************  Gestion des clics dans la popup des ouvertures  *********************************/
-$("#popup-ouverture").click(function (e) {
+$(".popup-ouverture").click(function (e) {
     e.preventDefault();
 
     if ($(e.target).attr('id') == 'popup-alerte-annuler') {
-        $("#popup-ouverture").hide();
+        $(".popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();
         return;
@@ -112,7 +114,7 @@ $("#popup-ouverture").click(function (e) {
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
         }
-        $("#popup-ouverture").hide();
+        $(".popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();
     }

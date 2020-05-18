@@ -79,25 +79,35 @@ function addSeparator() {
 }
 
 
-export function displayOpenings(traveeSelectionnee) {
+export function displayOpenings(traveeSelectionnee, face) {
 
     // RAZ des figures
     $('.popup-ouverture-image').each(function (i) {
         $(this).parent().removeClass();
         $(this).parent().addClass("normal");
     });
-    griserOuverturesIncompatibles(verifierContraintes(traveeSelectionnee));
+    disableUnauthorizedOpenings(verifierContraintes(traveeSelectionnee));
 
-    $("#popup-ouverture").css({
-        left: (window.innerWidth / 2) - ($("#popup-ouverture").width() / 2) + 'px',
-        top: (window.innerHeight / 2) - ($("#popup-ouverture").height() / 2) + 'px'
-    });
+    if (face == 'interieur') {
+        $("#popup-ouverture-in").css({
+            left: (window.innerWidth / 2) - ($("#popup-ouverture-in").width() / 2) + 'px',
+            top: (window.innerHeight / 2) - ($("#popup-ouverture-in").height() / 2) + 'px'
+        });
+        $("#popup-ouverture-in").show();
+
+    } else {
+
+        $("#popup-ouverture-out").css({
+            left: (window.innerWidth / 2) - ($("#popup-ouverture-out").width() / 2) + 'px',
+            top: (window.innerHeight / 2) - ($("#popup-ouverture-out").height() / 2) + 'px'
+        });
+        $("#popup-ouverture-out").show();
+    }
     $("#traveeSelectionnee").val(traveeSelectionnee);
-    $("#popup-ouverture").show();
     $("#overlay").show();
 }
 
-export function griserOuverturesIncompatibles(tableauOuverturesAutorisees) {
+export function disableUnauthorizedOpenings(tableauOuverturesAutorisees) {
 
     $('.popup-ouverture-image').each(function (i) {
 
