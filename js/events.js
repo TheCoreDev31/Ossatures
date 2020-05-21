@@ -52,12 +52,10 @@ $(".liste-deroulante").click(function (e) {
 
     switch (action) {
         case 'deleteOuverture':
-            var parent = scene.getObjectByName(objetSelectionne).parent.name;
-            supprimerOuverture(parent);
+            supprimerOuverture(scene.getObjectByName(objetSelectionne).parent.name);
             break;
         case 'addOpening':
-            var face = faceInterieureOuExterieure(objetSelectionne)
-            displayOpenings(objetSelectionne, face);
+            displayOpenings(objetSelectionne, faceInterieureOuExterieure(objetSelectionne));
             break;
         case 'moveFrontTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'front');

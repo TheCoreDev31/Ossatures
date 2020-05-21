@@ -524,18 +524,22 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     totalVtPD = parseFloat(tableauTravees[nomsTravees[(nbTraveesCourant - 1)]]['vt_PDAV'] + tableauTravees[nomsTravees[(nbTraveesCourant - 1)]]['vt_PDAR']);
 
     // Attention : sur les murs intérieurs, c'est la travée PG qui porte les scores VT.
-    switch (nbTraveesCourant) {
-        case 2:
-            totalVtR1 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PGAV'] + tableauTravees[nomsTravees[1]]['vt_PGAR']);
-            break;
-        case 3:
-            totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
-            break;
-        case 4:
-            totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
-            totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
-            break;
-    }
+    if (nbTraveesCourant > 1)
+        totalVtR1 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PGAV'] + tableauTravees[nomsTravees[1]]['vt_PGAR']);
+    if (nbTraveesCourant > 2)
+        totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
+    if (nbTraveesCourant > 3)
+        totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
+
+    /*    switch (nbTraveesCourant) {
+            case 2:
+                totalVtR1 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PGAV'] + tableauTravees[nomsTravees[1]]['vt_PGAR']);
+            case 3:
+                totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
+            case 4:
+                totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
+        }
+    */
     if (DEBUG)
         log('Liste des scores VT actuels : AV=' + totalVtAV + '/AR=' + totalVtAR + '/PG=' + totalVtPG + '/PD=' + totalVtPD + '/R1=' + totalVtR1 + '/R2=' + totalVtR2 + '/R3=' + totalVtR3);
 
@@ -605,24 +609,46 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
 export function faceInterieureOuExterieure(objetSelectionne) {
 
     var travee = extraireNomTravee(objetSelectionne);
+    var numTravee = parseInt(travee.substr(travee.indexOf(' ') + 1, 2));
     var face = extraireFace(objetSelectionne);
     var numConstruction = tableauTravees[travee]['numConstruction'];
     var traveesMemeConstruction = new Array();
-    var resultat = 'exterieur';
+    var resultat = 'interieur';
 
     // On parcourt toutes les travées pour connaitre celles qui sont dans la même construction que la travée courante.
-    for (var travee in tableauTravees) {
-        if (tableauTravees[travee]['numConstruction'] == numConstruction) {
-            traveesMemeConstruction.push(travee);
+    for (var uneTravee in tableauTravees) {
+        if (tableauTravees[uneTravee]['numConstruction'] == numConstruction) {
+            traveesMemeConstruction.push(uneTravee);
         }
     }
 
+    // Cas simples : une seule travée ou bien face avant ou arrière --> extérieur
     if (nbTravees == 1 || face == "AV" || face == "AR") return 'exterieur';
 
-    resultat = 'interieur';
+    // Autres cas simples : murs des travées extrêmes --> extérieur
     if ((tableauTravees[travee]['rangDansConstruction'] == 1 && face.includes('PG')) ||
         (tableauTravees[travee]['rangDansConstruction'] == traveesMemeConstruction.length && face.includes('PD')))
         resultat = 'exterieur';
+
+    // Plus compliqué : en cas de décalage entre deux travées, pour un même mur, il y aura un module en face extérieure et l'autre en face intérieure.
+    if (face.includes('PG')) {
+        var nomTraveeGauche = travee.substr(0, travee.indexOf(' ') + 1) + (numTravee - 1);
+        var traveeGauche = scene.getObjectByName(nomTraveeGauche);
+        if (traveeGauche) {
+            var decalage = tableauTravees[travee]['decalage'] - tableauTravees[nomTraveeGauche]['decalage'];
+            if ((decalage > 0) && face.includes("AR")) resultat = 'interieur'
+            if ((decalage < 0) && face.includes("AV")) resultat = 'interieur';
+        }
+
+    } else if (face.includes('PD')) {
+        var nomTraveeDroite = travee.substr(0, travee.indexOf(' ') + 1) + (numTravee + 1);
+        var traveeDroite = scene.getObjectByName(nomTraveeDroite);
+        if (traveeDroite) {
+            var decalage = tableauTravees[travee]['decalage'] - tableauTravees[nomTraveeDroite]['decalage'];
+            if ((decalage > 0) && face.includes("AR")) resultat = 'interieur'
+            if ((decalage < 0) && face.includes("AV")) resultat = 'interieur';
+        }
+    }
 
     return resultat;
 }
@@ -671,12 +697,10 @@ export function verifierContraintes(objet) {
         }
         scoreActuel -= PRODUITS['MU']['VT'];;
         delta = parseFloat(matrice_1[nomPignon]) - parseFloat(scoreActuel);
-    }
-
-    if (traveesMemeConstruction.length > 1) {
-        coteFace = faceInterieureOuExterieure(objet);
+    } else {
         delta = selectionnerMatrices(traveesMemeConstruction, tableauTravees[nomTravee]['rangDansConstruction'], nomFace);
     }
+    coteFace = faceInterieureOuExterieure(objet);
     typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
 
     if (DEBUG) {

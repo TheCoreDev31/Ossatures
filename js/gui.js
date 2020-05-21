@@ -152,9 +152,9 @@ export function displayContextualMenu(objet, x, y) {
         var nomFace = extraireFace(objet.name);
         // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
         if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
-            addMenu("Ajouter une ouverture", 'addOpening', false);
+            addMenu("Créer une ouverture", 'addOpening', false);
         else
-            addMenu("Ajouter une ouverture", 'addOpening');
+            addMenu("Créer une ouverture", 'addOpening');
 
     }
     addSeparator();
@@ -320,6 +320,6 @@ export function displayGui() {
             if (cotesX) cotesX.visible = true;
             if (cotesY) cotesY.visible = true;
         }
-        guiEnv.close();
+        //        guiEnv.close();
     });
 }
