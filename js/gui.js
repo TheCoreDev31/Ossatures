@@ -8,6 +8,7 @@ import {
 import {
     creerToitTexture,
     glassMaterial,
+    topMaterial,
     COLOR_ARRAY
 }
 from "./materials.js"
@@ -38,8 +39,10 @@ export function unSelect() {
         for (var i = 0; i < facesSelectionnees.length; i++) {
             if (objet.parent.name.includes('>'))
                 objet.material = glassMaterial;
-            else
-                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+            else {
+                if (objet.name.includes('plancher')) objet.material = topMaterial;
+                else objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+            }
         }
         objet.geometry.elementsNeedUpdate = true;
     }
@@ -67,6 +70,7 @@ function addMenu(menuTitle, action, isActive = true) {
     if (action.match('moveBack')) liText += " class=\"moveBack";
     if (action.match('add')) liText += " class=\"add";
     if (action.match('delete')) liText += " class=\"delete";
+    if (action.match('choose')) liText += " class=\"choose";
     if (!isActive) liText += " disabled";
     liText += "\">" + menuTitle + "</li>";
 
@@ -77,6 +81,23 @@ function addSeparator() {
     var liText = "<hr>";
     $('.liste-deroulante').append(liText);
 }
+
+
+export function chooseFloorHole(traveeSelectionnee) {
+    $('.popup-ouverture-image').each(function (i) {
+        $(this).parent().removeClass();
+        $(this).parent().addClass("normal");
+    });
+
+    $("#popup-plancher").css({
+        left: (window.innerWidth / 2) - ($("#popup-plancher").width() / 2) + 'px',
+        top: (window.innerHeight / 2) - ($("#popup-plancher").height() / 2) + 'px'
+    });
+    $("#popup-plancher").show();
+    $("#traveeSelectionnee").val(traveeSelectionnee);
+    $("#overlay").show();
+}
+
 
 
 export function displayOpenings(traveeSelectionnee, face) {
@@ -149,13 +170,16 @@ export function displayContextualMenu(objet, x, y) {
             }
             addSeparator();
         }
-        var nomFace = extraireFace(objet.name);
-        // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
-        if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
-            addMenu("Créer une ouverture", 'addOpening', false);
-        else
-            addMenu("Créer une ouverture", 'addOpening');
-
+        if (objet.name.includes('plancher')) {
+            addMenu("Positionner la trappe d'accès", 'chooseFloorHole');
+        } else {
+            var nomFace = extraireFace(objet.name);
+            // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
+            if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
+                addMenu("Créer une ouverture", 'addOpening', false);
+            else
+                addMenu("Créer une ouverture", 'addOpening');
+        }
     }
     addSeparator();
     addMenu("Annuler la sélection", 'unselect');
@@ -306,7 +330,7 @@ export function displayGui() {
                 travee.children[indiceRoof].visible = true;
             }
         }
-        guiEnv.close();
+        //        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherCotes').onChange(function (value) {

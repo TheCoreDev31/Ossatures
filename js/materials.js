@@ -142,3 +142,9 @@ export var topMaterial = new THREE.MeshBasicMaterial({
     opacity: 0.7,
     transparent: true
 })
+
+export var selectedTopMaterial = new THREE.MeshBasicMaterial({
+    color: COLOR_ARRAY['highlight'],
+    opacity: 0.7,
+    transparent: true
+})

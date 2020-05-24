@@ -484,11 +484,14 @@ export function creerTravee() {
     var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), floorMaterial);
     floor.position.set(0, (-HAUTEUR_TRAVEE / 2) + .01, 0);
     floor.rotation.x = -Math.PI / 2;
+    floor.name = 'excluded';
 
     var top = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), topMaterial);
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = false;
+    //    top.name = 'excluded';
+    top.name = 'plancher_' + prefixe;
 
     var wallsGrp = new THREE.Group();
     wallsGrp.add(wallAR);
@@ -503,9 +506,7 @@ export function creerTravee() {
     wallPGAV.name = prefixe + '>PGAV';
     wallsGrp.add(wallPGAR);
     wallPGAR.name = prefixe + '>PGAR';
-    floor.name = 'excluded';
     wallsGrp.add(floor);
-    top.name = 'excluded';
     wallsGrp.add(top);
     wallsGrp.name = prefixe;
     objetsModifiables.push(wallsGrp);

@@ -191,6 +191,10 @@ body {
     width: 450px;
 }
 
+#popup-plancher {
+    width: 800px;
+}
+
 .popup-ouverture #titre-popup {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 18px;
@@ -237,6 +241,9 @@ body {
     box-shadow: 2px 2px 5px;
 }
 
+#popup-plancher .popup-ouverture-image {
+    width: auto;
+}
 
 .popup-ouverture .container-images figcaption {
     text-align: center;
@@ -258,4 +265,8 @@ body {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 14px;
     text-align: center;
+}
+
+#popup-plancher button {
+    margin-top: 15px;
 }

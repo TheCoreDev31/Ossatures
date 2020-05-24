@@ -5,8 +5,10 @@ import {
 
 import {
     COLOR_ARRAY,
+    topMaterial,
     glassMaterial,
-    selectedGlassMaterial
+    selectedGlassMaterial,
+    selectedTopMaterial
 } from "./materials.js"
 
 import {
@@ -24,6 +26,7 @@ import {
 import {
     displayContextualMenu,
     displayOpenings,
+    chooseFloorHole,
     unSelect
 } from "./gui.js"
 
@@ -63,6 +66,9 @@ $(".liste-deroulante").click(function (e) {
         case 'moveBackTravee':
             decalerTravee(extraireNomTravee(objetSelectionne), 'back');
             break;
+        case 'chooseFloorHole':
+            chooseFloorHole(extraireNomTravee(objetSelectionne));
+            break;
         case 'unselect':
             unSelect();
             break;
@@ -72,6 +78,36 @@ $(".liste-deroulante").click(function (e) {
     }
     $("#div-menu-contextuel").hide();
 });
+
+
+/*******************************  Gestion des clics dans la popup des planchers  *********************************/
+$("#popup-plancher").click(function (e) {
+    e.stopImmediatePropagation();
+    if ($(e.target).attr('id') == 'popup-alerte-annuler') {
+        $(".popup-ouverture").hide();
+        $("#overlay").hide();
+        unSelect();
+        return;
+    }
+
+    if (!$(e.target).parent().hasClass('disabled')) {
+
+        // On supprime l'ancien plancher et on le recrée avec la trappe au bon endroit
+        var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
+        var nomFace = extraireFace($("#traveeSelectionnee").val());
+
+        var plancher = scene.getObjectByName(objetSelectionne);
+        if (plancher) {
+            var positionTrappe = $(e.target).parent().attr('id');
+        }
+
+
+        $(".popup-ouverture").hide();
+        $("#overlay").hide();
+        unSelect();
+    }
+});
+
 
 
 /*******************************  Gestion des clics dans la popup des ouvertures  *********************************/
@@ -178,9 +214,13 @@ export function onMouseClick(event) {
         var numFace = face * 2 + j;
         if (objetTouche.parent.name.includes('>'))
             objetTouche.material = selectedGlassMaterial;
-        else
-            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-
+        else {
+            if (objetTouche.name.includes('plancher')) {
+                objetTouche.material = selectedTopMaterial;
+            } else {
+                objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+            }
+        }
         objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
         objetSelectionne = objetTouche.name;
