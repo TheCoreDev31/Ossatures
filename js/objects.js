@@ -250,6 +250,7 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             break;
     }
     nbOuvertures++;
+
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');
         log(tableauTravees);

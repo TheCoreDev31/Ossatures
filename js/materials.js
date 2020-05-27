@@ -148,3 +148,14 @@ export var selectedTopMaterial = new THREE.MeshBasicMaterial({
     opacity: 0.7,
     transparent: true
 })
+
+
+
+// Texture armature bois
+var wallBoisTexture = loader.load("img/PE+F1.png");
+wallBoisTexture.wrapS = wallBoisTexture.wrapT = THREE.ClampToEdgeWrapping;
+wallBoisTexture.repeat.set(1, 1);
+export var wallBoisMaterial = new THREE.MeshLambertMaterial({
+    map: wallBoisTexture,
+    transparent: true
+});

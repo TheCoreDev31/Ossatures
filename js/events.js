@@ -8,7 +8,8 @@ import {
     topMaterial,
     glassMaterial,
     selectedGlassMaterial,
-    selectedTopMaterial
+    selectedTopMaterial,
+    wallBoisMaterial
 } from "./materials.js"
 
 import {
@@ -101,7 +102,6 @@ $("#popup-plancher").click(function (e) {
             var positionTrappe = $(e.target).parent().attr('id');
         }
 
-
         $(".popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();
@@ -147,6 +147,18 @@ $(".popup-ouverture").click(function (e) {
             retirerObjetModifiable(porte.name);
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
+
+            // On remplace la texture classique du module par la version "armatures bois", pour voir...
+            var mur = scene.getObjectByName(nomTravee + ">" + nomFace);
+            if (mur) {
+                var plaquage = new THREE.Mesh(new THREE.PlaneGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE), wallBoisMaterial);
+                plaquage.rotation.y = -Math.PI / 2;
+                plaquage.position.x += (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR - 0.01;
+                plaquage.position.z += (LARGEUR_TRAVEE / 2) - (EPAISSEUR_MUR / 2);
+                scene.add(plaquage);
+
+            }
+
         }
         $(".popup-ouverture").hide();
         $("#overlay").hide();

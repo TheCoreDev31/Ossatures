@@ -24,6 +24,9 @@ import {
     verifierContraintes
 } from "./main.js"
 
+import {
+    camera
+} from "./environment.js"
 
 export function unSelect() {
 
@@ -201,6 +204,13 @@ export function displayGui() {
         this.afficherToit = true;
         this.afficherPlancher = false;
         this.afficherCotes = false;
+        this.armaturesBois = false;
+
+        this.avant = function () {};
+        this.arriere = function () {};
+        this.gauche = function () {};
+        this.droite = function () {};
+        this.dessus = function () {};
     };
 
     var options = {
@@ -346,4 +356,48 @@ export function displayGui() {
         }
         //        guiEnv.close();
     });
+
+    guiEnv.add(controller, 'armaturesBois').onChange(function (value) {
+        /*
+                scene.children.forEach(function (child) {
+                    log(child.name + child.geometry.material);
+                });
+                */
+    });
+
+    // Utilisation des vues prédéfinies
+    var guiOrientation = myGui.addFolder('Vues prédéfinies');
+    guiOrientation.open();
+
+    guiOrientation.add(controller, 'avant').onChange(function (value) {
+        guiEnv.__controllers[0].setValue(true);
+        camera.position.set(0, 5, 150);
+        camera.lookAt(scene.position);
+        info("Vue avant");
+    });
+    guiOrientation.add(controller, 'arriere').onChange(function (value) {
+        guiEnv.__controllers[0].setValue(true);
+        camera.position.set(0, 5, -150);
+        camera.lookAt(scene.position);
+        info("Vue arrière");
+    });
+    guiOrientation.add(controller, 'gauche').onChange(function (value) {
+        guiEnv.__controllers[0].setValue(true);
+        camera.position.set(-150, 5, 0);
+        camera.lookAt(scene.position);
+        info("Vue de gauche");
+    });
+    guiOrientation.add(controller, 'droite').onChange(function (value) {
+        guiEnv.__controllers[0].setValue(true);
+        camera.position.set(150, 5, 0);
+        camera.lookAt(scene.position);
+        info("Vue de droite");
+    });
+    guiOrientation.add(controller, 'dessus').onChange(function (value) {
+        guiEnv.__controllers[0].setValue(false);
+        camera.position.set(0, 200, 0);
+        camera.lookAt(scene.position);
+        info("Vue de dessus");
+    });
+
 }
