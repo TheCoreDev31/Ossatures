@@ -25,7 +25,9 @@ import {
 } from "./main.js"
 
 import {
-    camera
+    camera,
+    cameraOrtho,
+    renderer
 } from "./environment.js"
 
 export function unSelect() {
@@ -56,6 +58,41 @@ export function unSelect() {
         info(null);
 }
 
+
+
+export function changePointOfView(direction) {
+
+    switch (direction) {
+        case 'dessus':
+            //            camera.position.set(0, 200, 0);
+            //            camera.lookAt(scene.position);
+            //            info("Vue de dessus");            break;
+        case 'avant':
+            camera.position.set(0, 5, 150);
+            camera.lookAt(scene.position);
+            info("Vue avant");
+            break;
+        case 'arriere':
+            camera.position.set(0, 5, -150);
+            camera.lookAt(scene.position);
+            info("Vue arrière");
+            break;
+        case 'gauche':
+            camera.position.set(-150, 5, 0);
+            camera.lookAt(scene.position);
+            info("Vue de gauche");
+            break;
+        case 'droite':
+            camera.position.set(150, 5, 0);
+            camera.lookAt(scene.position);
+            info("Vue de droite");
+            break;
+        case 'perspective':
+            camera.position.set(60, 40, 160);
+            camera.lookAt(scene.position);
+            break;
+    }
+}
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
 
@@ -205,12 +242,7 @@ export function displayGui() {
         this.afficherPlancher = false;
         this.afficherCotes = false;
         this.armaturesBois = false;
-
-        this.avant = function () {};
-        this.arriere = function () {};
-        this.gauche = function () {};
-        this.droite = function () {};
-        this.dessus = function () {};
+        this.modulesEnVueAerienne = function () {};
     };
 
     var options = {
@@ -340,7 +372,6 @@ export function displayGui() {
                 travee.children[indiceRoof].visible = true;
             }
         }
-        //        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherCotes').onChange(function (value) {
@@ -354,7 +385,6 @@ export function displayGui() {
             if (cotesX) cotesX.visible = true;
             if (cotesY) cotesY.visible = true;
         }
-        //        guiEnv.close();
     });
 
     guiEnv.add(controller, 'armaturesBois').onChange(function (value) {
@@ -365,39 +395,11 @@ export function displayGui() {
                 */
     });
 
-    // Utilisation des vues prédéfinies
-    var guiOrientation = myGui.addFolder('Vues prédéfinies');
-    guiOrientation.open();
-
-    guiOrientation.add(controller, 'avant').onChange(function (value) {
-        guiEnv.__controllers[0].setValue(true);
-        camera.position.set(0, 5, 150);
-        camera.lookAt(scene.position);
-        info("Vue avant");
-    });
-    guiOrientation.add(controller, 'arriere').onChange(function (value) {
-        guiEnv.__controllers[0].setValue(true);
-        camera.position.set(0, 5, -150);
-        camera.lookAt(scene.position);
-        info("Vue arrière");
-    });
-    guiOrientation.add(controller, 'gauche').onChange(function (value) {
-        guiEnv.__controllers[0].setValue(true);
-        camera.position.set(-150, 5, 0);
-        camera.lookAt(scene.position);
-        info("Vue de gauche");
-    });
-    guiOrientation.add(controller, 'droite').onChange(function (value) {
-        guiEnv.__controllers[0].setValue(true);
-        camera.position.set(150, 5, 0);
-        camera.lookAt(scene.position);
-        info("Vue de droite");
-    });
-    guiOrientation.add(controller, 'dessus').onChange(function (value) {
+    guiEnv.add(controller, 'modulesEnVueAerienne').onChange(function (value) {
         guiEnv.__controllers[0].setValue(false);
-        camera.position.set(0, 200, 0);
-        camera.lookAt(scene.position);
-        info("Vue de dessus");
+        renderer.render(scene, cameraOrtho);
+        cameraOrtho.updateProjectionMatrix();
+        //        changePointOfView('dessus');
     });
 
 }

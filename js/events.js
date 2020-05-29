@@ -28,7 +28,8 @@ import {
     displayContextualMenu,
     displayOpenings,
     chooseFloorHole,
-    unSelect
+    unSelect,
+    changePointOfView
 } from "./gui.js"
 
 import {
@@ -165,6 +166,15 @@ $(".popup-ouverture").click(function (e) {
         unSelect();
     }
 });
+
+
+
+/**********************************  Changement d'angle de vue  ***********************************/
+$("#changement-vue div").click(function (e) {
+    e.preventDefault();
+    changePointOfView($(e.target).parent().attr('id'));
+});
+
 
 
 export function onMouseClick(event) {

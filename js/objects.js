@@ -8,7 +8,8 @@ import {
     wallOutMaterial,
     pignonMaterial,
     floorMaterial,
-    topMaterial
+    topMaterial,
+    createText
 } from "./materials.js"
 
 import {
@@ -24,6 +25,7 @@ import {
 import {
     unSelect
 } from "./gui.js"
+
 
 
 function degrees_to_radians(degrees) {
@@ -250,6 +252,34 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             break;
     }
     nbOuvertures++;
+
+    // Pour l'affichage en vue aérienne, on rajoute au sol la description du module, masquée par défaut.
+    var decalageIncrustationX = 0,
+        decalageIncrustationZ = 0;
+    var incrustation = createText(PRODUITS[typeOuverture]['codeModule']);
+    incrustation.rotation.x = -Math.PI / 2;
+    switch (face) {
+        case "AV":
+            decalageIncrustationZ = 10;
+            break;
+        case "AR":
+            decalageIncrustationZ = -10;
+            break;
+        case "PGAV":
+            decalageIncrustationX = -10;
+            break;
+        case "PDAV":
+            decalageIncrustationX = 10;
+            break;
+        case "PGAR":
+            decalageIncrustationX = -10;
+            break;
+        case "PDAR":
+            decalageIncrustationX = 10;
+            break;
+    }
+    incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);
+    scene.add(incrustation);
 
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');

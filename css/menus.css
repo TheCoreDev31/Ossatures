@@ -35,38 +35,38 @@ ul.liste-deroulante {
 }
 
 .liste-deroulante li:not(.blank)::before {
-    font-family: "Glyphicons Halflings";
-    content: "\e014";
+    font-family: "FontAwesome";
+    content: "\f00d";
     margin-right: 8px;
 }
 
 .liste-deroulante li.moveBack::before {
-    font-family: "Glyphicons Halflings";
-    content: "\e093";
+    font-family: "FontAwesome";
+    content: "\f062";
     margin-right: 8px;
 }
 
 .liste-deroulante li.moveFront::before {
-    font-family: "Glyphicons Halflings";
-    content: "\e094";
+    font-family: "FontAwesome";
+    content: "\f063";
     margin-right: 8px;
 }
 
 .liste-deroulante li.add::before {
-    font-family: "Glyphicons Halflings";
-    content: "\2b";
+    font-family: "FontAwesome";
+    content: "\f067";
     margin-right: 8px;
 }
 
 .liste-deroulante li.delete::before {
-    font-family: "Glyphicons Halflings";
-    content: "\e020";
+    font-family: "FontAwesome";
+    content: "\f014";
     margin-right: 8px;
 }
 
 .liste-deroulante li.choose::before {
-    font-family: "Glyphicons Halflings";
-    content: "\e087";
+    font-family: "FontAwesome";
+    content: "\f05b";
     margin-right: 8px;
 }
 
@@ -83,4 +83,14 @@ ul.liste-deroulante {
     height: 1px;
     border: 0;
     margin: 2px 0px;
+}
+
+
+/* Pour le dat.gui */
+.dg .property-name {
+    width: 70% !important;
+}
+
+.dg .c {
+    width: 20% !important;
 }

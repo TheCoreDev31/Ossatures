@@ -38,7 +38,7 @@ body {
 .logo {
     position: absolute;
     transform: scale(0.8);
-    bottom: 40px;
+    bottom: 25px;
     right: 50px;
 }
 
@@ -279,35 +279,27 @@ body {
     grid-template-columns: 10% 80% 10%;
     grid-template-rows: 10% 80% 10%;
     position: fixed;
-    bottom: 50px;
-    right: 340px;
+    bottom: 120px;
+    right: 130px;
     z-index: 100;
     padding: 20px;
     margin: 0px;
     align-items: center;
     justify-items: center;
-
     height: 100px;
     width: 100px;
-
-    opacity: 0.6;
-    border-radius: 100px;
-    /*
-    border: 1px solid white;
-    border-radius: 10px;
-    box-shadow: 0 0 12px white;*/
 }
 
-#changement-vue .maison-3d:hover {
-    opacity: 0.90;
-    background-color: #e6e6e6;
-    box-shadow: 0 0 12px white;
-    */
-}
 
-#changement-vue .bouton-fleche {
+#changement-vue div {
     font-size: 16px;
     cursor: pointer;
+    color: white;
+}
+
+#changement-vue .bouton-fleche:hover {
+    transform: scale(1.6);
+    transition: all .5s ease-in-out;
 }
 
 #changement-vue div#dessus {
@@ -356,12 +348,12 @@ body {
     transform: rotate(45deg);
 }
 
-.maison-3d {
+#changement-vue div:not(.bouton-fleche) {
     grid-column: 2;
     grid-row: 2;
 }
 
-.maison-3d img {
+#changement-vue div > img {
     align-content: center;
     justify-content: center;
     width: 35px;

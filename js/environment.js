@@ -24,6 +24,12 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.lookAt(scene.position);
 
 
+export var cameraOrtho = new THREE.OrthographicCamera(-200, 200, 150, -150, 1, 500);
+cameraOrtho.position.set(0, 200, 0);
+cameraOrtho.lookAt(scene.position);
+
+
+
 // Environnement
 var ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), groundMaterial);
 ground.position.y = -12.5;

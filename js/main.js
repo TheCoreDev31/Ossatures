@@ -197,6 +197,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['elevation'] = 0;
     PRODUITS['MU']['interieur'] = PRODUITS['MU']['exterieur'] = true;
     PRODUITS['MU']['epaisseur'] = 2;
+    PRODUITS['MU']['codeModule'] = 'MPL';
 
     PRODUITS['PE'] = new Array(nbCaract);
     PRODUITS['PE']['VT'] = 2;
@@ -206,6 +207,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['elevation'] = 0.5;
     PRODUITS['PE']['interieur'] = true;
     PRODUITS['PE']['exterieur'] = true;
+    PRODUITS['PE']['codeModule'] = 'MPE';
 
     PRODUITS['F1'] = new Array(nbCaract);
     PRODUITS['F1']['VT'] = 2;
@@ -213,8 +215,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['hauteur'] = 6.5;
     PRODUITS['F1']['epaisseur'] = 3;
     PRODUITS['F1']['elevation'] = 15;
-    PRODUITS['F1']['interieur'] = false;
+    PRODUITS['F1']['interieur'] = true;
     PRODUITS['F1']['exterieur'] = true;
+    PRODUITS['F1']['codeModule'] = 'MF1';
 
     PRODUITS['F2'] = new Array(nbCaract);
     PRODUITS['F2']['VT'] = 2;
@@ -222,8 +225,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['hauteur'] = 11.5;
     PRODUITS['F2']['epaisseur'] = 3;
     PRODUITS['F2']['elevation'] = 10;
-    PRODUITS['F2']['interieur'] = false;
+    PRODUITS['F2']['interieur'] = true;
     PRODUITS['F2']['exterieur'] = true;
+    PRODUITS['F2']['codeModule'] = 'MF2';
 
     PRODUITS['PF'] = new Array(nbCaract);
     PRODUITS['PF']['VT'] = 1.4;
@@ -233,6 +237,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['elevation'] = 0;
     PRODUITS['PF']['interieur'] = true;
     PRODUITS['PF']['exterieur'] = true;
+    PRODUITS['PF']['codeModule'] = 'MPF';
 
     PRODUITS['PG'] = new Array(nbCaract);
     PRODUITS['PG']['VT'] = 0;
@@ -240,8 +245,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG']['hauteur'] = 20;
     PRODUITS['PG']['epaisseur'] = 3;
     PRODUITS['PG']['elevation'] = 0;
-    PRODUITS['PG']['interieur'] = false;
+    PRODUITS['PG']['interieur'] = true;
     PRODUITS['PG']['exterieur'] = true;
+    PRODUITS['PG']['codeModule'] = 'MPG1';
 
     PRODUITS['PE+F1'] = new Array(nbCaract);
     PRODUITS['PE+F1']['VT'] = 0.5;
@@ -249,8 +255,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['hauteur'] = 0;
     PRODUITS['PE+F1']['epaisseur'] = 0;
     PRODUITS['PE+F1']['elevation'] = 0;
-    PRODUITS['PE+F1']['interieur'] = false;
+    PRODUITS['PE+F1']['interieur'] = true;
     PRODUITS['PE+F1']['exterieur'] = true;
+    PRODUITS['PE+F1']['codeModule'] = 'MPEF';
 
     PRODUITS['PO'] = new Array(nbCaract);
     PRODUITS['PO']['VT'] = 0;
@@ -260,6 +267,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['elevation'] = 10.5;
     PRODUITS['PO']['interieur'] = true;
     PRODUITS['PO']['exterieur'] = false;
+    PRODUITS['PO']['codeModule'] = 'MPI';
 }
 
 function initMatricesScoreVT() {
@@ -531,15 +539,6 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     if (nbTraveesCourant > 3)
         totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
 
-    /*    switch (nbTraveesCourant) {
-            case 2:
-                totalVtR1 = parseFloat(tableauTravees[nomsTravees[1]]['vt_PGAV'] + tableauTravees[nomsTravees[1]]['vt_PGAR']);
-            case 3:
-                totalVtR2 = parseFloat(tableauTravees[nomsTravees[2]]['vt_PGAV'] + tableauTravees[nomsTravees[2]]['vt_PGAR']);
-            case 4:
-                totalVtR3 = parseFloat(tableauTravees[nomsTravees[3]]['vt_PGAV'] + tableauTravees[nomsTravees[3]]['vt_PGAR']);
-        }
-    */
     if (DEBUG)
         log('Liste des scores VT actuels : AV=' + totalVtAV + '/AR=' + totalVtAR + '/PG=' + totalVtPG + '/PD=' + totalVtPD + '/R1=' + totalVtR1 + '/R2=' + totalVtR2 + '/R3=' + totalVtR3);
 
