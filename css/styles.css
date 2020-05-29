@@ -37,6 +37,7 @@ body {
 
 .logo {
     position: absolute;
+    transform: scale(0.8);
     bottom: 40px;
     right: 50px;
 }
@@ -53,15 +54,15 @@ body {
     position: absolute;
     align-items: flex-start;
     align-content: center;
-    top: 280px;
-    right: -630px;
+    bottom: 10px;
+    right: -620px;
     padding: 8px;
     z-index: 200;
 
     background-color: white;
     border: 1px solid #4d5ee0;
     border-radius: 10px;
-    opacity: 80%;
+    opacity: 95%;
 
     transition: all .5s ease-in;
     box-shadow: -6px 6px 20px black;
@@ -88,8 +89,9 @@ body {
 }
 
 .texte-aide > li:before {
-    font-family: "Glyphicons Halflings";
-    content: "\e258";
+
+    font-family: "FontAwesome";
+    content: "\f105";
     margin-right: 8px;
 }
 
@@ -269,4 +271,99 @@ body {
 
 #popup-plancher button {
     margin-top: 15px;
+}
+
+/**********************************    Changement d'angle de vue   *************************************/
+#changement-vue {
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+    grid-template-rows: 10% 80% 10%;
+    position: fixed;
+    bottom: 50px;
+    right: 340px;
+    z-index: 100;
+    padding: 20px;
+    margin: 0px;
+    align-items: center;
+    justify-items: center;
+
+    height: 100px;
+    width: 100px;
+
+    opacity: 0.6;
+    border-radius: 100px;
+    /*
+    border: 1px solid white;
+    border-radius: 10px;
+    box-shadow: 0 0 12px white;*/
+}
+
+#changement-vue .maison-3d:hover {
+    opacity: 0.90;
+    background-color: #e6e6e6;
+    box-shadow: 0 0 12px white;
+    */
+}
+
+#changement-vue .bouton-fleche {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#changement-vue div#dessus {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 15px;
+}
+
+#changement-vue div#arriere {
+    grid-column: 3;
+    grid-row: 1;
+    margin-bottom: -10px;
+}
+
+#changement-vue div#arriere i {
+    transform: rotate(-45deg);
+}
+
+#changement-vue div#avant {
+    grid-column: 1;
+    grid-row: 3;
+    margin-bottom: 10px;
+}
+
+#changement-vue div#avant i {
+    transform: rotate(-45deg);
+}
+
+#changement-vue div#gauche {
+    grid-column: 1;
+    grid-row: 1;
+    margin-bottom: -10px;
+}
+
+#changement-vue div#gauche i {
+    transform: rotate(45deg);
+}
+
+#changement-vue div#droite {
+    grid-column: 3;
+    grid-row: 3;
+    margin-bottom: 10px;
+}
+
+#changement-vue div#droite i {
+    transform: rotate(45deg);
+}
+
+.maison-3d {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.maison-3d img {
+    align-content: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
 }
