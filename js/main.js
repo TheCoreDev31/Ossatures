@@ -1,6 +1,7 @@
 import {
     renderer,
-    camera
+    camera,
+    cameraOrtho
 }
 from "./environment.js"
 
@@ -28,14 +29,32 @@ import {
 
 
 // Fonctions communes
+function render() {
+
+    if (activeCamera === camera) {
+        camera.fov = 50;
+        camera.far = 600;
+        camera.updateProjectionMatrix();
+
+    } else {
+        cameraOrtho.far = 300;
+        cameraOrtho.updateProjectionMatrix();
+    }
+    renderer.clear();
+    renderer.render(scene, activeCamera);
+}
+
+
+
 export function animate() {
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+    render();
 };
 
 
 function init() {
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    activeCamera = camera;
+    var controls = new THREE.OrbitControls(activeCamera, renderer.domElement);
     controls.maxPolarAngle = Math.PI * 0.5;
     controls.minDistance = 1;
     controls.maxDistance = 500;
@@ -778,8 +797,9 @@ export function recalculerConstructions(tableauDecalages = null) {
 $(document).ready(function () {
 
     $(".popup-ouverture").hide();
-    $("#overlay").hide();
     $("#div-menu-contextuel").hide();
+    $("#quitter-vue-aerienne").hide();
+    $("#overlay").hide();
 
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();

@@ -279,7 +279,7 @@ body {
     grid-template-columns: 10% 80% 10%;
     grid-template-rows: 10% 80% 10%;
     position: fixed;
-    bottom: 120px;
+    bottom: 125px;
     right: 130px;
     z-index: 100;
     padding: 20px;
@@ -314,7 +314,8 @@ body {
     margin-bottom: -10px;
 }
 
-#changement-vue div#arriere i {
+#changement-vue div#arriere i,
+div#avant i {
     transform: rotate(-45deg);
 }
 
@@ -324,17 +325,14 @@ body {
     margin-bottom: 10px;
 }
 
-#changement-vue div#avant i {
-    transform: rotate(-45deg);
-}
-
 #changement-vue div#gauche {
     grid-column: 1;
     grid-row: 1;
     margin-bottom: -10px;
 }
 
-#changement-vue div#gauche i {
+#changement-vue div#gauche i,
+div#droite i {
     transform: rotate(45deg);
 }
 
@@ -344,9 +342,6 @@ body {
     margin-bottom: 10px;
 }
 
-#changement-vue div#droite i {
-    transform: rotate(45deg);
-}
 
 #changement-vue div:not(.bouton-fleche) {
     grid-column: 2;
@@ -358,4 +353,25 @@ body {
     justify-content: center;
     width: 35px;
     height: 35px;
+}
+
+
+/**************************    Bouton permettant de quitter la vue aérienne   ***********************************/
+#quitter-vue-aerienne {
+    display: flex;
+    position: fixed;
+    width: 280px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#quitter-vue-aerienne span {
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: white;
 }

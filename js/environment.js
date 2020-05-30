@@ -17,17 +17,20 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.gammaFactor = 2.2;
 
 
+var aspectRatio = window.innerWidth / window.innerHeight;
 // Camera
-export var camera = new THREE.PerspectiveCamera(50, (window.innerWidth / window.innerHeight), 1, 600);
+export var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 600);
 camera.position.set(60, 40, 160);
-camera.aspect = window.innerWidth / window.innerHeight;
+camera.aspect = aspectRatio;
 camera.lookAt(scene.position);
 
+var frustumSize = 300;
+export var cameraOrtho = new THREE.OrthographicCamera(frustumSize * aspectRatio / -2, frustumSize * aspectRatio / 2, frustumSize / 2, frustumSize / -2, 1, 500);
 
-export var cameraOrtho = new THREE.OrthographicCamera(-200, 200, 150, -150, 1, 500);
+//    -200, 200, 150, -150, 1, 500);
 cameraOrtho.position.set(0, 200, 0);
+camera.aspect = aspectRatio;
 cameraOrtho.lookAt(scene.position);
-
 
 
 // Environnement

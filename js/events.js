@@ -39,6 +39,18 @@ import {
 } from "./objects.js"
 
 
+
+/*******************************    Clic pour quitter le mode vue aérienne    **************************************/
+$("#quitter-vue-aerienne").click(function (e) {
+    e.preventDefault();
+    $("#quitter-vue-aerienne").hide();
+    camera.position.set(60, 40, 160);
+    activeCamera = camera;
+    afficherModules(false);
+    render();
+});
+
+
 /*******************************    Gestion du clic sur le menu déroulant    **************************************/
 $(".liste-deroulante").click(function (e) {
 
@@ -180,7 +192,6 @@ $("#changement-vue div").click(function (e) {
 export function onMouseClick(event) {
     var objetTouche, faceTouchee;
     var _faceExterneMur = 10;
-    // Pour info, les faces
 
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

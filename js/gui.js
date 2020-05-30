@@ -26,8 +26,7 @@ import {
 
 import {
     camera,
-    cameraOrtho,
-    renderer
+    cameraOrtho
 } from "./environment.js"
 
 export function unSelect() {
@@ -64,9 +63,10 @@ export function changePointOfView(direction) {
 
     switch (direction) {
         case 'dessus':
-            //            camera.position.set(0, 200, 0);
-            //            camera.lookAt(scene.position);
-            //            info("Vue de dessus");            break;
+            camera.position.set(0, 200, 0);
+            camera.lookAt(scene.position);
+            info("Vue de dessus");
+            break;
         case 'avant':
             camera.position.set(0, 5, 150);
             camera.lookAt(scene.position);
@@ -397,9 +397,13 @@ export function displayGui() {
 
     guiEnv.add(controller, 'modulesEnVueAerienne').onChange(function (value) {
         guiEnv.__controllers[0].setValue(false);
-        renderer.render(scene, cameraOrtho);
-        cameraOrtho.updateProjectionMatrix();
-        //        changePointOfView('dessus');
+        activeCamera = cameraOrtho;
+        afficherModules(true);
+        $("#quitter-vue-aerienne").css({
+            left: (window.innerWidth / 2) - $("#div-menu-contextuel").width(),
+            top: "100px"
+        });
+        $("#quitter-vue-aerienne").show();
     });
 
 }

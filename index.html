@@ -36,7 +36,7 @@
         <script type="text/javascript">
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
-            var raycaster, mouse;
+            var raycaster, mouse, activeCamera;
             var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
@@ -95,7 +95,7 @@
 -->
 
         <div class="popup-ouverture" id="popup-ouverture-out">
-            <span id="titre-popup">Quel type d'ouverture extérieure voulez-vous ajouter ?</span>
+            <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
             <div class="container-images">
                 <figure id="F1" class="normal"><img src="img/openings/F1.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65" />
                     <figcaption>Fenêtre<br>45x65cm</figcaption>
@@ -114,6 +114,9 @@
                 </figure>
                 <figure id="PE+F1" class="normal"><img src="img/openings/PE+F1.jpg" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
                     <figcaption>Porte entrée<br>+ fenêtre</figcaption>
+                </figure>
+                <figure id="PO" class="normal"><img src="img/openings/PO.jpg" class="popup-ouverture-image" alt="Portique intérieur" />
+                    <figcaption>Portique<br>intérieur</figcaption>
                 </figure>
             </div>
             <span class="popup-ouverture-texte">* Les éléments grisés ne sont pas disponibles pour des raisons de contrainte technique.</span>
@@ -181,6 +184,11 @@
             <div class="bouton-fleche" id="avant" alt="Vue avant"><i class="fa fa-arrow-right"></i></div>
             <div class="bouton-fleche" id="droite" alt="Vue de droite"><i class="fa fa-arrow-left"></i></div>
             <div id="perspective"><img src="icons/maison-3d.png"></div>
+        </div>
+
+
+        <div id="quitter-vue-aerienne" class="visible">
+            <span>Quittez la vue aérienne</span>
         </div>
     </div>
 
