@@ -45,12 +45,15 @@
                 EPAISSEUR_MUR = 2;
             var DOWN = true;
 
+            var incrustationModules = new THREE.Group();
+            var taillePoliceIncrustations = 3;
+
             // Quelques constantes pratiques pour repérer les faces
-            var indicePDAR = 1;
-            var indicePDAV = 2;
-            var indicePGAV = 4;
-            var indicePGAR = 5;
-            var indiceRoof = 7;
+            var indicePDAR = 1,
+                indicePDAV = 2,
+                indicePGAV = 4,
+                indicePGAR = 5,
+                indiceRoof = 7;
 
             var NB_CONSTRUCTIONS_MAXI = 2;
             var NB_TRAVEES_MAXI = 4;
@@ -187,7 +190,7 @@
         </div>
 
 
-        <div id="quitter-vue-aerienne" class="visible">
+        <div id="quitter-vue-aerienne">
             <span>Quittez la vue aérienne</span>
         </div>
     </div>

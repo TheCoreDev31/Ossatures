@@ -15,13 +15,13 @@ export var textMaterial = new THREE.MeshBasicMaterial({
     color: COLOR_ARRAY['blanc']
 });
 
-export function createText(texte) {
+export function createText(texte, taillePolice = 2) {
     var cotes = new THREE.Mesh();
     var loader = new THREE.FontLoader();
     loader.load('./fonts/helvetiker_regular.typeface.json', function (font) {
         var geometry = new THREE.TextGeometry(texte, {
             font: font,
-            size: 2,
+            size: taillePolice,
             height: 0.1,
             curveSegments: 4,
             bevelEnabled: false

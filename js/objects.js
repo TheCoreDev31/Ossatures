@@ -61,9 +61,18 @@ export function supprimerOuverture(nomObjet) {
         portique.visible = true;
     }
 
-    // Il faut supprimer l'objet à l'IHM...
+    // Il faut supprimer l'objet à l'IHM, ainsi que sa référence dans l'incrustation ...
     scene.remove(objet);
     nbOuvertures--;
+
+    log(nomObjet + ">Incrustation");
+    log(incrustationModules);
+    var newInscrustationModules = new THREE.Group();
+    for (var i = 0; i < incrustationModules.children.length; i++) {
+        if (incrustationModules.children[i].name != nomObjet + ">Incrustation")
+            newInscrustationModules.add(incrustationModules.children[i]);
+    }
+    incrustationModules = newInscrustationModules;
 
     // recalculer les scores VT de la travée concernée...
     tableauTravees[travee]['nb_ouvertures_' + face]--;
@@ -256,7 +265,7 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
     // Pour l'affichage en vue aérienne, on rajoute au sol la description du module, masquée par défaut.
     var decalageIncrustationX = 0,
         decalageIncrustationZ = 0;
-    var incrustation = createText(PRODUITS[typeOuverture]['codeModule']);
+    var incrustation = createText(PRODUITS[typeOuverture]['codeModule'], taillePoliceIncrustations);
     incrustation.rotation.x = -Math.PI / 2;
     switch (face) {
         case "AV":
@@ -279,7 +288,8 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
             break;
     }
     incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);
-    scene.add(incrustation);
+    incrustation.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + ">Incrustation";
+    incrustationModules.add(incrustation);
 
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');

@@ -362,11 +362,14 @@ div#droite i {
     position: fixed;
     width: 280px;
     height: 50px;
+    right: 35px;
+    top: 320px;
     justify-content: center;
     align-items: center;
     background-color: red;
     border-radius: 15px;
     cursor: pointer;
+    box-shadow: -20px 20px 25px;
 }
 
 #quitter-vue-aerienne span {

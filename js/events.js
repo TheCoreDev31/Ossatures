@@ -46,8 +46,7 @@ $("#quitter-vue-aerienne").click(function (e) {
     $("#quitter-vue-aerienne").hide();
     camera.position.set(60, 40, 160);
     activeCamera = camera;
-    afficherModules(false);
-    render();
+    scene.remove(incrustationModules);
 });
 
 
@@ -192,6 +191,8 @@ $("#changement-vue div").click(function (e) {
 export function onMouseClick(event) {
     var objetTouche, faceTouchee;
     var _faceExterneMur = 10;
+
+    if ($("#quitter-vue-aerienne").css("display") == "flex") return;
 
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

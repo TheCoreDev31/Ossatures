@@ -398,11 +398,7 @@ export function displayGui() {
     guiEnv.add(controller, 'modulesEnVueAerienne').onChange(function (value) {
         guiEnv.__controllers[0].setValue(false);
         activeCamera = cameraOrtho;
-        afficherModules(true);
-        $("#quitter-vue-aerienne").css({
-            left: (window.innerWidth / 2) - $("#div-menu-contextuel").width(),
-            top: "100px"
-        });
+        scene.add(incrustationModules);
         $("#quitter-vue-aerienne").show();
     });
 
