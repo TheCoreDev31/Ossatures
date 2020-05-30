@@ -186,11 +186,11 @@ body {
 }
 
 #popup-ouverture-out {
-    width: 800px;
+    width: 700px;
 }
 
 #popup-ouverture-in {
-    width: 450px;
+    width: 750px;
 }
 
 #popup-plancher {
@@ -211,7 +211,7 @@ body {
     width: 90%;
     align-items: flex-end;
     text-align: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     margin: 0px 30px;
 }
 
