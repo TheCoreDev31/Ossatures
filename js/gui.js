@@ -242,7 +242,6 @@ export function displayGui() {
         this.afficherPlancher = false;
         this.afficherCotes = false;
         this.armaturesBois = false;
-        this.modulesEnVueAerienne = function () {};
     };
 
     var options = {
@@ -339,7 +338,7 @@ export function displayGui() {
     guitravees.open();
 
 
-    var guiEnv = myGui.addFolder('Autres réglages');
+    var guiEnv = myGui.addFolder("Réglages d'affichage");
 
     guiEnv.add(controller, 'afficherToit').onChange(function (value) {
 
@@ -395,11 +394,5 @@ export function displayGui() {
                 */
     });
 
-    guiEnv.add(controller, 'modulesEnVueAerienne').onChange(function (value) {
-        guiEnv.__controllers[0].setValue(false);
-        activeCamera = cameraOrtho;
-        scene.add(incrustationModules);
-        $("#quitter-vue-aerienne").show();
-    });
 
 }

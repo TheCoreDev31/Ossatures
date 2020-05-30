@@ -1,5 +1,6 @@
 import {
     camera,
+    cameraOrtho,
     renderer
 } from "./environment.js"
 
@@ -21,7 +22,8 @@ import {
     verifierContraintes,
     mergeGroups,
     retirerObjetModifiable,
-    faceInterieureOuExterieure
+    faceInterieureOuExterieure,
+    supprimerObjetDunGroupe
 } from "./main.js"
 
 import {
@@ -38,16 +40,6 @@ import {
     creerOuverture
 } from "./objects.js"
 
-
-
-/*******************************    Clic pour quitter le mode vue aérienne    **************************************/
-$("#quitter-vue-aerienne").click(function (e) {
-    e.preventDefault();
-    $("#quitter-vue-aerienne").hide();
-    camera.position.set(60, 40, 160);
-    activeCamera = camera;
-    scene.remove(incrustationModules);
-});
 
 
 /*******************************    Gestion du clic sur le menu déroulant    **************************************/
@@ -159,6 +151,11 @@ $(".popup-ouverture").click(function (e) {
             retirerObjetModifiable(porte.name);
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
+            var newIncrustationModules = new THREE.Group();
+            newIncrustationModules = supprimerObjetDunGroupe(incrustationModules, nomTravee + '>' + nomFace + '>Ouverture PE>Incrustation');
+            newIncrustationModules = supprimerObjetDunGroupe(incrustationModules, nomTravee + '>' + nomFace + '>Ouverture F1>Incrustation');
+            newIncrustationModules.add()
+            incrustationModules = newIncrustationModules;
 
             // On remplace la texture classique du module par la version "armatures bois", pour voir...
             var mur = scene.getObjectByName(nomTravee + ">" + nomFace);
@@ -183,8 +180,26 @@ $(".popup-ouverture").click(function (e) {
 /**********************************  Changement d'angle de vue  ***********************************/
 $("#changement-vue div").click(function (e) {
     e.preventDefault();
-    changePointOfView($(e.target).parent().attr('id'));
+
+    var direction = $(e.target).parent().attr('id');
+    if (direction == "aerien") {
+        //        guiEnv.__controllers[0].setValue(false);
+        activeCamera = cameraOrtho;
+        scene.add(incrustationModules);
+        $("#quitter-vue-aerienne").show();
+    } else changePointOfView(direction);
 });
+
+/*******************************    Clic pour quitter le mode vue aérienne    **************************************/
+$("#quitter-vue-aerienne").click(function (e) {
+    e.preventDefault();
+    $("#quitter-vue-aerienne").hide();
+    camera.position.set(60, 40, 160);
+    activeCamera = camera;
+    scene.remove(incrustationModules);
+});
+
+
 
 
 

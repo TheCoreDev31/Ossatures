@@ -447,6 +447,19 @@ export function extraireFace(objet) {
 }
 
 
+// Permet de supprimer un enfant à l'intérieur d'un groupe, en fonction de son nom.
+export function supprimerObjetDunGroupe(groupe, enfant) {
+    var newGroupe = new THREE.Group();
+    var nbEnfants = groupe.children.length;
+
+    for (var i = 0; i < nbEnfants; i++) {
+        if (groupe.children[i].name != enfant)
+            newGroupe.add(groupe.children[i]);
+    }
+    return newGroupe;
+}
+
+
 /******************   Fonctions métier   *****************/
 
 export function retirerObjetModifiable(nomObjet) {

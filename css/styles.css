@@ -37,8 +37,8 @@ body {
 
 .logo {
     position: absolute;
-    transform: scale(0.8);
-    bottom: 25px;
+    transform: scale(0.7);
+    bottom: 10px;
     right: 50px;
 }
 
@@ -277,17 +277,15 @@ body {
 #changement-vue {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-    grid-template-rows: 10% 80% 10%;
+    grid-template-rows: 10% 10% 70% 10%;
     position: fixed;
-    bottom: 125px;
-    right: 130px;
+    bottom: 90px;
+    right: 110px;
     z-index: 100;
-    padding: 20px;
-    margin: 0px;
+    padding: 30px;
     align-items: center;
     justify-items: center;
-    height: 100px;
-    width: 100px;
+    height: 130px;
 }
 
 
@@ -302,15 +300,23 @@ body {
     transition: all .5s ease-in-out;
 }
 
-#changement-vue div#dessus {
+#changement-vue div#aerien {
     grid-column: 2;
     grid-row: 1;
+    margin-bottom: 70px;
+    font-size: 26px;
+
+}
+
+#changement-vue div#dessus {
+    grid-column: 2;
+    grid-row: 2;
     margin-bottom: 15px;
 }
 
 #changement-vue div#arriere {
     grid-column: 3;
-    grid-row: 1;
+    grid-row: 2;
     margin-bottom: -10px;
 }
 
@@ -321,13 +327,13 @@ div#avant i {
 
 #changement-vue div#avant {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 4;
     margin-bottom: 10px;
 }
 
 #changement-vue div#gauche {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
     margin-bottom: -10px;
 }
 
@@ -338,14 +344,14 @@ div#droite i {
 
 #changement-vue div#droite {
     grid-column: 3;
-    grid-row: 3;
+    grid-row: 4;
     margin-bottom: 10px;
 }
 
 
 #changement-vue div:not(.bouton-fleche) {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 3;
 }
 
 #changement-vue div > img {
@@ -362,8 +368,8 @@ div#droite i {
     position: fixed;
     width: 280px;
     height: 50px;
-    right: 35px;
-    top: 320px;
+    right: 20px;
+    bottom: 270px;
     justify-content: center;
     align-items: center;
     background-color: red;

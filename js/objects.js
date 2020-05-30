@@ -19,7 +19,8 @@ import {
     extraireFace,
     retirerObjetModifiable,
     initialiserScoresVT,
-    recalculerConstructions
+    recalculerConstructions,
+    supprimerObjetDunGroupe
 } from "./main.js"
 
 import {
@@ -65,13 +66,8 @@ export function supprimerOuverture(nomObjet) {
     scene.remove(objet);
     nbOuvertures--;
 
-    log(nomObjet + ">Incrustation");
-    log(incrustationModules);
     var newInscrustationModules = new THREE.Group();
-    for (var i = 0; i < incrustationModules.children.length; i++) {
-        if (incrustationModules.children[i].name != nomObjet + ">Incrustation")
-            newInscrustationModules.add(incrustationModules.children[i]);
-    }
+    newInscrustationModules = supprimerObjetDunGroupe(incrustationModules, nomObjet + ">Incrustation");
     incrustationModules = newInscrustationModules;
 
     // recalculer les scores VT de la travée concernée...
