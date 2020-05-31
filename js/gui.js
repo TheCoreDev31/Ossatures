@@ -8,7 +8,6 @@ import {
 import {
     creerToitTexture,
     glassMaterial,
-    topMaterial,
     COLOR_ARRAY
 }
 from "./materials.js"
@@ -44,8 +43,10 @@ export function unSelect() {
             if (objet.parent.name.includes('>'))
                 objet.material = glassMaterial;
             else {
-                if (objet.name.includes('plancher')) objet.material = topMaterial;
-                else objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+                if (objet.name.includes('plancher')) {
+                    objet.material[0].color = COLOR_ARRAY['blanc'];
+                    objet.material[1].color = COLOR_ARRAY['blanc'];
+                } else objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
             }
         }
         objet.geometry.elementsNeedUpdate = true;

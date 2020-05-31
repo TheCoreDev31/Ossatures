@@ -11,11 +11,11 @@
     <link href="css/menus.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!--    <link href="css/fontawesome.min.css" rel="stylesheet">-->
 </head>
 
 <body>
     <div id="container">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
         <script src="js/jquery-3.4.1.min.js"></script>
         <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
@@ -165,26 +165,26 @@
         <div class="popup-ouverture" id="popup-plancher">
             <span id="titre-popup">Où souhaitez-vous positionner la trappe d'accès ?</span>
             <div class="container-images">
-                <figure id="plein" class="normal"><img src="img/floors/plein.jpg" class="popup-ouverture-image" alt="Plancher plein" />
+                <figure id="plein" class="normal"><img src="img/floors/SOLP.jpg" class="popup-ouverture-image" alt="Plancher plein" />
                     <figcaption>Pas de trappe</figcaption>
                 </figure>
-                <figure id="haut-gauche" class="normal"><img src="img/floors/h-g.jpg" class="popup-ouverture-image" alt="Ouverture haut gauche" />
-                    <figcaption>En haut à gauche</figcaption>
+                <figure id="haut-gauche" class="normal"><img src="img/floors/SOLE_hg.jpg" class="popup-ouverture-image" alt="Ouverture haut gauche" />
+                    <figcaption>Escalier<br>haut gauche</figcaption>
                 </figure>
-                <figure id="haut-droite" class="normal"><img src="img/floors/h-d.jpg" class="popup-ouverture-image" alt="Ouverture haut droite" />
-                    <figcaption>En haut à droite</figcaption>
+                <figure id="haut-droite" class="normal"><img src="img/floors/SOLE_hd.jpg" class="popup-ouverture-image" alt="Ouverture haut droite" />
+                    <figcaption>Escalier<br>haut droite</figcaption>
                 </figure>
-                <figure id="bas-gauche" class="normal"><img src="img/floors/b-g.jpg" class="popup-ouverture-image" alt="Ouverture bas gauche" />
-                    <figcaption>En bas à gauche</figcaption>
+                <figure id="bas-gauche" class="normal"><img src="img/floors/SOLE_bg.jpg" class="popup-ouverture-image" alt="Ouverture bas gauche" />
+                    <figcaption>Escalier<br>bas gauche</figcaption>
                 </figure>
-                <figure id="bas-droite" class="normal"><img src="img/floors/b-d.jpg" class="popup-ouverture-image" alt="Ouverture bas droite" />
-                    <figcaption>En bas à droite</figcaption>
+                <figure id="bas-droite" class="normal"><img src="img/floors/SOLE_bd.jpg" class="popup-ouverture-image" alt="Ouverture bas droite" />
+                    <figcaption>Escalier<br>bas droite</figcaption>
                 </figure>
-                <figure id="haut-centre" class="normal"><img src="img/floors/h-c.jpg" class="popup-ouverture-image" alt="Ouverture haut centré" />
-                    <figcaption>Centrée, en haut</figcaption>
+                <figure id="haut-centre" class="normal"><img src="img/floors/SOLT_h.jpg" class="popup-ouverture-image" alt="Ouverture haut centré" />
+                    <figcaption>Trappe en haut</figcaption>
                 </figure>
-                <figure id="bas-centre" class="normal"><img src="img/floors/b-c.jpg" class="popup-ouverture-image" alt="Ouverture bas centré" />
-                    <figcaption>Centrée, en bas</figcaption>
+                <figure id="bas-centre" class="normal"><img src="img/floors/SOLT_b.jpg" class="popup-ouverture-image" alt="Ouverture bas centré" />
+                    <figcaption>Trappe en bas</figcaption>
                 </figure>
             </div>
             <br>
@@ -197,7 +197,7 @@
         <div id="overlay"></div>
 
         <div id="changement-vue">
-            <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane"></i></div>
+            <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i></div>
             <div class="bouton-fleche" id="gauche" alt="Vue de gauche"><i class="fa fa-arrow-right"></i></div>
             <div class="bouton-fleche" id="dessus" alt="Vue de dessus"><i class="fa fa-arrow-down"></i></div>
             <div class="bouton-fleche" id="arriere" alt="Vue arrière"><i class="fa fa-arrow-left"></i></div>

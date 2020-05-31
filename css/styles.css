@@ -217,7 +217,7 @@ body {
 .popup-ouverture .container-images {
     display: flex;
     width: 90%;
-    align-items: flex-end;
+    align-items: flex-start;
     text-align: center;
     justify-content: space-between;
     margin: 0px 30px;
@@ -242,17 +242,12 @@ body {
     transform: none;
 }
 
-
 .popup-ouverture .popup-ouverture-image {
     width: 64px;
     height: auto;
     border: 0px solid black;
     border-radius: 3px;
     box-shadow: 2px 2px 5px;
-}
-
-#popup-plancher .popup-ouverture-image {
-    width: auto;
 }
 
 .popup-ouverture .container-images figcaption {
@@ -279,6 +274,11 @@ body {
 
 #popup-plancher button {
     margin-top: 15px;
+}
+
+#popup-plancher .container-images img {
+    width: 32px;
+    border-radius: 0px;
 }
 
 /**********************************    Changement d'angle de vue   *************************************/

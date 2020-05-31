@@ -6,10 +6,8 @@ import {
 
 import {
     COLOR_ARRAY,
-    topMaterial,
     glassMaterial,
     selectedGlassMaterial,
-    selectedTopMaterial,
     wallBoisMaterial
 } from "./materials.js"
 
@@ -260,7 +258,8 @@ export function onMouseClick(event) {
             objetTouche.material = selectedGlassMaterial;
         else {
             if (objetTouche.name.includes('plancher')) {
-                objetTouche.material = selectedTopMaterial;
+                objetTouche.material[0].color = COLOR_ARRAY['highlight'];
+                objetTouche.material[1].color = COLOR_ARRAY['highlight'];
             } else {
                 objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
             }

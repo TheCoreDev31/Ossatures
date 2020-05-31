@@ -8,7 +8,8 @@ import {
     wallOutMaterial,
     pignonMaterial,
     floorMaterial,
-    topMaterial,
+    plancherSOLP_Up_Material,
+    plancherSOLP_Down_Material,
     createText
 } from "./materials.js"
 
@@ -529,7 +530,14 @@ export function creerTravee() {
     floor.rotation.x = -Math.PI / 2;
     floor.name = 'excluded';
 
-    var top = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), topMaterial);
+    var topGeometry = new THREE.BoxGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE, 0.2);
+    for (var i = 0; i < topGeometry.faces.length; i++) {
+        topGeometry.faces[i].materialIndex = 0;
+    }
+    topGeometry.faces[10].materialIndex = 1;
+    topGeometry.faces[11].materialIndex = 1;
+
+    var top = new THREE.Mesh(topGeometry, [plancherSOLP_Up_Material, plancherSOLP_Down_Material]);
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = false;

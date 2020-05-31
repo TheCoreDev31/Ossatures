@@ -61,7 +61,9 @@ function init() {
 
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
+
 }
+
 
 var PREFIXE_CONSTRUCTION = 'Construction ';
 var matrices = new Array();
