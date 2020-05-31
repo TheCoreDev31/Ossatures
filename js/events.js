@@ -135,8 +135,8 @@ $(".popup-ouverture").click(function (e) {
 
             // Cas particulier du combo PE + F1 :
             // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
-            var porte = creerOuverture(nomTravee, nomFace, 'PE');
-            var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
+            var porte = creerOuverture(nomTravee, nomFace, 'PE', 'MPEF');
+            var fenetre = creerOuverture(nomTravee, nomFace, 'F1', 'null');
 
             var nouveauGroupe = new THREE.Group();
             nouveauGroupe = mergeGroups(porte, fenetre);
@@ -151,11 +151,7 @@ $(".popup-ouverture").click(function (e) {
             retirerObjetModifiable(porte.name);
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
-            var newIncrustationModules = new THREE.Group();
-            newIncrustationModules = supprimerObjetDunGroupe(incrustationModules, nomTravee + '>' + nomFace + '>Ouverture PE>Incrustation');
-            newIncrustationModules = supprimerObjetDunGroupe(incrustationModules, nomTravee + '>' + nomFace + '>Ouverture F1>Incrustation');
-            newIncrustationModules.add()
-            incrustationModules = newIncrustationModules;
+
 
             // On remplace la texture classique du module par la version "armatures bois", pour voir...
             var mur = scene.getObjectByName(nomTravee + ">" + nomFace);
@@ -165,7 +161,6 @@ $(".popup-ouverture").click(function (e) {
                 plaquage.position.x += (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR - 0.01;
                 plaquage.position.z += (LARGEUR_TRAVEE / 2) - (EPAISSEUR_MUR / 2);
                 scene.add(plaquage);
-
             }
 
         }
@@ -194,8 +189,8 @@ $("#changement-vue div").click(function (e) {
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#quitter-vue-aerienne").hide();
-    camera.position.set(60, 40, 160);
     activeCamera = camera;
+    camera.position.set(60, 40, 160);
     scene.remove(incrustationModules);
 });
 

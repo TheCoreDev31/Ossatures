@@ -66,9 +66,12 @@ export function supprimerOuverture(nomObjet) {
     scene.remove(objet);
     nbOuvertures--;
 
-    var newInscrustationModules = new THREE.Group();
-    newInscrustationModules = supprimerObjetDunGroupe(incrustationModules, nomObjet + ">Incrustation");
-    incrustationModules = newInscrustationModules;
+    if (nomObjet.includes("PE+F1")) {
+        var newInscrustationModules = new THREE.Group();
+        newInscrustationModules = supprimerObjetDunGroupe(incrustationModules, travee + ">" + face);
+        incrustationModules = newInscrustationModules;
+    }
+
 
     // recalculer les scores VT de la travée concernée...
     tableauTravees[travee]['nb_ouvertures_' + face]--;
@@ -84,7 +87,7 @@ export function supprimerOuverture(nomObjet) {
     }
 }
 
-export function creerOuverture(nomTravee, face, typeOuverture) {
+export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustation = false) {
 
     var windowGrp = new THREE.Group();
     var largeur, hauteur, epaisseur, elevation;
@@ -259,33 +262,36 @@ export function creerOuverture(nomTravee, face, typeOuverture) {
     nbOuvertures++;
 
     // Pour l'affichage en vue aérienne, on rajoute au sol la description du module, masquée par défaut.
-    var decalageIncrustationX = 0,
-        decalageIncrustationZ = 0;
-    var incrustation = createText(PRODUITS[typeOuverture]['codeModule'], taillePoliceIncrustations);
-    incrustation.rotation.x = -Math.PI / 2;
-    switch (face) {
-        case "AV":
-            decalageIncrustationZ = 10;
-            break;
-        case "AR":
-            decalageIncrustationZ = -10;
-            break;
-        case "PGAV":
-            decalageIncrustationX = -10;
-            break;
-        case "PDAV":
-            decalageIncrustationX = 10;
-            break;
-        case "PGAR":
-            decalageIncrustationX = -10;
-            break;
-        case "PDAR":
-            decalageIncrustationX = 10;
-            break;
+    if (forcerIncrustation != 'null') {
+
+        var decalageIncrustationX = 0,
+            decalageIncrustationZ = 0;
+        var incrustation = createText(forcerIncrustation == false ? PRODUITS[typeOuverture]['codeModule'] : forcerIncrustation, taillePoliceIncrustations);
+        incrustation.rotation.x = -Math.PI / 2;
+        switch (face) {
+            case "AV":
+                decalageIncrustationZ = 10;
+                break;
+            case "AR":
+                decalageIncrustationZ = -10;
+                break;
+            case "PGAV":
+                decalageIncrustationX = -10;
+                break;
+            case "PDAV":
+                decalageIncrustationX = 10;
+                break;
+            case "PGAR":
+                decalageIncrustationX = -10;
+                break;
+            case "PDAR":
+                decalageIncrustationX = 10;
+                break;
+        }
+        incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);
+        incrustation.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + ">Incrustation";
+        incrustationModules.add(incrustation);
     }
-    incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);
-    incrustation.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + ">Incrustation";
-    incrustationModules.add(incrustation);
 
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');

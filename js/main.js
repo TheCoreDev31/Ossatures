@@ -453,7 +453,7 @@ export function supprimerObjetDunGroupe(groupe, enfant) {
     var nbEnfants = groupe.children.length;
 
     for (var i = 0; i < nbEnfants; i++) {
-        if (groupe.children[i].name != enfant)
+        if (!groupe.children[i].name.includes(enfant))
             newGroupe.add(groupe.children[i]);
     }
     return newGroupe;
