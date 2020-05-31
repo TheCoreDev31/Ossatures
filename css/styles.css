@@ -52,24 +52,32 @@ body {
 .div-aide {
     display: flex;
     position: absolute;
-    align-items: flex-start;
-    align-content: center;
+    align-items: flex-end;
     bottom: 10px;
-    right: -620px;
-    padding: 8px;
+    right: -660px;
     z-index: 200;
-
-    background-color: white;
-    border: 1px solid #4d5ee0;
-    border-radius: 10px;
-    opacity: 95%;
-
+    margin: 10px;
+    opacity: 90%;
     transition: all .5s ease-in;
-    box-shadow: -6px 6px 20px black;
 }
 
 .div-aide:hover {
-    transform: translateX(-620px);
+    transform: translateX(-660px);
+}
+
+.div-aide .div-icone {
+    width: 46px;
+    padding: 8px;
+    justify-content: center;
+    background-color: white;
+    border-radius: 10px 0px 0px 10px;
+}
+
+.div-aide .div-contenu {
+    height: auto;
+    background-color: white;
+    padding: 15px 10px 0px 30px;
+    border-radius: 10px 10px 10px 0px;
 }
 
 .texte-aide {
