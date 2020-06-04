@@ -157,6 +157,7 @@ plancherSOLP_Up_Texture = textureLoader.load("img/textures/SOLP_up.png");
 var plancherSOLP_Down_Texture = new THREE.Texture();
 plancherSOLP_Down_Texture = textureLoader.load("img/textures/SOLP_down.png");
 
+// Pour simuler un effet de relief
 var plancherSOLP_Bump_Texture = new THREE.Texture();
 plancherSOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_down_bumpmap.png");
 
