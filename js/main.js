@@ -69,7 +69,8 @@ var PREFIXE_CONSTRUCTION = 'Construction ';
 var matrices = new Array();
 var matrice_1,
     matrice_2_1, matrice_2_2, matrice_2_3, matrice_2_4, matrice_2_5, matrice_2_6, matrice_2_7, matrice_2_8,
-    matrice_3_1, matrice_3_2, matrice_3_3, matrice_3_4, matrice_3_5, matrice_3_6;
+    matrice_3_1, matrice_3_2, matrice_3_3, matrice_3_4, matrice_3_5, matrice_3_6,
+    matrice_4_1, matrice_4_2, matrice_4_3, matrice_4_4, matrice_4_5, matrice_4_6, matrice_4_7, matrice_4_8;
 
 
 /********************************   Gestion des messages d'info et des alertes   ***************************************/
@@ -418,6 +419,86 @@ function initMatricesScoreVT() {
     matrice_3_6['R2'] = 3;
     matrice_3_6['PD'] = 2.5;
 
+    matrice_4_1 = new Array();
+    matrice_4_1['nbTravees'] = 4;
+    matrice_4_1['AV'] = 3;
+    matrice_4_1['AR'] = 2.5;
+    matrice_4_1['PG'] = 3;
+    matrice_4_1['R1'] = 3;
+    matrice_4_1['R2'] = 2;
+    matrice_4_1['R3'] = 2;
+    matrice_4_1['PD'] = 3;
+
+    matrice_4_2 = new Array();
+    matrice_4_2['nbTravees'] = 4;
+    matrice_4_2['AV'] = 3;
+    matrice_4_2['AR'] = 2.5;
+    matrice_4_2['PG'] = 3;
+    matrice_4_2['R1'] = 2;
+    matrice_4_2['R2'] = 3;
+    matrice_4_2['R3'] = 2;
+    matrice_4_2['PD'] = 3;
+
+    matrice_4_3 = new Array();
+    matrice_4_3['nbTravees'] = 4;
+    matrice_4_3['AV'] = 3;
+    matrice_4_3['AR'] = 2.5;
+    matrice_4_3['PG'] = 3;
+    matrice_4_3['R1'] = 2;
+    matrice_4_3['R2'] = 2;
+    matrice_4_3['R3'] = 3;
+    matrice_4_3['PD'] = 3;
+
+    matrice_4_4 = new Array();
+    matrice_4_4['nbTravees'] = 4;
+    matrice_4_4['AV'] = 3;
+    matrice_4_4['AR'] = 2.5;
+    matrice_4_4['PG'] = 2.5;
+    matrice_4_4['R1'] = 3;
+    matrice_4_4['R2'] = 3;
+    matrice_4_4['R3'] = 2;
+    matrice_4_4['PD'] = 2.5;
+
+    matrice_4_5 = new Array();
+    matrice_4_5['nbTravees'] = 4;
+    matrice_4_5['AV'] = 2.5;
+    matrice_4_5['AR'] = 3;
+    matrice_4_5['PG'] = 3;
+    matrice_4_5['R1'] = 3;
+    matrice_4_5['R2'] = 2;
+    matrice_4_5['R3'] = 2;
+    matrice_4_5['PD'] = 3;
+
+    matrice_4_6 = new Array();
+    matrice_4_6['nbTravees'] = 4;
+    matrice_4_6['AV'] = 2.5;
+    matrice_4_6['AR'] = 3;
+    matrice_4_6['PG'] = 3;
+    matrice_4_6['R1'] = 2;
+    matrice_4_6['R2'] = 3;
+    matrice_4_6['R3'] = 2;
+    matrice_4_6['PD'] = 3;
+
+    matrice_4_7 = new Array();
+    matrice_4_7['nbTravees'] = 4;
+    matrice_4_7['AV'] = 2.5;
+    matrice_4_7['AR'] = 3;
+    matrice_4_7['PG'] = 3;
+    matrice_4_7['R1'] = 2;
+    matrice_4_7['R2'] = 2;
+    matrice_4_7['R3'] = 3;
+    matrice_4_7['PD'] = 3;
+
+    matrice_4_8 = new Array();
+    matrice_4_8['nbTravees'] = 4;
+    matrice_4_8['AV'] = 2.5;
+    matrice_4_8['AR'] = 3;
+    matrice_4_8['PG'] = 2.5;
+    matrice_4_8['R1'] = 3;
+    matrice_4_8['R2'] = 3;
+    matrice_4_8['R3'] = 2;
+    matrice_4_8['PD'] = 2.5;
+
     matrices.push(matrice_1);
     matrices.push(matrice_2_1);
     matrices.push(matrice_2_2);
@@ -433,6 +514,14 @@ function initMatricesScoreVT() {
     matrices.push(matrice_3_4);
     matrices.push(matrice_3_5);
     matrices.push(matrice_3_6);
+    matrices.push(matrice_4_1);
+    matrices.push(matrice_4_2);
+    matrices.push(matrice_4_3);
+    matrices.push(matrice_4_4);
+    matrices.push(matrice_4_5);
+    matrices.push(matrice_4_6);
+    matrices.push(matrice_4_7);
+    matrices.push(matrice_4_8);
 }
 
 

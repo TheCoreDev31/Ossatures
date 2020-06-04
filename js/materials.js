@@ -153,16 +153,20 @@ export var wallBoisMaterial = new THREE.MeshLambertMaterial({
 
 
 var plancherSOLP_Up_Texture = new THREE.Texture();
-var plancherSOLP_Down_Texture = new THREE.Texture();
 plancherSOLP_Up_Texture = textureLoader.load("img/textures/SOLP_up.png");
+var plancherSOLP_Down_Texture = new THREE.Texture();
 plancherSOLP_Down_Texture = textureLoader.load("img/textures/SOLP_down.png");
+
+var plancherSOLP_Bump_Texture = new THREE.Texture();
+plancherSOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_down_bumpmap.png");
 
 export var plancherSOLP_Up_Material = new THREE.MeshLambertMaterial({
     map: plancherSOLP_Up_Texture,
     side: THREE.DoubleSide
 
 });
-export var plancherSOLP_Down_Material = new THREE.MeshLambertMaterial({
+export var plancherSOLP_Down_Material = new THREE.MeshStandardMaterial({
     map: plancherSOLP_Down_Texture,
+    bumpMap: plancherSOLP_Bump_Texture,
     side: THREE.DoubleSide
 });
