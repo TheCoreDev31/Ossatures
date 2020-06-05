@@ -1,0 +1,19 @@
+#div-menu-contextuel {
+    display: flex;
+    z-index: 200;
+    position: absolute;
+
+    border-radius: 12px;
+    box-shadow: 0 0 12px black;
+    background: black;
+    color: white;
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 18x;
+    font-weight: normal;
+
+    opacity: 95%;
+    -webkit-transition: opacity 500ms;
+    -moz-transition: opacity 500ms;
+    -o-transition: opacity 500ms;
+    -ms-transition: opacity 500ms;
+}

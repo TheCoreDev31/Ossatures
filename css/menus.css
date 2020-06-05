@@ -1,96 +1,19 @@
+/* line 1, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
 #div-menu-contextuel {
-    display: flex;
-    z-index: 200;
-    position: absolute;
+  display: flex;
+  z-index: 200;
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 0 12px black;
+  background: black;
+  color: white;
+  font-family: "Avenir Next", "Avenir", sans-serif;
+  font-size: 18x;
+  font-weight: normal;
+  opacity: 95%;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  -ms-transition: opacity 500ms; }
 
-    border-radius: 12px;
-    box-shadow: 0 0 12px black;
-    background: black;
-    color: white;
-    font-family: "Avenir Next", "Avenir", sans-serif;
-    font-size: 18x;
-    font-weight: normal;
-
-    opacity: 95%;
-    -webkit-transition: opacity 500ms;
-    -moz-transition: opacity 500ms;
-    -o-transition: opacity 500ms;
-    -ms-transition: opacity 500ms;
-}
-
-.liste-deroulante {
-    list-style: none;
-    margin-right: 20px;
-}
-
-ul.liste-deroulante {
-    margin: 10px;
-    padding-left: 0px;
-    border: 0px;
-}
-
-.liste-deroulante li {
-    padding: 6px 8px;
-    cursor: pointer;
-}
-
-.liste-deroulante li:not(.blank)::before {
-    font-family: "FontAwesome";
-    content: "\f00d";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.moveBack::before {
-    font-family: "FontAwesome";
-    content: "\f062";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.moveFront::before {
-    font-family: "FontAwesome";
-    content: "\f063";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.add::before {
-    font-family: "FontAwesome";
-    content: "\f067";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.delete::before {
-    font-family: "FontAwesome";
-    content: "\f014";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.choose::before {
-    font-family: "FontAwesome";
-    content: "\f05b";
-    margin-right: 8px;
-}
-
-.liste-deroulante li.disabled {
-    cursor: not-allowed;
-}
-
-.liste-deroulante li.disabled:hover {
-    background-color: #202020;
-}
-
-.liste-deroulante hr {
-    background-color: grey;
-    height: 1px;
-    border: 0;
-    margin: 2px 0px;
-}
-
-
-/* Pour le dat.gui */
-.dg .property-name {
-    width: 70% !important;
-}
-
-.dg .c {
-    width: 20% !important;
-}
+/*# sourceMappingURL=menus.css.map */
