@@ -1,7 +1,8 @@
 import {
     camera,
     cameraOrtho,
-    renderer
+    renderer,
+    aspectRatio
 } from "./environment.js"
 
 import {
@@ -173,18 +174,32 @@ $(".popup-ouverture").click(function (e) {
 /**********************************  Changement d'angle de vue  ***********************************/
 $("#changement-vue div").click(function (e) {
     e.stopImmediatePropagation();
-    $("#changement-vue div").removeClass("actif");
+    $("#changement-vue div").removeClass('actif');
 
     var direction = $(e.target).parent().attr('id');
     if (direction == "aerien") {
-        //        guiEnv.__controllers[0].setValue(false);
 
-        $("#changement-vue div#aerien").addClass("actif");
+        $("span:contains('afficherToit')").click();
+        $("span:contains('afficherPlancher')").click();
+        $("#changement-vue div#aerien").addClass('actif');
+
+        var borne;
+        if (nbTravees === 1) borne = 100;
+        else borne = (150 * 0.5) * nbTravees;
+        cameraOrtho.left = -(borne * aspectRatio) / 2;
+        cameraOrtho.right = (borne * aspectRatio) / 2;
+        cameraOrtho.top = borne / 2;
+        cameraOrtho.bottom = -borne / 2;
+        log(borne);
+
+
+
         activeCamera = cameraOrtho;
+
         scene.add(incrustationModules);
         $("#quitter-vue-aerienne").show();
     } else {
-        $(e.target).parent().addClass("actif");
+        $(e.target).parent().addClass('actif');
         changePointOfView(direction);
     }
 
@@ -194,6 +209,8 @@ $("#changement-vue div").click(function (e) {
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#quitter-vue-aerienne").hide();
+    $("span:contains('afficherToit')").click();
+    $("span:contains('afficherPlancher')").click();
     $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
     camera.position.set(60, 40, 160);

@@ -17,7 +17,7 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.gammaFactor = 2.2;
 
 
-var aspectRatio = window.innerWidth / window.innerHeight;
+export var aspectRatio = window.innerWidth / window.innerHeight;
 // Camera
 export var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 600);
 camera.position.set(60, 40, 160);
