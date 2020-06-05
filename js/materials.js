@@ -144,38 +144,77 @@ export var floorMaterial = new THREE.MeshBasicMaterial({
 
 /*************   Planchers  ***********/
 
-var plancherSOLP_Up_Texture = new THREE.Texture();
-var plancherSOLP_Down_Texture = new THREE.Texture();
-var plancherSOLP_Bump_Texture = new THREE.Texture();
-plancherSOLP_Up_Texture = textureLoader.load("img/textures/SOLP_up_256.png");
-plancherSOLP_Down_Texture = textureLoader.load("img/textures/SOLP_down_256.png");
-plancherSOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_down_bumpMap.png");
+var SOLP_Up_Texture = new THREE.Texture();
+var SOLP_Down_Texture = new THREE.Texture();
+var SOLP_Bump_Texture = new THREE.Texture();
+SOLP_Up_Texture = textureLoader.load("img/textures/SOLP_U.png");
+SOLP_Down_Texture = textureLoader.load("img/textures/SOLP_D.png");
+SOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_D_bump.png");
 
-export var plancherSOLP_Up_Material = new THREE.MeshLambertMaterial({
-    map: plancherSOLP_Up_Texture,
+export var SOLP_Up_Material = new THREE.MeshLambertMaterial({
+    map: SOLP_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var plancherSOLP_Down_Material = new THREE.MeshStandardMaterial({
-    map: plancherSOLP_Down_Texture,
-    bumpMap: plancherSOLP_Bump_Texture,
+export var SOLP_Down_Material = new THREE.MeshStandardMaterial({
+    map: SOLP_Down_Texture,
+    bumpMap: SOLP_Bump_Texture,
     transparent: true
 });
 
 
-var plancherSOLE_Up_Texture = new THREE.Texture();
-var plancherSOLE_Down_Texture = new THREE.Texture();
-var plancherSOLE_Bump_Texture = new THREE.Texture();
-export var plancherSOLE_Up_Material = new THREE.MeshLambertMaterial({
-    map: plancherSOLE_Up_Texture,
+var SOLE_1_Up_Texture = new THREE.Texture();
+var SOLE_1_Down_Texture = new THREE.Texture();
+var SOLE_1_Bump_Texture = new THREE.Texture();
+SOLE_1_Up_Texture = textureLoader.load("img/textures/SOLE_1_U.png");
+SOLE_1_Down_Texture = textureLoader.load("img/textures/SOLE_1_D.png");
+SOLE_1_Bump_Texture = textureLoader.load("img/textures/SOLE_1_D_bump.png");
+export var SOLE_1_Up_Material = new THREE.MeshLambertMaterial({
+    map: SOLE_1_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var plancherSOLE_Down_Material = new THREE.MeshStandardMaterial({
-    map: plancherSOLE_Down_Texture,
-    bumpMap: plancherSOLE_Bump_Texture,
+export var SOLE_1_Down_Material = new THREE.MeshStandardMaterial({
+    map: SOLE_1_Down_Texture,
+    bumpMap: SOLE_1_Bump_Texture,
+    transparent: true
+});
+
+var SOLE_2_Up_Texture = new THREE.Texture();
+var SOLE_2_Down_Texture = new THREE.Texture();
+var SOLE_2_Bump_Texture = new THREE.Texture();
+SOLE_2_Up_Texture = textureLoader.load("img/textures/SOLE_2_U.png");
+SOLE_2_Down_Texture = textureLoader.load("img/textures/SOLE_2_D.png");
+SOLE_2_Bump_Texture = textureLoader.load("img/textures/SOLE_2_D_bump.png");
+export var SOLE_2_Up_Material = new THREE.MeshLambertMaterial({
+    map: SOLE_2_Up_Texture,
+    vertexColors: true,
+    transparent: true
+
+});
+export var SOLE_2_Down_Material = new THREE.MeshStandardMaterial({
+    map: SOLE_2_Down_Texture,
+    bumpMap: SOLE_2_Bump_Texture,
+    transparent: true
+});
+
+var SOLT_Up_Texture = new THREE.Texture();
+var SOLT_Down_Texture = new THREE.Texture();
+var SOLT_Bump_Texture = new THREE.Texture();
+SOLT_Up_Texture = textureLoader.load("img/textures/SOLT_U.png");
+SOLT_Down_Texture = textureLoader.load("img/textures/SOLT_D.png");
+SOLT_Bump_Texture = textureLoader.load("img/textures/SOLT_D_bump.png");
+export var SOLT_Up_Material = new THREE.MeshLambertMaterial({
+    map: SOLT_Up_Texture,
+    vertexColors: true,
+    transparent: true
+
+});
+export var SOLT_Down_Material = new THREE.MeshStandardMaterial({
+    map: SOLT_Down_Texture,
+    bumpMap: SOLT_Bump_Texture,
     transparent: true
 });
 

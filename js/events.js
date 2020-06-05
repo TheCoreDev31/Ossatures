@@ -10,10 +10,14 @@ import {
     glassMaterial,
     selectedGlassMaterial,
     wallBoisMaterial,
-    plancherSOLE_Up_Material,
-    plancherSOLE_Down_Material,
-    plancherSOLP_Up_Material,
-    plancherSOLP_Down_Material
+    SOLE_1_Up_Material,
+    SOLE_1_Down_Material,
+    SOLE_2_Up_Material,
+    SOLE_2_Down_Material,
+    SOLP_Up_Material,
+    SOLP_Down_Material,
+    SOLT_Up_Material,
+    SOLT_Down_Material
 } from "./materials.js"
 
 import {
@@ -106,13 +110,40 @@ $("#popup-plancher").click(function (e) {
 
         var plancher = scene.getObjectByName(objetSelectionne);
         if (plancher) {
-            var positionTrappe = $(e.target).parent().attr('id');
-
-            var nouvelleTexture;
-            log(plancher);
-            switch (positionTrappe) {
+            switch ($(e.target).parent().attr('id')) {
+                case "plein":
+                    plancher.material[0] = SOLP_Up_Material;
+                    plancher.material[1] = SOLP_Down_Material;
+                    break;
                 case "haut-gauche":
-                    plancher.material = plancherSOLE_Up_Material;
+                    plancher.material[0] = SOLE_1_Up_Material;
+                    plancher.material[1] = SOLE_1_Down_Material;
+                    plancher.rotation.z = 0;
+                    break;
+                case "haut-droite":
+                    plancher.material[0] = SOLE_2_Up_Material;
+                    plancher.rotation.z = 0;
+                    plancher.material[1] = SOLE_2_Down_Material;
+                    break;
+                case "bas-droite":
+                    plancher.material[0] = SOLE_1_Up_Material;
+                    plancher.material[1] = SOLE_1_Down_Material;
+                    plancher.rotation.z = Math.PI;
+                    break;
+                case "bas-gauche":
+                    plancher.material[0] = SOLE_2_Up_Material;
+                    plancher.material[1] = SOLE_2_Down_Material;
+                    plancher.rotation.z = Math.PI;
+                    break;
+                case "haut-centre":
+                    plancher.material[0] = SOLT_Up_Material;
+                    plancher.material[1] = SOLT_Down_Material;
+                    plancher.rotation.z = 0;
+                    break;
+                case "bas-centre":
+                    plancher.material[0] = SOLT_Up_Material;
+                    plancher.material[1] = SOLT_Down_Material;
+                    plancher.rotation.z = Math.PI;
                     break;
             }
         }
@@ -193,7 +224,7 @@ $("#changement-vue div").click(function (e) {
 
         $("#changement-vue div#aerien").addClass('actif');
 
-        // On masque toit et plancher
+        // On masque toit et plancher (si pas déjà masqués)
         if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
             $("span:contains('afficherToit')").click();
 

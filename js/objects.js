@@ -8,8 +8,10 @@ import {
     wallOutMaterial,
     pignonMaterial,
     floorMaterial,
-    plancherSOLP_Up_Material,
-    plancherSOLP_Down_Material,
+    SOLP_Up_Material,
+    SOLP_Down_Material,
+    SOLE_1_Up_Material,
+    SOLE_2_Down_Material,
     createText
 } from "./materials.js"
 
@@ -537,7 +539,7 @@ export function creerTravee() {
     topGeometry.faces[10].materialIndex = 1;
     topGeometry.faces[11].materialIndex = 1;
 
-    var top = new THREE.Mesh(topGeometry, [plancherSOLP_Up_Material, plancherSOLP_Down_Material]);
+    var top = new THREE.Mesh(topGeometry, [SOLP_Up_Material, SOLP_Down_Material]);
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = true;
