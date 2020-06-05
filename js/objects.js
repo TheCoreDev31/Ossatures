@@ -602,6 +602,56 @@ export function creerTravee() {
         }
     }
 
+    // Gestion de l'incrustation des modules MPL
+    var lesMurs = new Array('AV', 'AR', 'PGAV', 'PGAR', 'PDAR', 'PDAV');
+    for (var i = 0; i < 6; i++) {
+        var decalageIncrustationX = 0,
+            decalageIncrustationZ = 0;
+        var incrustation = createText(PRODUITS['MU']['codeModule'], taillePoliceIncrustations);
+        incrustation.rotation.x = -Math.PI / 2;
+        var positionX = 0;
+        var positionZ = 0;
+        switch (lesMurs[i]) {
+            case "AV":
+                positionX = wallAV.position.x;
+                positionZ = wallAV.position.z;
+                decalageIncrustationZ = 10;
+                break;
+            case "AR":
+                positionX = wallAR.position.x;
+                positionZ = wallAR.position.z;
+                decalageIncrustationZ = -10;
+                break;
+            case "PGAV":
+                positionX = wallPGAV.position.x;
+                positionZ = wallPGAV.position.z;
+                decalageIncrustationX = -10;
+                break;
+            case "PDAV":
+                positionX = wallPDAV.position.x;
+                positionZ = wallPDAV.position.z;
+                decalageIncrustationX = 10;
+                break;
+            case "PGAR":
+                positionX = wallPGAR.position.x;
+                positionZ = wallPGAR.position.z;
+                decalageIncrustationX = -10;
+                break;
+            case "PDAR":
+                positionX = wallPDAR.position.x;
+                positionZ = wallPDAR.position.z;
+                decalageIncrustationX = 10;
+                break;
+        }
+        incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);
+        incrustation.name = prefixe + ">" + lesMurs[i] + ">Ouverture MPL>Incrustation";
+        incrustationModules.add(incrustation);
+        incrustation.visible = false;
+        wallsGrp.add(incrustation);
+    }
+
+
+
     initialiserScoresVT(PREFIXE_TRAVEE + nbTravees);
 
     if (DEBUG) {

@@ -240,7 +240,15 @@ $("#changement-vue div").click(function (e) {
         cameraOrtho.bottom = -borne / 2;
         activeCamera = cameraOrtho;
 
-        scene.add(incrustationModules);
+        $("#changement-vue div#aerien").addClass('actif');
+
+
+        scene.traverse(function (child) {
+            if (child.name.includes("Incrustation")) {
+                child.visible = true;
+            }
+        });
+
         $("#quitter-vue-aerienne").show();
     } else {
         $(e.target).parent().addClass('actif');
@@ -257,7 +265,12 @@ $("#quitter-vue-aerienne").click(function (e) {
     $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
     camera.position.set(60, 40, 160);
-    scene.remove(incrustationModules);
+
+    scene.traverse(function (child) {
+        if (child.name.includes("Incrustation")) {
+            child.visible = false;
+        }
+    });
 
     // On raffiche toit et plancher
     $("span:contains('afficherToit')").click();
