@@ -9,7 +9,11 @@ import {
     COLOR_ARRAY,
     glassMaterial,
     selectedGlassMaterial,
-    wallBoisMaterial
+    wallBoisMaterial,
+    plancherSOLE_Up_Material,
+    plancherSOLE_Down_Material,
+    plancherSOLP_Up_Material,
+    plancherSOLP_Down_Material
 } from "./materials.js"
 
 import {
@@ -103,6 +107,14 @@ $("#popup-plancher").click(function (e) {
         var plancher = scene.getObjectByName(objetSelectionne);
         if (plancher) {
             var positionTrappe = $(e.target).parent().attr('id');
+
+            var nouvelleTexture;
+            log(plancher);
+            switch (positionTrappe) {
+                case "haut-gauche":
+                    plancher.material = plancherSOLE_Up_Material;
+                    break;
+            }
         }
 
         $(".popup-ouverture").hide();
@@ -179,9 +191,14 @@ $("#changement-vue div").click(function (e) {
     var direction = $(e.target).parent().attr('id');
     if (direction == "aerien") {
 
-        $("span:contains('afficherToit')").click();
-        $("span:contains('afficherPlancher')").click();
         $("#changement-vue div#aerien").addClass('actif');
+
+        // On masque toit et plancher
+        if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('afficherToit')").click();
+
+        if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('afficherPlancher')").click();
 
         var borne;
         if (nbTravees === 1) borne = 100;
@@ -190,10 +207,6 @@ $("#changement-vue div").click(function (e) {
         cameraOrtho.right = (borne * aspectRatio) / 2;
         cameraOrtho.top = borne / 2;
         cameraOrtho.bottom = -borne / 2;
-        log(borne);
-
-
-
         activeCamera = cameraOrtho;
 
         scene.add(incrustationModules);
@@ -209,16 +222,20 @@ $("#changement-vue div").click(function (e) {
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#quitter-vue-aerienne").hide();
-    $("span:contains('afficherToit')").click();
-    $("span:contains('afficherPlancher')").click();
+
     $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
     camera.position.set(60, 40, 160);
     scene.remove(incrustationModules);
+
+    // On raffiche toit et plancher
+    $("span:contains('afficherToit')").click();
+    $("span:contains('afficherPlancher')").click();
 });
 
 
 
+/****************************************************************************************************************/
 
 
 export function onMouseDoubleClick(event) {
@@ -281,14 +298,9 @@ export function onMouseDoubleClick(event) {
         var numFace = face * 2 + j;
         if (objetTouche.parent.name.includes('>'))
             objetTouche.material = selectedGlassMaterial;
-        else {
-            if (objetTouche.name.includes('plancher')) {
-                objetTouche.material[0].color = COLOR_ARRAY['highlight'];
-                objetTouche.material[1].color = COLOR_ARRAY['highlight'];
-            } else {
-                objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-            }
-        }
+        else
+            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+
         objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
         objetSelectionne = objetTouche.name;

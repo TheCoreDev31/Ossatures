@@ -142,32 +142,50 @@ export var floorMaterial = new THREE.MeshBasicMaterial({
 
 /****************************************   Armatures bois   *************************************************/
 
-// Texture armature bois
-var wallBoisTexture = loader.load("img/openings/MPEF.png");
-wallBoisTexture.wrapS = wallBoisTexture.wrapT = THREE.ClampToEdgeWrapping;
-wallBoisTexture.repeat.set(1, 1);
-export var wallBoisMaterial = new THREE.MeshLambertMaterial({
-    map: wallBoisTexture,
-    transparent: true
-});
-
+/*************   Planchers  ***********/
 
 var plancherSOLP_Up_Texture = new THREE.Texture();
-plancherSOLP_Up_Texture = textureLoader.load("img/textures/SOLE_up_256.png");
 var plancherSOLP_Down_Texture = new THREE.Texture();
-plancherSOLP_Down_Texture = textureLoader.load("img/textures/SOLE_down_256.png");
-
-// Pour simuler un effet de relief
 var plancherSOLP_Bump_Texture = new THREE.Texture();
-plancherSOLP_Bump_Texture = textureLoader.load("img/textures/SOLE_down_bumpMap.png");
+plancherSOLP_Up_Texture = textureLoader.load("img/textures/SOLP_up_256.png");
+plancherSOLP_Down_Texture = textureLoader.load("img/textures/SOLP_down_256.png");
+plancherSOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_down_bumpMap.png");
 
 export var plancherSOLP_Up_Material = new THREE.MeshLambertMaterial({
     map: plancherSOLP_Up_Texture,
+    vertexColors: true,
     transparent: true
 
 });
 export var plancherSOLP_Down_Material = new THREE.MeshStandardMaterial({
     map: plancherSOLP_Down_Texture,
     bumpMap: plancherSOLP_Bump_Texture,
+    transparent: true
+});
+
+
+var plancherSOLE_Up_Texture = new THREE.Texture();
+var plancherSOLE_Down_Texture = new THREE.Texture();
+var plancherSOLE_Bump_Texture = new THREE.Texture();
+export var plancherSOLE_Up_Material = new THREE.MeshLambertMaterial({
+    map: plancherSOLE_Up_Texture,
+    vertexColors: true,
+    transparent: true
+
+});
+export var plancherSOLE_Down_Material = new THREE.MeshStandardMaterial({
+    map: plancherSOLE_Down_Texture,
+    bumpMap: plancherSOLE_Bump_Texture,
+    transparent: true
+});
+
+
+
+// Texture armature bois
+var wallBoisTexture = loader.load("img/openings/MPEF.png");
+wallBoisTexture.wrapS = wallBoisTexture.wrapT = THREE.ClampToEdgeWrapping;
+wallBoisTexture.repeat.set(1, 1);
+export var wallBoisMaterial = new THREE.MeshLambertMaterial({
+    map: wallBoisTexture,
     transparent: true
 });

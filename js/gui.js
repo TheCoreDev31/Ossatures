@@ -42,12 +42,8 @@ export function unSelect() {
         for (var i = 0; i < facesSelectionnees.length; i++) {
             if (objet.parent.name.includes('>'))
                 objet.material = glassMaterial;
-            else {
-                if (objet.name.includes('plancher')) {
-                    objet.material[0].color = COLOR_ARRAY['blanc'];
-                    objet.material[1].color = COLOR_ARRAY['blanc'];
-                } else objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
-            }
+            else
+                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
         }
         objet.geometry.elementsNeedUpdate = true;
     }
