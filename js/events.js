@@ -172,21 +172,29 @@ $(".popup-ouverture").click(function (e) {
 
 /**********************************  Changement d'angle de vue  ***********************************/
 $("#changement-vue div").click(function (e) {
-    e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#changement-vue div").removeClass("actif");
 
     var direction = $(e.target).parent().attr('id');
     if (direction == "aerien") {
         //        guiEnv.__controllers[0].setValue(false);
+
+        $("#changement-vue div#aerien").addClass("actif");
         activeCamera = cameraOrtho;
         scene.add(incrustationModules);
         $("#quitter-vue-aerienne").show();
-    } else changePointOfView(direction);
+    } else {
+        $(e.target).parent().addClass("actif");
+        changePointOfView(direction);
+    }
+
 });
 
 /*******************************    Clic pour quitter le mode vue aérienne    **************************************/
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#quitter-vue-aerienne").hide();
+    $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
     camera.position.set(60, 40, 160);
     scene.remove(incrustationModules);
@@ -196,7 +204,7 @@ $("#quitter-vue-aerienne").click(function (e) {
 
 
 
-export function onMouseClick(event) {
+export function onMouseDoubleClick(event) {
     var objetTouche, faceTouchee;
     var _faceExterneMur = 10;
 
@@ -273,6 +281,13 @@ export function onMouseClick(event) {
 }
 
 
+export function onMouseClick(event) {
+    event.preventDefault();
+    $("#changement-vue div").removeClass("actif");
+}
+
+
+/*
 export function onMouseMove(event) {
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -280,7 +295,7 @@ export function onMouseMove(event) {
     mouse.left = event.pageX;
     mouse.top = event.pageY;
 }
-
+*/
 
 export function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;

@@ -94,6 +94,7 @@ body {
 .texte-aide > li {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 14px;
+    text-align: justify-all;
 }
 
 .texte-aide > li:before {
@@ -307,6 +308,12 @@ body {
     transform: scale(1.6);
     transition: all .5s ease-in-out;
 }
+
+#changement-vue div.actif {
+    color: red;
+    font-size: 30px !important;
+}
+
 
 #changement-vue div#aerien {
     grid-column: 2;

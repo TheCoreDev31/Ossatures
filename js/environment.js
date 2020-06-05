@@ -26,8 +26,6 @@ camera.lookAt(scene.position);
 
 var frustumSize = 300;
 export var cameraOrtho = new THREE.OrthographicCamera(frustumSize * aspectRatio / -2, frustumSize * aspectRatio / 2, frustumSize / 2, frustumSize / -2, 1, 500);
-
-//    -200, 200, 150, -150, 1, 500);
 cameraOrtho.position.set(0, 200, 0);
 camera.aspect = aspectRatio;
 cameraOrtho.lookAt(scene.position);

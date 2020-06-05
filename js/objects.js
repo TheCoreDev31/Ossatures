@@ -530,7 +530,7 @@ export function creerTravee() {
     floor.rotation.x = -Math.PI / 2;
     floor.name = 'excluded';
 
-    var topGeometry = new THREE.BoxGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE, 0.2);
+    var topGeometry = new THREE.BoxGeometry(LARGEUR_TRAVEE - 0.2, LONGUEUR_TRAVEE - 0.2, 0.2);
     for (var i = 0; i < topGeometry.faces.length; i++) {
         topGeometry.faces[i].materialIndex = 0;
     }
@@ -540,8 +540,7 @@ export function creerTravee() {
     var top = new THREE.Mesh(topGeometry, [plancherSOLP_Up_Material, plancherSOLP_Down_Material]);
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
-    top.visible = false;
-    //    top.name = 'excluded';
+    top.visible = true;
     top.name = 'plancher_' + prefixe;
 
     var wallsGrp = new THREE.Group();

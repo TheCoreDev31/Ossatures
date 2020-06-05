@@ -240,8 +240,8 @@ export function displayGui() {
 
     var controller = new function () {
         this.afficherToit = true;
-        this.afficherPlancher = false;
-        this.afficherCotes = false;
+        this.afficherPlancher = true;
+        this.afficherCotes = true;
         this.armaturesBois = false;
     };
 
@@ -395,5 +395,6 @@ export function displayGui() {
                 */
     });
 
+    guiEnv.open();
 
 }

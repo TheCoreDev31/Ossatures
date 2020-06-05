@@ -7,7 +7,7 @@ from "./environment.js"
 
 import {
     onMouseClick,
-    onMouseMove,
+    onMouseDoubleClick,
     onWindowResize
 } from "./events.js"
 
@@ -35,7 +35,6 @@ function render() {
         camera.fov = 50;
         camera.far = 600;
         camera.updateProjectionMatrix();
-
     } else {
         cameraOrtho.far = 300;
         cameraOrtho.updateProjectionMatrix();
@@ -143,7 +142,7 @@ function incrusterCotes() {
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrp.add(line);
     cotesGrp.name = 'CoteX';
-    cotesGrp.visible = false;
+    cotesGrp.visible = true;
     scene.add(cotesGrp);
 
     /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels    */
@@ -165,7 +164,7 @@ function incrusterCotes() {
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrp.add(line);
     cotesGrp.name = 'CoteY';
-    cotesGrp.visible = false;
+    cotesGrp.visible = true;
     scene.add(cotesGrp);
 }
 
@@ -930,8 +929,8 @@ $(document).ready(function () {
     animate();
 
     window.addEventListener('resize', onWindowResize, false);
-    document.addEventListener('dblclick', onMouseClick);
+    document.addEventListener('dblclick', onMouseDoubleClick);
+    document.addEventListener('click', onMouseClick);
     //document.addEventListener('mousemove', onMouseMove, false);
-    //document.addEventListener('click', onMouseClick);
 
 });
