@@ -1,4 +1,7 @@
-$font-family: "FontAwesome";
+$font-family-icones: 'FontAwesome';
+$font-family-texte: 'Avenir Next',
+'Avenir',
+sans-serif;
 
 
 #div-menu-contextuel {
@@ -10,7 +13,6 @@ $font-family: "FontAwesome";
     box-shadow: 0 0 12px black;
     background: black;
     color: white;
-    font-family: "Avenir Next", "Avenir", sans-serif;
     font-size: 18x;
     font-weight: normal;
 
@@ -28,15 +30,19 @@ $font-family: "FontAwesome";
 
 ul.liste-deroulante {
     margin: 10px;
-    padding-left: 0px;
+    padding-left: 8px;
     border: 0px;
 }
 
 .liste-deroulante li {
     padding: 6px 8px;
     cursor: pointer;
-    font-family: $font-family;
-    margin-right: 8px;
+    font-family: $font-family-texte;
+
+    &:before {
+        padding-right: 8px;
+        font-family: $font-family-icones;
+    }
 }
 
 .liste-deroulante li:not(.blank)::before {
@@ -52,29 +58,23 @@ ul.liste-deroulante {
 }
 
 .liste-deroulante li.add::before {
-    font-family: "FontAwesome";
     content: "\f067";
-    margin-right: 8px;
 }
 
 .liste-deroulante li.delete::before {
-    font-family: "FontAwesome";
     content: "\f014";
-    margin-right: 8px;
 }
 
 .liste-deroulante li.choose::before {
-    font-family: "FontAwesome";
     content: "\f05b";
-    margin-right: 8px;
 }
 
 .liste-deroulante li.disabled {
     cursor: not-allowed;
-}
 
-.liste-deroulante li.disabled:hover {
-    background-color: #202020;
+    &:hover {
+        background-color: #202020;
+    }
 }
 
 .liste-deroulante hr {
