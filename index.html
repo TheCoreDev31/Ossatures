@@ -36,7 +36,7 @@
         <script type="text/javascript">
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
-            var raycaster, mouse, activeCamera;
+            var raycaster, mouse, activeCamera, controls;
             var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
@@ -45,7 +45,6 @@
                 EPAISSEUR_MUR = 2;
             var DOWN = true;
 
-            var incrustationModules = new THREE.Group();
             var taillePoliceIncrustations = 3;
 
             // Quelques constantes pratiques pour repérer les faces
@@ -67,6 +66,7 @@
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
             var etapeActuelle = 1;
+
         </script>
 
         <div class="div-aide">
@@ -206,12 +206,18 @@
             <div id="perspective"><img src="icons/maison-3d.png"></div>
         </div>
 
-
-        <div id="quitter-vue-aerienne">
-            <span>Quittez le plan d'implantation</span>
+        <div id="vue-aerienne">
+            <div id="zoom">
+                <button id="dezoom">-</button>
+                <button id="zoom">+</button>
+            </div>
+            <div id="quitter-vue-aerienne">
+                <span>Quittez le plan d'implantation</span>
+            </div>
         </div>
     </div>
 
-
     </div>
-</body></html>
+</body>
+
+</html>

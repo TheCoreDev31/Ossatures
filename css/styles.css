@@ -378,15 +378,18 @@ div#droite i {
 
 
 /**************************    Bouton permettant de quitter la vue aérienne   ***********************************/
-#quitter-vue-aerienne {
-    display: flex;
+#vue-aerienne {
     position: fixed;
-    width: 280px;
-    height: 50px;
     right: 20px;
     bottom: 270px;
+}
+
+#quitter-vue-aerienne {
+    display: flex;
+    width: 280px;
+    height: 50px;
     justify-content: center;
-    align-items: center;
+    align-content: center;
     background-color: red;
     border-radius: 15px;
     cursor: pointer;
@@ -398,4 +401,27 @@ div#droite i {
     font-size: 18px;
     font-weight: 500;
     color: white;
+    align-self: center;
+    justify-self: center !important;
+}
+
+
+#zoom {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+
+#zoom button {
+    font-size: 30px;
+    color: red;
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 100%;
+    align-items: center;
+    justify-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-left: 15px;
 }

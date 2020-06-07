@@ -53,7 +53,7 @@ export function animate() {
 
 function init() {
     activeCamera = camera;
-    var controls = new THREE.OrbitControls(activeCamera, renderer.domElement);
+    controls = new THREE.OrbitControls(activeCamera, renderer.domElement);
     controls.maxPolarAngle = Math.PI * 0.5;
     controls.minDistance = 1;
     controls.maxDistance = 500;
@@ -168,6 +168,16 @@ function incrusterCotes() {
     scene.add(cotesGrp);
 }
 
+export function toggleIncrustations() {
+    scene.traverse(function (child) {
+        if (child.name.includes("Incrustation")) {
+
+            // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche l'incrustation
+            if (scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>'))).visible)
+                child.visible = !child.visible;
+        }
+    });
+}
 
 export function mergeGroups(porte, fenetre) {
     var newGroup = new THREE.Group();
@@ -537,16 +547,29 @@ export function extraireFace(objet) {
 }
 
 
-// Permet de supprimer un enfant à l'intérieur d'un groupe, en fonction de son nom.
-export function supprimerObjetDunGroupe(groupe, enfant) {
-    var newGroupe = new THREE.Group();
+export function modifierIncrustation(travee, face, remplacant = null) {
+
+    var groupe = scene.getObjectByName(travee);
     var nbEnfants = groupe.children.length;
 
-    for (var i = 0; i < nbEnfants; i++) {
-        if (!groupe.children[i].name.includes(enfant))
-            newGroupe.add(groupe.children[i]);
+    for (var i = nbEnfants - 1; i >= 0; i--) {
+        if (groupe.children[i].name.includes(face + ">Incrustation")) {
+            var positionX = groupe.children[i].position.x;
+            var positionY = groupe.children[i].position.y;
+            var positionZ = groupe.children[i].position.z;
+            groupe.remove(groupe.children[i]);
+
+            if (remplacant != null) {
+                var nouvelleIncrustation = createText(remplacant, taillePoliceIncrustations);
+                nouvelleIncrustation.rotation.x = -Math.PI / 2;
+                nouvelleIncrustation.position.set(positionX, positionY, positionZ);
+                nouvelleIncrustation.name = travee + ">" + face + ">Incrustation";
+                nouvelleIncrustation.visible = false;
+                groupe.add(nouvelleIncrustation);
+            }
+            return;
+        }
     }
-    return newGroupe;
 }
 
 
@@ -901,7 +924,7 @@ $(document).ready(function () {
 
     $(".popup-ouverture").hide();
     $("#div-menu-contextuel").hide();
-    $("#quitter-vue-aerienne").hide();
+    $("#vue-aerienne").hide();
     $("#overlay").hide();
 
     initCaracteristiquesOuvertures();
@@ -909,18 +932,6 @@ $(document).ready(function () {
 
     var travee1 = creerTravee();
     scene.add(travee1);
-
-    //    var firstWindow = creerOuverture(travee1.name, 'PDAV', 'PE');
-    //    scene.add(firstWindow);
-    //
-    //    var secondWindow = creerOuverture(travee1.name, 'PDAR', 'PF');
-    //    scene.add(secondWindow); //
-    //
-    //    var firstDoor = creerOuverture(travee1.name, 'PGAV', 'F1');
-    //    scene.add(firstDoor);
-    //
-    //    var secondDoor = creerOuverture(travee1.name, 'PGAR', 'PF', 2);
-    //    scene.add(secondDoor); //
 
     incrusterCotes();
 

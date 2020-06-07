@@ -30,7 +30,8 @@ import {
     mergeGroups,
     retirerObjetModifiable,
     faceInterieureOuExterieure,
-    supprimerObjetDunGroupe
+    modifierIncrustation,
+    toggleIncrustations
 } from "./main.js"
 
 import {
@@ -177,8 +178,9 @@ $(".popup-ouverture").click(function (e) {
 
             // Cas particulier du combo PE + F1 :
             // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
-            var porte = creerOuverture(nomTravee, nomFace, 'PE', 'MPEF');
-            var fenetre = creerOuverture(nomTravee, nomFace, 'F1', 'null');
+            var porte = creerOuverture(nomTravee, nomFace, 'PE');
+            var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
+            modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
 
             var nouveauGroupe = new THREE.Group();
             nouveauGroupe = mergeGroups(porte, fenetre);
@@ -241,15 +243,8 @@ $("#changement-vue div").click(function (e) {
         activeCamera = cameraOrtho;
 
         $("#changement-vue div#aerien").addClass('actif');
-
-
-        scene.traverse(function (child) {
-            if (child.name.includes("Incrustation")) {
-                child.visible = true;
-            }
-        });
-
-        $("#quitter-vue-aerienne").show();
+        toggleIncrustations();
+        $("#vue-aerienne").show();
     } else {
         $(e.target).parent().addClass('actif');
         changePointOfView(direction);
@@ -258,24 +253,39 @@ $("#changement-vue div").click(function (e) {
 });
 
 /*******************************    Clic pour quitter le mode vue aérienne    **************************************/
-$("#quitter-vue-aerienne").click(function (e) {
+$("#vue-aerienne").click(function (e) {
     e.preventDefault();
-    $("#quitter-vue-aerienne").hide();
+    $("#vue-aerienne").hide();
 
     $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
     camera.position.set(60, 40, 160);
+    cameraOrtho.zoom = 1;
 
-    scene.traverse(function (child) {
-        if (child.name.includes("Incrustation")) {
-            child.visible = false;
-        }
-    });
+    toggleIncrustations();
 
     // On raffiche toit et plancher
     $("span:contains('afficherToit')").click();
     $("span:contains('afficherPlancher')").click();
 });
+
+
+
+$("#zoom").click(function (e) {
+    if (cameraOrtho.zoom < 4)
+        cameraOrtho.zoom += 0.1;
+    e.stopImmediatePropagation();
+});
+
+$("#dezoom").click(function (e) {
+    if (cameraOrtho.zoom > 0.2)
+        cameraOrtho.zoom -= 0.1;
+    e.stopImmediatePropagation();
+});
+
+
+
+
 
 
 
@@ -356,6 +366,10 @@ export function onMouseDoubleClick(event) {
 
 export function onMouseClick(event) {
     event.preventDefault();
+
+    if (activeCamera != camera)
+        camera.zoom = 1;
+
     $("#changement-vue div").removeClass("actif");
 }
 
