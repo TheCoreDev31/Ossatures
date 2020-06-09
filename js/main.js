@@ -23,8 +23,9 @@ import {
 } from "./objects.js"
 
 import {
+    wallMaterial,
     textMaterial,
-    createText
+    createText,
 } from "./materials.js"
 
 
@@ -125,7 +126,7 @@ export function recalculerCotes(direction = 'largeur') {
 
 function incrusterCotes() {
 
-    var texte = (nbTravees * (LARGEUR_TRAVEE / 10)) + ' m';
+    var texte = nbTravees * (LARGEUR_TRAVEE * 100) + ' mm';
     var cotes = createText(texte);
     var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
     var cotesGrp = new THREE.Group();
@@ -146,7 +147,7 @@ function incrusterCotes() {
     scene.add(cotesGrp);
 
     /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels    */
-    var texte = (LONGUEUR_TRAVEE / 10) + ' m';
+    var texte = (LONGUEUR_TRAVEE * 100) + ' mm';
     var cotes = createText(texte);
     var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
     var cotesGrp = new THREE.Group();

@@ -9,15 +9,10 @@ import {
     COLOR_ARRAY,
     glassMaterial,
     selectedGlassMaterial,
-    wallBoisMaterial,
-    SOLE_1_Up_Material,
-    SOLE_1_Down_Material,
-    SOLE_2_Up_Material,
-    SOLE_2_Down_Material,
-    SOLP_Up_Material,
-    SOLP_Down_Material,
-    SOLT_Up_Material,
-    SOLT_Down_Material
+    SOLE_1_Material,
+    SOLE_2_Material,
+    SOLP_Material,
+    SOLT_Material
 } from "./materials.js"
 
 import {
@@ -113,37 +108,30 @@ $("#popup-plancher").click(function (e) {
         if (plancher) {
             switch ($(e.target).parent().attr('id')) {
                 case "plein":
-                    plancher.material[0] = SOLP_Up_Material;
-                    plancher.material[1] = SOLP_Down_Material;
+                    plancher.material = SOLP_Material;
                     break;
                 case "haut-gauche":
-                    plancher.material[0] = SOLE_1_Up_Material;
-                    plancher.material[1] = SOLE_1_Down_Material;
+                    plancher.material = SOLE_1_Material;
                     plancher.rotation.z = 0;
                     break;
                 case "haut-droite":
-                    plancher.material[0] = SOLE_2_Up_Material;
+                    plancher.material = SOLE_2_Material;
                     plancher.rotation.z = 0;
-                    plancher.material[1] = SOLE_2_Down_Material;
                     break;
                 case "bas-droite":
-                    plancher.material[0] = SOLE_1_Up_Material;
-                    plancher.material[1] = SOLE_1_Down_Material;
+                    plancher.material = SOLE_1_Material;
                     plancher.rotation.z = Math.PI;
                     break;
                 case "bas-gauche":
-                    plancher.material[0] = SOLE_2_Up_Material;
-                    plancher.material[1] = SOLE_2_Down_Material;
+                    plancher.material = SOLE_2_Material;
                     plancher.rotation.z = Math.PI;
                     break;
                 case "haut-centre":
-                    plancher.material[0] = SOLT_Up_Material;
-                    plancher.material[1] = SOLT_Down_Material;
+                    plancher.material = SOLT_Material;
                     plancher.rotation.z = 0;
                     break;
                 case "bas-centre":
-                    plancher.material[0] = SOLT_Up_Material;
-                    plancher.material[1] = SOLT_Down_Material;
+                    plancher.material = SOLT_Material;
                     plancher.rotation.z = Math.PI;
                     break;
             }
@@ -195,18 +183,6 @@ $(".popup-ouverture").click(function (e) {
             retirerObjetModifiable(porte.name);
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
-
-
-            // On remplace la texture classique du module par la version "armatures bois", pour voir...
-            var mur = scene.getObjectByName(nomTravee + ">" + nomFace);
-            if (mur) {
-                var plaquage = new THREE.Mesh(new THREE.PlaneGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE), wallBoisMaterial);
-                plaquage.rotation.y = -Math.PI / 2;
-                plaquage.position.x += (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR - 0.01;
-                plaquage.position.z += (LARGEUR_TRAVEE / 2) - (EPAISSEUR_MUR / 2);
-                scene.add(plaquage);
-            }
-
         }
         $(".popup-ouverture").hide();
         $("#overlay").hide();

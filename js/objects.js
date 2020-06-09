@@ -5,13 +5,15 @@ import {
     windowMaterial,
     doorMaterial,
     garageDoorMaterial,
-    wallOutMaterial,
+    wallMaterial,
     pignonMaterial,
     floorMaterial,
-    SOLP_Up_Material,
-    SOLP_Down_Material,
-    SOLE_1_Up_Material,
-    SOLE_2_Down_Material,
+    SOLP_Material,
+    SOLE_1_Material,
+    SOLE_2_Material,
+    SOLT_Material,
+    MPL_Material,
+    PEXT_Material,
     createText
 } from "./materials.js"
 
@@ -70,16 +72,6 @@ export function supprimerOuverture(nomObjet) {
     modifierIncrustation(travee, face, PRODUITS['MU']['codeModule']);
     nbOuvertures--;
 
-
-    if (nomObjet.includes("PE+F1")) {
-        //modifierIncrustation(scene.getObjectByName(travee), face);
-
-        //        var newInscrustationModules = new THREE.Group();
-        //        newInscrustationModules = supprimerObjetDunGroupe(incrustationModules, travee + ">" + face);
-        //        incrustationModules = newInscrustationModules;
-    }
-
-
     // recalculer les scores VT de la travée concernée...
     tableauTravees[travee]['nb_ouvertures_' + face]--;
     tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
@@ -117,7 +109,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
     if (typeOuverture == 'PO') {
         var facade = scene.getObjectByName(nomTravee + ">" + face);
         facade.visible = false;
-        var portionMur = new THREE.Mesh(new THREE.BoxGeometry((LONGUEUR_TRAVEE / 2), 4, EPAISSEUR_MUR), wallOutMaterial);
+        var portionMur = new THREE.Mesh(new THREE.BoxGeometry((LONGUEUR_TRAVEE / 2), 4, EPAISSEUR_MUR), wallMaterial);
         portionMur.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Portique';
         windowGrp.add(portionMur);
 
@@ -333,7 +325,8 @@ export function creerToit(nomTravee) {
     pignonGeometry.lineTo(0, 0);
     var extrudeSettings = {
         depth: EPAISSEUR_MUR,
-        bevelEnabled: false
+        bevelEnabled: false,
+        material: PEXT_Material
     };
     var leftPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     leftPignon.rotation.y = Math.PI / 2;
@@ -501,30 +494,30 @@ export function creerTravee() {
     nbTravees++;
 
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
-    // IMPORTANT : on crée les murs avec la face avant DEVANT !!!!!!!!!!
-    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    // IMPORTANT : on crée les murs avec la face extérieure DEVANT !!!!!!!!!!
+    var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
 
-    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
     wallPDAR.position.x = ((-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2) - 0.01;
     wallPDAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
 
-    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAV.rotation.y = -Math.PI / 2;
     wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
     wallPDAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAV.rotation.y = Math.PI;
     wallAV.position.z = LARGEUR_TRAVEE - (EPAISSEUR_MUR / 2);
 
-    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAV.rotation.y = Math.PI / 2;
     wallPGAV.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
     wallPGAV.position.z = (LONGUEUR_TRAVEE / 4) - EPAISSEUR_MUR / 2;
 
-    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallOutMaterial);
+    var wallPGAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAR.rotation.y = Math.PI / 2;
     wallPGAR.position.x = (EPAISSEUR_MUR / 2) - LARGEUR_TRAVEE / 2;
     wallPGAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
@@ -535,13 +528,7 @@ export function creerTravee() {
     floor.name = 'excluded';
 
     var topGeometry = new THREE.BoxGeometry(LARGEUR_TRAVEE - 0.2, LONGUEUR_TRAVEE - 0.2, 0.2);
-    for (var i = 0; i < topGeometry.faces.length; i++) {
-        topGeometry.faces[i].materialIndex = 0;
-    }
-    topGeometry.faces[10].materialIndex = 1;
-    topGeometry.faces[11].materialIndex = 1;
-
-    var top = new THREE.Mesh(topGeometry, [SOLP_Up_Material, SOLP_Down_Material]);
+    var top = new THREE.Mesh(topGeometry, SOLP_Material);
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = true;

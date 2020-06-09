@@ -113,18 +113,18 @@ export var garageDoorMaterial = new THREE.MeshLambertMaterial({
 
 
 // Travee
-var wallOutTexture = textureLoader.load("img/textures/briques.jpg");
-wallOutTexture.wrapS = wallOutTexture.wrapT = THREE.RepeatWrapping;
-wallOutTexture.repeat.set(2, 2);
-export var wallOutMaterial = new THREE.MeshLambertMaterial({
-    map: wallOutTexture,
+var wallTexture = textureLoader.load("img/textures/briques.jpg");
+wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
+wallTexture.repeat.set(2, 2);
+export var wallMaterial = new THREE.MeshLambertMaterial({
+    map: wallTexture,
     color: COLOR_ARRAY['blanc'],
     vertexColors: true
 });
 
 var pignonTexture = textureLoader.load("img/textures/briques.jpg");
 pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
-pignonTexture.repeat.set(0.08, 0.08);
+pignonTexture.repeat.set(0.06, 0.08);
 export var pignonMaterial = new THREE.MeshLambertMaterial({
     map: pignonTexture,
     color: COLOR_ARRAY['blanc']
@@ -151,17 +151,18 @@ SOLP_Up_Texture = textureLoader.load("img/openings/SOLP_U.png");
 SOLP_Down_Texture = textureLoader.load("img/openings/SOLP_D.png");
 SOLP_Bump_Texture = textureLoader.load("img/openings/SOLP_D_bump.png");
 
-export var SOLP_Up_Material = new THREE.MeshLambertMaterial({
+var SOLP_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLP_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var SOLP_Down_Material = new THREE.MeshStandardMaterial({
+var SOLP_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLP_Down_Texture,
     bumpMap: SOLP_Bump_Texture,
     transparent: true
 });
+export var SOLP_Material = [SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Down_Material];
 
 
 var SOLE_1_Up_Texture = new THREE.Texture();
@@ -170,17 +171,19 @@ var SOLE_1_Bump_Texture = new THREE.Texture();
 SOLE_1_Up_Texture = textureLoader.load("img/openings/SOLE_1_U.png");
 SOLE_1_Down_Texture = textureLoader.load("img/openings/SOLE_1_D.png");
 SOLE_1_Bump_Texture = textureLoader.load("img/openings/SOLE_1_D_bump.png");
-export var SOLE_1_Up_Material = new THREE.MeshLambertMaterial({
+var SOLE_1_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_1_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var SOLE_1_Down_Material = new THREE.MeshStandardMaterial({
+var SOLE_1_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLE_1_Down_Texture,
     bumpMap: SOLE_1_Bump_Texture,
     transparent: true
 });
+export var SOLE_1_Material = [SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Down_Material];
+
 
 var SOLE_2_Up_Texture = new THREE.Texture();
 var SOLE_2_Down_Texture = new THREE.Texture();
@@ -188,17 +191,19 @@ var SOLE_2_Bump_Texture = new THREE.Texture();
 SOLE_2_Up_Texture = textureLoader.load("img/openings/SOLE_2_U.png");
 SOLE_2_Down_Texture = textureLoader.load("img/openings/SOLE_2_D.png");
 SOLE_2_Bump_Texture = textureLoader.load("img/openings/SOLE_2_D_bump.png");
-export var SOLE_2_Up_Material = new THREE.MeshLambertMaterial({
+var SOLE_2_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_2_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var SOLE_2_Down_Material = new THREE.MeshStandardMaterial({
+var SOLE_2_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLE_2_Down_Texture,
     bumpMap: SOLE_2_Bump_Texture,
     transparent: true
 });
+export var SOLE_2_Material = [SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Down_Material];
+
 
 var SOLT_Up_Texture = new THREE.Texture();
 var SOLT_Down_Texture = new THREE.Texture();
@@ -206,37 +211,52 @@ var SOLT_Bump_Texture = new THREE.Texture();
 SOLT_Up_Texture = textureLoader.load("img/openings/SOLT_U.png");
 SOLT_Down_Texture = textureLoader.load("img/openings/SOLT_D.png");
 SOLT_Bump_Texture = textureLoader.load("img/openings/SOLT_D_bump.png");
-export var SOLT_Up_Material = new THREE.MeshLambertMaterial({
+var SOLT_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLT_Up_Texture,
     vertexColors: true,
     transparent: true
 
 });
-export var SOLT_Down_Material = new THREE.MeshStandardMaterial({
+var SOLT_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLT_Down_Texture,
     bumpMap: SOLT_Bump_Texture,
     transparent: true
 });
-
+export var SOLT_Material = [SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Down_Material];
 
 /************************    Modules   *******************/
 
-var mplTexture = loader.load("img/openings/MPL_F.png");
-mplTexture.wrapS = mplTexture.wrapT = THREE.ClampToEdgeWrapping;
-mplTexture.repeat.set(1, 1);
-export var mplMaterial = new THREE.MeshLambertMaterial({
-    map: mplTexture,
+var MPL_Front_Texture = textureLoader.load("img/openings/MPL_F.png");
+var MPL_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPL_Front_Texture,
+    vertexColors: true,
     transparent: true
 });
-
-
-
-
-// Texture armature bois
-var wallBoisTexture = loader.load("img/openings/MPEF.png");
-wallBoisTexture.wrapS = wallBoisTexture.wrapT = THREE.ClampToEdgeWrapping;
-wallBoisTexture.repeat.set(1, 1);
-export var wallBoisMaterial = new THREE.MeshLambertMaterial({
-    map: wallBoisTexture,
+var MPL_Back_Texture = textureLoader.load("img/openings/MPL_B.png");
+var MPL_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPL_Back_Texture,
+    vertexColors: true,
     transparent: true
 });
+export var MPL_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Back_Material, MPL_Front_Material];
+
+
+/*************************    Pignons      *****************************/
+
+var PEXT_Front_Texture = textureLoader.load("img/openings/PEXT_F.png");
+PEXT_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
+PEXT_Front_Texture.repeat.set(0.014, 0.037);
+PEXT_Front_Texture.offset.set(0.5, 0);
+export var PEXT_Front_Material = new THREE.MeshLambertMaterial({
+    map: PEXT_Front_Texture,
+    side: THREE.FrontSide
+});
+var PEXT_Back_Texture = textureLoader.load("img/openings/PEXT_B.png");
+PEXT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
+PEXT_Back_Texture.repeat.set(0.014, 0.037);
+PEXT_Back_Texture.offset.set(0.5, 0);
+export var PEXT_Back_Material = new THREE.MeshLambertMaterial({
+    map: PEXT_Back_Texture,
+    side: THREE.FrontSide
+});
+export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];

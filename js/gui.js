@@ -8,6 +8,12 @@ import {
 import {
     creerToitTexture,
     glassMaterial,
+    MPL_Material,
+    pignonMaterial,
+    wallMaterial,
+    PEXT_Material,
+    PEXT_Front_Material,
+    PEXT_Back_Material,
     COLOR_ARRAY
 }
 from "./materials.js"
@@ -361,6 +367,8 @@ export function displayGui() {
             for (var i = 1; i <= nbTravees; i++) {
                 var travee = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 travee.children[indiceRoof].visible = false;
+
+                travee.children[indiceRoof].visible = false;
             }
         } else {
             for (var i = 1; i <= nbTravees; i++) {
@@ -384,11 +392,35 @@ export function displayGui() {
     });
 
     guiEnv.add(controller, 'armaturesBois').onChange(function (value) {
-        /*
-                scene.children.forEach(function (child) {
-                    log(child.name + child.geometry.material);
-                });
-                */
+
+        if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('afficherToit')").click();
+
+        scene.traverse(function (child) {
+
+            if (!value) {
+                // On remet la texture d'origine
+                switch (child.material) {
+                    case MPL_Material:
+                        child.material = wallMaterial;
+                        break;
+                    case PEXT_Material:
+                        child.material = pignonMaterial;
+                        break;
+                }
+            } else {
+                // Plus compliqué : chaque module a sa propre texture
+                switch (child.material) {
+                    case wallMaterial:
+                        child.material = MPL_Material;
+                        break;
+                    case pignonMaterial:
+                        child.material = PEXT_Material;
+                        break;
+                }
+
+            }
+        });
     });
 
     guiEnv.open();
