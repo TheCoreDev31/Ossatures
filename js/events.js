@@ -296,7 +296,7 @@ export function onMouseDoubleClick(event) {
     var objetTouche, faceTouchee;
     var _faceExterneMur = 10;
 
-    if ($("#quitter-vue-aerienne").css("display") == "flex") return;
+    if ($("#vue-aerienne").css("display") == "flex") return;
 
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

@@ -147,9 +147,9 @@ export var floorMaterial = new THREE.MeshBasicMaterial({
 var SOLP_Up_Texture = new THREE.Texture();
 var SOLP_Down_Texture = new THREE.Texture();
 var SOLP_Bump_Texture = new THREE.Texture();
-SOLP_Up_Texture = textureLoader.load("img/textures/SOLP_U.png");
-SOLP_Down_Texture = textureLoader.load("img/textures/SOLP_D.png");
-SOLP_Bump_Texture = textureLoader.load("img/textures/SOLP_D_bump.png");
+SOLP_Up_Texture = textureLoader.load("img/openings/SOLP_U.png");
+SOLP_Down_Texture = textureLoader.load("img/openings/SOLP_D.png");
+SOLP_Bump_Texture = textureLoader.load("img/openings/SOLP_D_bump.png");
 
 export var SOLP_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLP_Up_Texture,
@@ -167,9 +167,9 @@ export var SOLP_Down_Material = new THREE.MeshStandardMaterial({
 var SOLE_1_Up_Texture = new THREE.Texture();
 var SOLE_1_Down_Texture = new THREE.Texture();
 var SOLE_1_Bump_Texture = new THREE.Texture();
-SOLE_1_Up_Texture = textureLoader.load("img/textures/SOLE_1_U.png");
-SOLE_1_Down_Texture = textureLoader.load("img/textures/SOLE_1_D.png");
-SOLE_1_Bump_Texture = textureLoader.load("img/textures/SOLE_1_D_bump.png");
+SOLE_1_Up_Texture = textureLoader.load("img/openings/SOLE_1_U.png");
+SOLE_1_Down_Texture = textureLoader.load("img/openings/SOLE_1_D.png");
+SOLE_1_Bump_Texture = textureLoader.load("img/openings/SOLE_1_D_bump.png");
 export var SOLE_1_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_1_Up_Texture,
     vertexColors: true,
@@ -185,9 +185,9 @@ export var SOLE_1_Down_Material = new THREE.MeshStandardMaterial({
 var SOLE_2_Up_Texture = new THREE.Texture();
 var SOLE_2_Down_Texture = new THREE.Texture();
 var SOLE_2_Bump_Texture = new THREE.Texture();
-SOLE_2_Up_Texture = textureLoader.load("img/textures/SOLE_2_U.png");
-SOLE_2_Down_Texture = textureLoader.load("img/textures/SOLE_2_D.png");
-SOLE_2_Bump_Texture = textureLoader.load("img/textures/SOLE_2_D_bump.png");
+SOLE_2_Up_Texture = textureLoader.load("img/openings/SOLE_2_U.png");
+SOLE_2_Down_Texture = textureLoader.load("img/openings/SOLE_2_D.png");
+SOLE_2_Bump_Texture = textureLoader.load("img/openings/SOLE_2_D_bump.png");
 export var SOLE_2_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_2_Up_Texture,
     vertexColors: true,
@@ -203,9 +203,9 @@ export var SOLE_2_Down_Material = new THREE.MeshStandardMaterial({
 var SOLT_Up_Texture = new THREE.Texture();
 var SOLT_Down_Texture = new THREE.Texture();
 var SOLT_Bump_Texture = new THREE.Texture();
-SOLT_Up_Texture = textureLoader.load("img/textures/SOLT_U.png");
-SOLT_Down_Texture = textureLoader.load("img/textures/SOLT_D.png");
-SOLT_Bump_Texture = textureLoader.load("img/textures/SOLT_D_bump.png");
+SOLT_Up_Texture = textureLoader.load("img/openings/SOLT_U.png");
+SOLT_Down_Texture = textureLoader.load("img/openings/SOLT_D.png");
+SOLT_Bump_Texture = textureLoader.load("img/openings/SOLT_D_bump.png");
 export var SOLT_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLT_Up_Texture,
     vertexColors: true,
@@ -220,6 +220,17 @@ export var SOLT_Down_Material = new THREE.MeshStandardMaterial({
 
 
 /************************    Modules   *******************/
+
+var mplTexture = loader.load("img/openings/MPL_F.png");
+mplTexture.wrapS = mplTexture.wrapT = THREE.ClampToEdgeWrapping;
+mplTexture.repeat.set(1, 1);
+export var mplMaterial = new THREE.MeshLambertMaterial({
+    map: mplTexture,
+    transparent: true
+});
+
+
+
 
 // Texture armature bois
 var wallBoisTexture = loader.load("img/openings/MPEF.png");
