@@ -142,7 +142,7 @@ export var floorMaterial = new THREE.MeshBasicMaterial({
 
 /****************************************   Armatures bois   *************************************************/
 
-/*************   Planchers  ***********/
+/************************   Planchers  *******************/
 
 var SOLP_Up_Texture = new THREE.Texture();
 var SOLP_Down_Texture = new THREE.Texture();
@@ -219,6 +219,7 @@ export var SOLT_Down_Material = new THREE.MeshStandardMaterial({
 });
 
 
+/************************    Modules   *******************/
 
 // Texture armature bois
 var wallBoisTexture = loader.load("img/openings/MPEF.png");
