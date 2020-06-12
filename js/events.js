@@ -302,14 +302,14 @@ export function onMouseDoubleClick(event) {
     faceTouchee = intersects[0].faceIndex;
 
     // On n'intercepte volontairement pas certains objets
-    if (objetTouche.name == 'excluded') return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
+    if (objetTouche.name.includes('excluded')) return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
     if (objetTouche.name.includes('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < _faceExterneMur) return; // Façade != façade avant du mur
 
     // Pour le cas particulier du toit, qui doit laisser passer le raycast, on recherche le prochain objet ni transparent ni exclu.
     var trouve = false;
-    if (objetTouche.name == 'transparent') {
+    if (objetTouche.name.includes('transparent')) {
         for (var i = 1; i < intersects.length; i++) {
-            if (intersects[i].object.name != 'transparent' && intersects[i].object.name != 'excluded') {
+            if (!intersects[i].object.name.includes('transparent') && !intersects[i].object.name.includes('excluded')) {
                 objetTouche = intersects[i].object;
                 faceTouchee = intersects[i].faceIndex;
                 trouve = true;

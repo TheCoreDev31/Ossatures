@@ -89,7 +89,7 @@ export function supprimerOuverture(nomObjet) {
 export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustation = false) {
 
     var windowGrp = new THREE.Group();
-    var largeur, hauteur, epaisseur, elevation;
+    var largeur, hauteur, epaisseur, elevation, decalageX;
     var nbPanneaux = 1;
     var murInterieur = false;
 
@@ -98,6 +98,8 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
     hauteur = PRODUITS[typeOuverture]['hauteur'];
     elevation = PRODUITS[typeOuverture]['elevation'];
     epaisseur = PRODUITS[typeOuverture]['epaisseur'];
+    decalageX = PRODUITS[typeOuverture]['decalageX'];
+
 
     var dernierRang = 2;
     if ((face.includes('PG') && tableauTravees[nomTravee]['rangDansConstruction'] != 1) ||
@@ -191,39 +193,40 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
     // Pour rappel, l'ouverture est créée face à soi.
     switch (face) {
         case 'AV':
-            positionX = 0;
+            positionX = 0 + decalageX;
             positionZ = (LONGUEUR_TRAVEE / 2) - epaisseur / 2 + 0.5;
             break;
         case 'AR':
             windowGrp.rotation.y = Math.PI;
-            positionX = 0;
+            positionX = 0 + decalageX;
             positionZ = -(LONGUEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
             break;
         case 'PGAV':
             windowGrp.rotation.y = -Math.PI / 2;
             positionX = -(LARGEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
-            positionZ = (LONGUEUR_TRAVEE / 4);
+            positionZ = (LONGUEUR_TRAVEE / 4) + decalageX;
             break;
         case 'PGAR':
             windowGrp.rotation.y = -Math.PI / 2;
             positionX = -(LARGEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
-            positionZ = -(LONGUEUR_TRAVEE / 4);
+            positionZ = -(LONGUEUR_TRAVEE / 4) + decalageX;
             break;
         case 'PDAV':
             windowGrp.rotation.y = Math.PI / 2;
             positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = (LONGUEUR_TRAVEE / 4);
+            positionZ = (LONGUEUR_TRAVEE / 4) + decalageX;
             break;
         case 'PDAR':
             windowGrp.rotation.y = Math.PI / 2;
             positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = -(LONGUEUR_TRAVEE / 4);
+            positionZ = -(LONGUEUR_TRAVEE / 4) + decalageX;
             break;
     }
 
     positionX += tableauTravees[nomTravee]['positionX'];
     positionZ += tableauTravees[nomTravee]['positionZ'];
     windowGrp.position.set(positionX, positionY, positionZ);
+
 
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
     switch (face) {
@@ -308,14 +311,14 @@ export function creerToit(nomTravee) {
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
-    frontPan.name = 'excluded';
+    frontPan.name = 'toit_excluded';
     roofGrp.add(frontPan);
 
     var rearPan = frontPan.clone();
     rearPan.rotateX(2 * degrees_to_radians(55));
     rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 17.5);
     rearPan.castShadow = true;
-    rearPan.name = 'excluded';
+    rearPan.name = 'toit_excluded';
     roofGrp.add(rearPan);
 
     var pignonGeometry = new THREE.Shape();
@@ -331,7 +334,7 @@ export function creerToit(nomTravee) {
     var leftPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     leftPignon.rotation.y = Math.PI / 2;
     leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    leftPignon.name = 'excluded';
+    leftPignon.name = 'pignon_excluded';
     roofGrp.add(leftPignon);
     var rightPignon = leftPignon.clone()
     rightPignon.position.x = (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR;
@@ -591,7 +594,7 @@ export function creerTravee() {
         }
     }
 
-    // Gestion de l'incrustation des modules MPL
+    // Gestion de l'incrustation pour la vue d'implantation
     var lesMurs = new Array('AV', 'AR', 'PGAV', 'PGAR', 'PDAR', 'PDAV');
     for (var i = 0; i < 6; i++) {
         var decalageIncrustationX = 0,

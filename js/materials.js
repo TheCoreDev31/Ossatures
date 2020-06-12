@@ -226,19 +226,104 @@ export var SOLT_Material = [SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material
 
 /************************    Modules   *******************/
 
+/******   Mur plein   ****/
 var MPL_Front_Texture = textureLoader.load("img/openings/MPL_F.png");
 var MPL_Front_Material = new THREE.MeshLambertMaterial({
     map: MPL_Front_Texture,
-    vertexColors: true,
-    transparent: true
+    vertexColors: true
 });
 var MPL_Back_Texture = textureLoader.load("img/openings/MPL_B.png");
 var MPL_Back_Material = new THREE.MeshLambertMaterial({
     map: MPL_Back_Texture,
+    vertexColors: true
+});
+export var MPL_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Back_Material, MPL_Front_Material];
+
+/******   Porte d'entrée   ****/
+var MPE_Front_Texture = textureLoader.load("img/openings/MPE_F.png");
+var MPE_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPE_Front_Texture,
     vertexColors: true,
     transparent: true
 });
-export var MPL_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Back_Material, MPL_Front_Material];
+var MPE_Back_Texture = textureLoader.load("img/openings/MPE_B.png");
+var MPE_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPE_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MPE_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPE_Back_Material, MPE_Front_Material];
+
+/******   Fenêtre de type F1   ****/
+var MF1_Front_Texture = textureLoader.load("img/openings/MF1_F.png");
+var MF1_Front_Material = new THREE.MeshLambertMaterial({
+    map: MF1_Front_Texture,
+    vertexColors: true,
+    transparent: true
+});
+var MF1_Back_Texture = textureLoader.load("img/openings/MF1_B.png");
+var MF1_Back_Material = new THREE.MeshLambertMaterial({
+    map: MF1_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MF1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF1_Back_Material, MF1_Front_Material];
+
+/******   Fenêtre de type F2   ****/
+var MF2_Front_Texture = textureLoader.load("img/openings/MF2_F.png");
+var MF2_Front_Material = new THREE.MeshLambertMaterial({
+    map: MF2_Front_Texture,
+    vertexColors: true,
+    transparent: true
+});
+var MF2_Back_Texture = textureLoader.load("img/openings/MF2_B.png");
+var MF2_Back_Material = new THREE.MeshLambertMaterial({
+    map: MF2_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MF2_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF2_Back_Material, MF2_Front_Material];
+
+/******   Combo porte d'entrée + fenêtre F1   ****/
+var MPEF_Front_Texture = textureLoader.load("img/openings/MPEF_F.png");
+var MPEF_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPEF_Front_Texture,
+    vertexColors: true,
+    transparent: true
+});
+var MPEF_Back_Texture = textureLoader.load("img/openings/MPEF_B.png");
+var MPEF_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPEF_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MPEF_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPEF_Back_Material, MPEF_Front_Material];
+
+/******   Porte-fenêtre    ****/
+var MPF_Front_Texture = textureLoader.load("img/openings/MPF_F.png");
+var MPF_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPF_Front_Texture,
+    vertexColors: true,
+    transparent: true
+});
+var MPF_Back_Texture = textureLoader.load("img/openings/MPF_B.png");
+var MPF_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPF_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MPF_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPF_Back_Material, MPF_Front_Material];
+
+/******   Portique intérieur    ****/
+var MPI_Texture = textureLoader.load("img/openings/MPI.png");
+MPI_Texture.wrapS = MPI_Texture.wrapT = THREE.RepeatWrapping;
+MPI_Texture.repeat.set(10, 20);
+var MPI_Material = new THREE.MeshLambertMaterial({
+    map: MPI_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MPI_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPI_Material, MPI_Material];
 
 
 /*************************    Pignons      *****************************/
@@ -249,7 +334,7 @@ PEXT_Front_Texture.repeat.set(0.014, 0.037);
 PEXT_Front_Texture.offset.set(0.5, 0);
 export var PEXT_Front_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Front_Texture,
-    side: THREE.FrontSide
+    color: COLOR_ARRAY['blanc']
 });
 var PEXT_Back_Texture = textureLoader.load("img/openings/PEXT_B.png");
 PEXT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
@@ -257,6 +342,6 @@ PEXT_Back_Texture.repeat.set(0.014, 0.037);
 PEXT_Back_Texture.offset.set(0.5, 0);
 export var PEXT_Back_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Back_Texture,
-    side: THREE.FrontSide
+    color: COLOR_ARRAY['blanc']
 });
 export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];

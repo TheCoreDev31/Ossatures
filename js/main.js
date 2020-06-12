@@ -236,9 +236,10 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['largeur'] = 9;
     PRODUITS['PE']['hauteur'] = 21.5;
     PRODUITS['PE']['epaisseur'] = 3;
-    PRODUITS['PE']['elevation'] = 0.5;
+    PRODUITS['PE']['elevation'] = 0.3;
     PRODUITS['PE']['interieur'] = true;
     PRODUITS['PE']['exterieur'] = true;
+    PRODUITS['PE']['decalageX'] = 0.1;
     PRODUITS['PE']['codeModule'] = 'MPE';
 
     PRODUITS['F1'] = new Array(nbCaract);
@@ -246,9 +247,10 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['largeur'] = 4.5;
     PRODUITS['F1']['hauteur'] = 6.5;
     PRODUITS['F1']['epaisseur'] = 3;
-    PRODUITS['F1']['elevation'] = 15;
+    PRODUITS['F1']['elevation'] = 14.8;
     PRODUITS['F1']['interieur'] = true;
     PRODUITS['F1']['exterieur'] = true;
+    PRODUITS['F1']['decalageX'] = -8.8;
     PRODUITS['F1']['codeModule'] = 'MF1';
 
     PRODUITS['F2'] = new Array(nbCaract);
@@ -259,6 +261,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['elevation'] = 10;
     PRODUITS['F2']['interieur'] = true;
     PRODUITS['F2']['exterieur'] = true;
+    PRODUITS['F2']['decalageX'] = -0.5;
     PRODUITS['F2']['codeModule'] = 'MF2';
 
     PRODUITS['PF'] = new Array(nbCaract);
@@ -269,6 +272,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['elevation'] = 0;
     PRODUITS['PF']['interieur'] = true;
     PRODUITS['PF']['exterieur'] = true;
+    PRODUITS['PF']['decalageX'] = -0.5;
     PRODUITS['PF']['codeModule'] = 'MPF';
 
     PRODUITS['PG'] = new Array(nbCaract);
@@ -279,6 +283,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG']['elevation'] = 0;
     PRODUITS['PG']['interieur'] = true;
     PRODUITS['PG']['exterieur'] = true;
+    PRODUITS['PG']['decalageX'] = 0;
     PRODUITS['PG']['codeModule'] = 'MPG1';
 
     PRODUITS['PE+F1'] = new Array(nbCaract);
@@ -289,6 +294,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['elevation'] = 0;
     PRODUITS['PE+F1']['interieur'] = true;
     PRODUITS['PE+F1']['exterieur'] = true;
+    PRODUITS['PE+F1']['decalageX'] = 0;
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
 
     PRODUITS['PO'] = new Array(nbCaract);
@@ -299,6 +305,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['elevation'] = 10.5;
     PRODUITS['PO']['interieur'] = true;
     PRODUITS['PO']['exterieur'] = false;
+    PRODUITS['PO']['decalageX'] = 0;
     PRODUITS['PO']['codeModule'] = 'MPI';
 }
 
@@ -934,7 +941,7 @@ $(document).ready(function () {
     var travee1 = creerTravee();
     scene.add(travee1);
 
-    incrusterCotes();
+    //    incrusterCotes();
 
     init();
     displayGui();

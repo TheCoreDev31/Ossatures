@@ -39,6 +39,7 @@ ground.receiveShadow = true;
 ground.castShadow = false;
 ground.matrixAutoUpdate = false;
 ground.updateMatrix();
+ground.name = 'ground';
 scene.add(ground);
 
 scene.background = COLOR_ARRAY['bleu_ciel'];
@@ -47,6 +48,7 @@ scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 200, 1000);
 
 // Repère face avant
 var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(16, 16), boussoleMaterial);
+boussole.name = 'boussole';
 boussole.rotation.x = -Math.PI / 2;
 boussole.position.set(0, -(HAUTEUR_TRAVEE / 2) + 0.1, 100);
 scene.add(boussole);

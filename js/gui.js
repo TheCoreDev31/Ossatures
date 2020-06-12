@@ -8,12 +8,16 @@ import {
 import {
     creerToitTexture,
     glassMaterial,
-    MPL_Material,
     pignonMaterial,
     wallMaterial,
+    MPL_Material,
+    MPE_Material,
+    MF1_Material,
+    MF2_Material,
+    MPEF_Material,
+    MPF_Material,
+    MPI_Material,
     PEXT_Material,
-    PEXT_Front_Material,
-    PEXT_Back_Material,
     COLOR_ARRAY
 }
 from "./materials.js"
@@ -46,9 +50,13 @@ export function unSelect() {
         var objet = scene.getObjectByName(objetSelectionne);
 
         for (var i = 0; i < facesSelectionnees.length; i++) {
-            if (objet.parent.name.includes('>'))
-                objet.material = glassMaterial;
-            else
+            if (objet.parent.name.includes('>')) {
+                if (objet.name.includes('Portique')) {
+                    objet.material = wallMaterial;
+                } else {
+                    objet.material = glassMaterial;
+                }
+            } else
                 objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
         }
         objet.geometry.elementsNeedUpdate = true;
@@ -243,8 +251,8 @@ export function displayGui() {
     var controller = new function () {
         this.afficherToit = true;
         this.afficherPlancher = true;
-        this.afficherCotes = true;
-        this.armaturesBois = false;
+        this.afficherCotes = false;
+        this.ossatureBois = false;
     };
 
     var options = {
@@ -295,8 +303,8 @@ export function displayGui() {
                 var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
                 voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = false;
 
-                recalculerCotes('largeur');
-                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
+                //                recalculerCotes('largeur');
+                //                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
         },
 
@@ -349,17 +357,22 @@ export function displayGui() {
             var leToit = scene.getObjectByName(PREFIXE_TRAVEE + j + '>Toit');
             if (!value) {
                 for (var i = 0; i < leToit.children.length; i++) {
-                    leToit.children[i].material.wireframe = true;
-                    leToit.children[i].name = 'transparent';
+                    if (leToit.children[i].name.includes('toit')) {
+                        leToit.children[i].material.wireframe = true;
+                        var newName = leToit.children[i].name.replace('excluded', 'transparent');
+                        leToit.children[i].name = newName;
+                    }
                 }
             } else {
                 for (var i = 0; i < leToit.children.length; i++) {
-                    leToit.children[i].material.wireframe = false;
-                    leToit.children[i].name = 'excluded';
+                    if (leToit.children[i].name.includes('toit')) {
+                        leToit.children[i].material.wireframe = false;
+                        var newName = leToit.children[i].name.replace('transparent', 'excluded');
+                        leToit.children[i].name = newName;
+                    }
                 }
             }
         }
-        //        guiEnv.close();
     });
 
     guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
@@ -379,6 +392,10 @@ export function displayGui() {
     });
 
     guiEnv.add(controller, 'afficherCotes').onChange(function (value) {
+
+        alert('Fonction désactivée pour le moment');
+        return; // Pour l'instant DESACTIVE car bogue lors des décalages
+
         var cotesX = scene.getObjectByName('CoteX');
         var cotesY = scene.getObjectByName('CoteY');
 
@@ -391,38 +408,84 @@ export function displayGui() {
         }
     });
 
-    guiEnv.add(controller, 'armaturesBois').onChange(function (value) {
+    guiEnv.add(controller, 'ossatureBois').onChange(function (afficherBois) {
 
+        var strTravee = "^" + PREFIXE_TRAVEE + "[1-8]>AV|AR|PGAV|PGAR|PDAV|PDAR$";
+        var isTravee = new RegExp(strTravee);
+        var isOuverture = new RegExp(strTravee.substr(0, strTravee.length - 1) + ">Ouverture ")
+
+        // Tout d'abord, on masque/affiche le toit.
         if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
             $("span:contains('afficherToit')").click();
 
         scene.traverse(function (child) {
 
-            if (!value) {
-                // On remet la texture d'origine
-                switch (child.material) {
-                    case MPL_Material:
-                        child.material = wallMaterial;
-                        break;
-                    case PEXT_Material:
-                        child.material = pignonMaterial;
-                        break;
-                }
-            } else {
-                // Plus compliqué : chaque module a sa propre texture
-                switch (child.material) {
-                    case wallMaterial:
-                        child.material = MPL_Material;
-                        break;
-                    case pignonMaterial:
-                        child.material = PEXT_Material;
-                        break;
+            if (afficherBois) {
+                if (child instanceof THREE.Mesh) {
+
+                    switch (child.material) {
+                        case wallMaterial:
+                            if (isTravee.test(child.name)) {
+
+                                child.material = MPL_Material;
+                                // Il faut récupérer le type d'ouverture présent sur le module.
+                                objetsModifiables.forEach(function (objet) {
+                                    if (objet.name.includes(child.name + ">Ouverture")) {
+                                        var module = objet.name.substr(objet.name.lastIndexOf(' ') + 1, objet.name.length);
+
+                                        switch (module) {
+                                            case "PE":
+                                                child.material = MPE_Material;
+                                                break;
+                                            case "F1":
+                                                child.material = MF1_Material;
+                                                break;
+                                            case "F2":
+                                                child.material = MF2_Material;
+                                                break;
+                                            case "PE+F1":
+                                                child.material = MPEF_Material;
+                                                break;
+                                            case "PF":
+                                                child.material = MPF_Material;
+                                                break;
+                                            case "PO":
+                                                child.material = MPI_Material;
+                                                break;
+                                        }
+                                    }
+                                });
+                            } else
+                                child.material = MPL_Material;
+                            break;
+                        case pignonMaterial:
+                            child.material = PEXT_Material;
+                            break;
+                    }
                 }
 
+                //                if (child instanceof THREE.Group && child.name.includes('Ouverture')) {
+                //                    child.visible = false;
+                //                }
+
+            } else {
+                // Texture d'origine
+                if (child instanceof THREE.Mesh) {
+
+                    if (isTravee.test(child.name))
+                        child.material = wallMaterial;
+                }
+
+                if (child instanceof THREE.Group && child.name.includes('Ouverture')) {
+                    child.visible = true;
+                }
             }
+
+            camera.updateMatrixWorld();
         });
     });
 
     guiEnv.open();
+    //        guiEnv.close();
 
 }
