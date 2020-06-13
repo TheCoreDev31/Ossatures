@@ -317,13 +317,28 @@ export var MPF_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Mat
 /******   Portique intérieur    ****/
 var MPI_Texture = textureLoader.load("img/openings/MPI.png");
 MPI_Texture.wrapS = MPI_Texture.wrapT = THREE.RepeatWrapping;
-MPI_Texture.repeat.set(10, 20);
+MPI_Texture.repeat.set(0.5, 0.5);
 var MPI_Material = new THREE.MeshLambertMaterial({
     map: MPI_Texture,
     vertexColors: true,
     transparent: true
 });
-export var MPI_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPI_Material, MPI_Material];
+export var MPI_Material = [MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material];
+
+/******   Porte de garage    ****/
+var MPG1_Front_Texture = textureLoader.load("img/openings/MPG1_F.png");
+var MPG1_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPG1_Front_Texture,
+    vertexColors: true,
+    transparent: true
+});
+var MPG1_Back_Texture = textureLoader.load("img/openings/MPG1_B.png");
+var MPG1_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPG1_Back_Texture,
+    vertexColors: true,
+    transparent: true
+});
+export var MPG1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPG1_Back_Material, MPG1_Front_Material];
 
 
 /*************************    Pignons      *****************************/

@@ -275,16 +275,16 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['decalageX'] = -0.5;
     PRODUITS['PF']['codeModule'] = 'MPF';
 
-    PRODUITS['PG'] = new Array(nbCaract);
-    PRODUITS['PG']['VT'] = 0;
-    PRODUITS['PG']['largeur'] = 24;
-    PRODUITS['PG']['hauteur'] = 20;
-    PRODUITS['PG']['epaisseur'] = 3;
-    PRODUITS['PG']['elevation'] = 0;
-    PRODUITS['PG']['interieur'] = true;
-    PRODUITS['PG']['exterieur'] = true;
-    PRODUITS['PG']['decalageX'] = 0;
-    PRODUITS['PG']['codeModule'] = 'MPG1';
+    PRODUITS['PG1'] = new Array(nbCaract);
+    PRODUITS['PG1']['VT'] = 0;
+    PRODUITS['PG1']['largeur'] = 24;
+    PRODUITS['PG1']['hauteur'] = 20;
+    PRODUITS['PG1']['epaisseur'] = 3;
+    PRODUITS['PG1']['elevation'] = 0;
+    PRODUITS['PG1']['interieur'] = true;
+    PRODUITS['PG1']['exterieur'] = true;
+    PRODUITS['PG1']['decalageX'] = 0.5;
+    PRODUITS['PG1']['codeModule'] = 'MPG1';
 
     PRODUITS['PE+F1'] = new Array(nbCaract);
     PRODUITS['PE+F1']['VT'] = 0.5;
@@ -941,7 +941,7 @@ $(document).ready(function () {
     var travee1 = creerTravee();
     scene.add(travee1);
 
-    //    incrusterCotes();
+    incrusterCotes();
 
     init();
     displayGui();

@@ -172,7 +172,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
             windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
             windowGrp.add(windowGlass);
         } else {
-            if (typeOuverture == 'PG')
+            if (typeOuverture == 'PG1')
                 var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
             else
                 var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
