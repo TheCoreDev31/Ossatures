@@ -286,6 +286,17 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['decalageX'] = 0.5;
     PRODUITS['PG1']['codeModule'] = 'MPG1';
 
+    PRODUITS['PG2'] = new Array(nbCaract);
+    PRODUITS['PG2']['VT'] = 0;
+    PRODUITS['PG2']['largeur'] = 24;
+    PRODUITS['PG2']['hauteur'] = 20;
+    PRODUITS['PG2']['epaisseur'] = 3;
+    PRODUITS['PG2']['elevation'] = 0;
+    PRODUITS['PG2']['interieur'] = true;
+    PRODUITS['PG2']['exterieur'] = true;
+    PRODUITS['PG2']['decalageX'] = 0.5;
+    PRODUITS['PG2']['codeModule'] = 'MPG2';
+
     PRODUITS['PE+F1'] = new Array(nbCaract);
     PRODUITS['PE+F1']['VT'] = 0.5;
     PRODUITS['PE+F1']['largeur'] = 0;
