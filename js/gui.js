@@ -479,6 +479,7 @@ export function displayGui() {
 
                         case pignonMaterial:
                             child.material = PEXT_Material;
+                            //                            child.geometry.faces[0].materialIndex = 1;
                             break;
                     }
                 }

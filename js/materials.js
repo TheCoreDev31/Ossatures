@@ -125,10 +125,11 @@ export var wallMaterial = new THREE.MeshLambertMaterial({
 var pignonTexture = textureLoader.load("img/textures/briques.jpg");
 pignonTexture.wrapS = pignonTexture.wrapT = THREE.RepeatWrapping;
 pignonTexture.repeat.set(0.06, 0.08);
-export var pignonMaterial = new THREE.MeshLambertMaterial({
+var pignonExtMaterial = new THREE.MeshLambertMaterial({
     map: pignonTexture,
     color: COLOR_ARRAY['blanc']
 });
+export var pignonMaterial = [pignonExtMaterial, pignonExtMaterial];
 
 var floorTexture = textureLoader.load("img/textures/carrelage.jpg");
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
@@ -361,4 +362,15 @@ export var PEXT_Back_Material = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['blanc'],
     side: THREE.DoubleSide
 });
-export var PEXT_Material = [PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Back_Material];
+export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];
+
+
+/*
+
+var multi_material = [new THREE.MeshPhongMaterial(),new THREE.MeshPhongMaterial()]
+var mesh = new THREE.Mesh(new THREE.BoxGeometry(100,100,100),multi_material)
+mesh.geometry.faces[0].materialIndex = 1;
+mesh.geometry.faces[1].materialIndex = 1;
+scene.add(mesh)
+
+*/

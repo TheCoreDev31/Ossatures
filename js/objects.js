@@ -331,17 +331,20 @@ export function creerToit(nomTravee) {
         bevelEnabled: false,
         material: PEXT_Material
     };
-    var leftPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+    var leftPignon = new THREE.Mesh(new THREE.ExtrudeGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+    leftPignon.geometry.faces[2].materialIndex = leftPignon.geometry.faces[3].materialIndex = 1;
     leftPignon.rotation.y = Math.PI / 2;
     leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
     leftPignon.name = 'pignonGauche_excluded';
-    roofGrp.add(leftPignon);
-    var rightPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+
+    var rightPignon = new THREE.Mesh(new THREE.ExtrudeGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+    rightPignon.geometry.faces[2].materialIndex = rightPignon.geometry.faces[3].materialIndex = 1;
     rightPignon.rotation.y = -Math.PI / 2;
     rightPignon.position.set((LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
     rightPignon.name = 'pignonDroit_excluded';
-    roofGrp.add(rightPignon);
 
+    roofGrp.add(leftPignon);
+    roofGrp.add(rightPignon);
     roofGrp.name = nomTravee + '>Toit';
     return roofGrp;
 }
