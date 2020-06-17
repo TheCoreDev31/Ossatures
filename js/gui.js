@@ -483,6 +483,10 @@ export function displayGui() {
                         if (isTravee.test(child.name))
                             child.material = wallMaterial;
                     }
+
+                    if (child.material == PEXT_Material) {
+                        child.material = pignonMaterial;
+                    }
                 }
 
                 if (child instanceof THREE.Group && child.name.includes('Ouverture') && !child.name.includes(' PO')) {

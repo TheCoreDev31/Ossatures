@@ -42,6 +42,12 @@ body {
     right: 50px;
 }
 
+.logo h4 {
+    color: white;
+    font-size: 14px;
+    text-align: end;
+}
+
 .image-logo {
     filter: drop-shadow(5px 5px 5px black);
 }
