@@ -349,7 +349,8 @@ PEXT_Front_Texture.repeat.set(0.014, 0.037);
 PEXT_Front_Texture.offset.set(0.5, 0);
 export var PEXT_Front_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Front_Texture,
-    color: COLOR_ARRAY['blanc']
+    color: COLOR_ARRAY['blanc'],
+    side: THREE.DoubleSide
 });
 var PEXT_Back_Texture = textureLoader.load("img/openings/PEXT_B.png");
 PEXT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
@@ -357,6 +358,7 @@ PEXT_Back_Texture.repeat.set(0.014, 0.037);
 PEXT_Back_Texture.offset.set(0.5, 0);
 export var PEXT_Back_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Back_Texture,
-    color: COLOR_ARRAY['blanc']
+    color: COLOR_ARRAY['blanc'],
+    side: THREE.DoubleSide
 });
-export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];
+export var PEXT_Material = [PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Front_Material, PEXT_Back_Material];

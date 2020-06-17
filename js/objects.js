@@ -334,10 +334,12 @@ export function creerToit(nomTravee) {
     var leftPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     leftPignon.rotation.y = Math.PI / 2;
     leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    leftPignon.name = 'pignon_excluded';
+    leftPignon.name = 'pignonGauche_excluded';
     roofGrp.add(leftPignon);
-    var rightPignon = leftPignon.clone()
-    rightPignon.position.x = (LARGEUR_TRAVEE / 2) - EPAISSEUR_MUR;
+    var rightPignon = new THREE.Mesh(new THREE.ExtrudeBufferGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
+    rightPignon.rotation.y = -Math.PI / 2;
+    rightPignon.position.set((LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
+    rightPignon.name = 'pignonDroit_excluded';
     roofGrp.add(rightPignon);
 
     roofGrp.name = nomTravee + '>Toit';
@@ -362,7 +364,11 @@ export function decalerTravee(nomTravee, direction) {
 
     if (nbOuvertures > 0) {
         if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+
+        unSelect();
         supprimerToutesOuvertures();
+        if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('ossatureBois')").click();
     }
 
     var travee = scene.getObjectByName(nomTravee);
@@ -402,9 +408,12 @@ export function decalerTravee(nomTravee, direction) {
                 if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
+
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
                 }
             }
         }
@@ -418,9 +427,11 @@ export function decalerTravee(nomTravee, direction) {
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
                     traveeDroite.children[indicePGAV].visible = travee.children[indicePGAR].visible = travee.children[indicePDAV].visible = true;
                     travee.children[indicePDAR].visible = false;
+                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
+                    travee.children[indiceToit].children[indicePignonDroit].visible = false;
                 }
             }
         }
@@ -448,9 +459,11 @@ export function decalerTravee(nomTravee, direction) {
                 if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
                     traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
                 }
             }
         }
@@ -464,9 +477,11 @@ export function decalerTravee(nomTravee, direction) {
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
                     travee.children[indicePDAR].visible = traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = false;
+                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
+                    travee.children[indiceToit].children[indicePignonDroit].visible = false;
                 }
             }
         }

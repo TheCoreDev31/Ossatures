@@ -274,6 +274,10 @@ export function displayGui() {
                 }
             }
 
+            // On repasse volontairement en texture classique.
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('ossatureBois')").click();
+
             var travee = creerTravee();
             if (travee) {
 
@@ -300,9 +304,10 @@ export function displayGui() {
                     }
                 }
 
-                // On masque les cloisons de la travée de gauche
+                // On masque les cloisons de la travée de gauche, ainsi que son pignon droit.
                 var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
                 voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = false;
+                voisine.children[indiceToit].children[indicePignonDroit].visible = false;
 
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
@@ -319,6 +324,11 @@ export function displayGui() {
                 if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
                 supprimerToutesOuvertures();
             }
+
+            // On repasse volontairement en texture classique.
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('ossatureBois')").click();
+
             var nomTravee = PREFIXE_TRAVEE + nbTravees;
             var travee = scene.getObjectByName(nomTravee);
             scene.remove(travee);
@@ -337,6 +347,7 @@ export function displayGui() {
             // On raffiche les cloisons de la travée de gauche
             var voisine = scene.getObjectByName(PREFIXE_TRAVEE + nbTravees);
             voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = true;
+            voisine.children[indiceToit].children[indicePignonDroit].visible = true;
 
             recalculerCotes('largeur');
             scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
