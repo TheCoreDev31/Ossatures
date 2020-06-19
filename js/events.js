@@ -12,7 +12,9 @@ import {
     SOLE_1_Material,
     SOLE_2_Material,
     SOLP_Material,
-    SOLT_Material
+    SOLT_Material,
+    PEXT_Material,
+    PINT_Material
 } from "./materials.js"
 
 import {
@@ -78,6 +80,18 @@ $(".liste-deroulante").click(function (e) {
             chooseFloorHole(extraireNomTravee(objetSelectionne));
             break;
         case 'unselect':
+            unSelect();
+            break;
+        case 'addPignonOpening':
+            // On remplace la texture du pignon intérieur concerné
+            var pignon = scene.getObjectByName(objetSelectionne);
+            pignon.material = PINT_Material;
+            unSelect();
+            break;
+        case 'deletePignonOpening':
+            // On remplace la texture du pignon intérieur concerné
+            var pignon = scene.getObjectByName(objetSelectionne);
+            pignon.material = PEXT_Material;
             unSelect();
             break;
         default:
@@ -270,7 +284,7 @@ $("#dezoom").click(function (e) {
 
 export function onMouseDoubleClick(event) {
     var objetTouche, faceTouchee;
-    var _faceExterneMur = 10;
+    var FACE_EXTERNE = 10;
 
     if ($("#vue-aerienne").css("display") == "flex") return;
 
@@ -303,7 +317,7 @@ export function onMouseDoubleClick(event) {
 
     // On n'intercepte volontairement pas certains objets
     if (objetTouche.name.includes('excluded')) return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
-    if (objetTouche.name.includes('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < _faceExterneMur) return; // Façade != façade avant du mur
+    if (objetTouche.name.startsWith('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < FACE_EXTERNE) return; // Façade != façade avant du mur
 
     // Pour le cas particulier du toit, qui doit laisser passer le raycast, on recherche le prochain objet ni transparent ni exclu.
     var trouve = false;
@@ -326,11 +340,16 @@ export function onMouseDoubleClick(event) {
 
     for (var j = 0; j < 2; j++) {
         var numFace = face * 2 + j;
-        if (objetTouche.parent.name.includes('>'))
+        if (objetTouche.parent.name.includes('>') && !objetTouche.name.includes('PINT'))
             objetTouche.material = selectedGlassMaterial;
-        else
-            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
-
+        else {
+            if (objetTouche.name.includes('PINT')) {
+                for (var k = 0; k < 12; k++) {
+                    objetTouche.geometry.faces[k].color.set(COLOR_ARRAY['highlight']);
+                }
+            } else
+                objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+        }
         objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
         objetSelectionne = objetTouche.name;
@@ -350,15 +369,20 @@ export function onMouseClick(event) {
 }
 
 
-/*
 export function onMouseMove(event) {
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     mouse.left = event.pageX;
     mouse.top = event.pageY;
+
+    if (DEBUG) {
+        var intersects = raycaster.intersectObjects(objetsModifiables, true);
+        alerte(intersects[0].name);
+    }
+
+
 }
-*/
 
 export function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;

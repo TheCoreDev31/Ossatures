@@ -8,7 +8,8 @@ from "./environment.js"
 import {
     onMouseClick,
     onMouseDoubleClick,
-    onWindowResize
+    onWindowResize,
+    onMouseMove
 } from "./events.js"
 
 import {
@@ -961,6 +962,6 @@ $(document).ready(function () {
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('dblclick', onMouseDoubleClick);
     document.addEventListener('click', onMouseClick);
-    //document.addEventListener('mousemove', onMouseMove, false);
+    //    document.addEventListener('mousemove', onMouseMove, false);
 
 });

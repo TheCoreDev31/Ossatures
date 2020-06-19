@@ -55,7 +55,7 @@ scene.add(boussole);
 
 
 // Eclairage
-scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.3));
+scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.45));
 
 // Une lampe derrière pour l'ombre des bâtiments
 const reference = 200;

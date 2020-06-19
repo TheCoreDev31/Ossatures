@@ -37,7 +37,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 72,
@@ -54,7 +54,8 @@
                 indicePGAR = 5,
                 indiceRoof = 7,
                 indiceToit = 8,
-                indicePignonDroit = 3;
+                indicePignonDroit = 3,
+                indicePignonGauche = 2;
 
             var NB_CONSTRUCTIONS_MAXI = 2;
             var NB_TRAVEES_MAXI = 4;
@@ -90,7 +91,7 @@
 
         <div class="logo">
             <img src="icons/logo.png" class="image-logo">
-            <h4>Version : 1.0</h4>
+            <h4>Version : 1.1</h4>
         </div>
 
         <!--

@@ -1,9 +1,10 @@
 export var COLOR_ARRAY = new Array(THREE.Color);
-COLOR_ARRAY['bleu_ciel'] = (new THREE.Color(0xc0defc).convertSRGBToLinear());
+COLOR_ARRAY['bleu_ciel'] = (new THREE.Color(0xc0dfff).convertSRGBToLinear());
 COLOR_ARRAY['ral7016'] = (new THREE.Color(0x303438).convertSRGBToLinear());
 COLOR_ARRAY['blanc'] = (new THREE.Color(0xffffff).convertSRGBToLinear());
 COLOR_ARRAY['crepi'] = (new THREE.Color(0xf5f2e6).convertSRGBToLinear());
 COLOR_ARRAY['marron'] = (new THREE.Color(0x744b35).convertSRGBToLinear());
+COLOR_ARRAY['bois'] = (new THREE.Color(0xfce7dc).convertSRGBToLinear());
 COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
 COLOR_ARRAY['vert'] = (new THREE.Color(0x55a06d).convertSRGBToLinear());
 COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
@@ -60,14 +61,14 @@ export var groundMaterial = new THREE.MeshLambertMaterial({
 
 
 // Toit
-export function creerToitTexture(repeatX = 1) {
-    var roofTexture = new THREE.Texture();
-    roofTexture = textureLoader.load("img/textures/ardoise.jpg");
-    roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
-    roofTexture.repeat.set(5 * repeatX, 5);
-
-    return roofTexture;
-}
+var roofTexture = textureLoader.load("img/textures/ardoise.jpg");
+roofTexture.wrapS = roofTexture.wrapT = THREE.RepeatWrapping;
+roofTexture.repeat.set(5, 5);
+var roofExtMaterial = new THREE.MeshLambertMaterial({
+    map: roofTexture,
+    color: COLOR_ARRAY['gris_clair']
+});
+export var roofMaterial = [roofExtMaterial, roofExtMaterial, roofExtMaterial, roofExtMaterial, roofExtMaterial, roofExtMaterial];
 
 
 // Pour tout type d'ouverture
@@ -155,12 +156,14 @@ SOLP_Bump_Texture = textureLoader.load("img/openings/SOLP_D_bump.png");
 var SOLP_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLP_Up_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 
 });
 var SOLP_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLP_Down_Texture,
     bumpMap: SOLP_Bump_Texture,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var SOLP_Material = [SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Up_Material, SOLP_Down_Material];
@@ -175,12 +178,14 @@ SOLE_1_Bump_Texture = textureLoader.load("img/openings/SOLE_1_D_bump.png");
 var SOLE_1_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_1_Up_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 
 });
 var SOLE_1_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLE_1_Down_Texture,
     bumpMap: SOLE_1_Bump_Texture,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var SOLE_1_Material = [SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Up_Material, SOLE_1_Down_Material];
@@ -195,12 +200,14 @@ SOLE_2_Bump_Texture = textureLoader.load("img/openings/SOLE_2_D_bump.png");
 var SOLE_2_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLE_2_Up_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 
 });
 var SOLE_2_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLE_2_Down_Texture,
     bumpMap: SOLE_2_Bump_Texture,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var SOLE_2_Material = [SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Up_Material, SOLE_2_Down_Material];
@@ -215,12 +222,15 @@ SOLT_Bump_Texture = textureLoader.load("img/openings/SOLT_D_bump.png");
 var SOLT_Up_Material = new THREE.MeshLambertMaterial({
     map: SOLT_Up_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+
     transparent: true
 
 });
 var SOLT_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLT_Down_Texture,
     bumpMap: SOLT_Bump_Texture,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var SOLT_Material = [SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Down_Material];
@@ -231,12 +241,14 @@ export var SOLT_Material = [SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material
 var MPL_Front_Texture = textureLoader.load("img/openings/MPL_F.png");
 var MPL_Front_Material = new THREE.MeshLambertMaterial({
     map: MPL_Front_Texture,
-    vertexColors: true
+    vertexColors: true,
+    color: COLOR_ARRAY['bois']
 });
 var MPL_Back_Texture = textureLoader.load("img/openings/MPL_B.png");
 var MPL_Back_Material = new THREE.MeshLambertMaterial({
     map: MPL_Back_Texture,
-    vertexColors: true
+    vertexColors: true,
+    color: COLOR_ARRAY['bois']
 });
 export var MPL_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Back_Material, MPL_Front_Material];
 
@@ -245,12 +257,14 @@ var MPE_Front_Texture = textureLoader.load("img/openings/MPE_F.png");
 var MPE_Front_Material = new THREE.MeshLambertMaterial({
     map: MPE_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MPE_Back_Texture = textureLoader.load("img/openings/MPE_B.png");
 var MPE_Back_Material = new THREE.MeshLambertMaterial({
     map: MPE_Back_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MPE_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPE_Back_Material, MPE_Front_Material];
@@ -260,12 +274,14 @@ var MF1_Front_Texture = textureLoader.load("img/openings/MF1_F.png");
 var MF1_Front_Material = new THREE.MeshLambertMaterial({
     map: MF1_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MF1_Back_Texture = textureLoader.load("img/openings/MF1_B.png");
 var MF1_Back_Material = new THREE.MeshLambertMaterial({
     map: MF1_Back_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MF1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF1_Back_Material, MF1_Front_Material];
@@ -275,12 +291,14 @@ var MF2_Front_Texture = textureLoader.load("img/openings/MF2_F.png");
 var MF2_Front_Material = new THREE.MeshLambertMaterial({
     map: MF2_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MF2_Back_Texture = textureLoader.load("img/openings/MF2_B.png");
 var MF2_Back_Material = new THREE.MeshLambertMaterial({
     map: MF2_Back_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MF2_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF2_Back_Material, MF2_Front_Material];
@@ -290,12 +308,14 @@ var MPEF_Front_Texture = textureLoader.load("img/openings/MPEF_F.png");
 var MPEF_Front_Material = new THREE.MeshLambertMaterial({
     map: MPEF_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MPEF_Back_Texture = textureLoader.load("img/openings/MPEF_B.png");
 var MPEF_Back_Material = new THREE.MeshLambertMaterial({
     map: MPEF_Back_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MPEF_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPEF_Back_Material, MPEF_Front_Material];
@@ -305,12 +325,14 @@ var MPF_Front_Texture = textureLoader.load("img/openings/MPF_F.png");
 var MPF_Front_Material = new THREE.MeshLambertMaterial({
     map: MPF_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MPF_Back_Texture = textureLoader.load("img/openings/MPF_B.png");
 var MPF_Back_Material = new THREE.MeshLambertMaterial({
     map: MPF_Back_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MPF_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPF_Back_Material, MPF_Front_Material];
@@ -322,6 +344,7 @@ MPI_Texture.repeat.set(0.5, 0.5);
 var MPI_Material = new THREE.MeshLambertMaterial({
     map: MPI_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 export var MPI_Material = [MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material];
@@ -331,13 +354,15 @@ var MPG1_Front_Texture = textureLoader.load("img/openings/MPG1_F.png");
 var MPG1_Front_Material = new THREE.MeshLambertMaterial({
     map: MPG1_Front_Texture,
     vertexColors: true,
+    color: COLOR_ARRAY['bois'],
     transparent: true
 });
 var MPG1_Back_Texture = textureLoader.load("img/openings/MPG1_B.png");
 var MPG1_Back_Material = new THREE.MeshLambertMaterial({
     map: MPG1_Back_Texture,
     vertexColors: true,
-    transparent: true
+    transparent: true,
+    color: COLOR_ARRAY['bois']
 });
 export var MPG1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPG1_Back_Material, MPG1_Front_Material];
 
@@ -348,29 +373,53 @@ var PEXT_Front_Texture = textureLoader.load("img/openings/PEXT_F.png");
 PEXT_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
 PEXT_Front_Texture.repeat.set(0.014, 0.037);
 PEXT_Front_Texture.offset.set(0.5, 0);
-export var PEXT_Front_Material = new THREE.MeshLambertMaterial({
+var PEXT_Front_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Front_Texture,
-    color: COLOR_ARRAY['blanc'],
-    side: THREE.DoubleSide
+    vertexColors: true,
+    color: COLOR_ARRAY['bois']
 });
 var PEXT_Back_Texture = textureLoader.load("img/openings/PEXT_B.png");
 PEXT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
 PEXT_Back_Texture.repeat.set(0.014, 0.037);
 PEXT_Back_Texture.offset.set(0.5, 0);
-export var PEXT_Back_Material = new THREE.MeshLambertMaterial({
+var PEXT_Back_Material = new THREE.MeshLambertMaterial({
     map: PEXT_Back_Texture,
-    color: COLOR_ARRAY['blanc'],
-    side: THREE.DoubleSide
+    vertexColors: true,
+    color: COLOR_ARRAY['bois']
 });
 export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];
 
 
-/*
+var PINT_Front_Texture = textureLoader.load("img/openings/PINT_F.png");
+PINT_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Front_Texture.repeat.set(0.014, 0.039);
+PINT_Front_Texture.offset.set(0.5, 0);
+var PINT_Front_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Front_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+var PINT_Back_Texture = textureLoader.load("img/openings/PINT_B.png");
+PINT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Back_Texture.repeat.set(0.014, 0.039);
+PINT_Back_Texture.offset.set(0.5, 0);
+var PINT_Back_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Back_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+export var PINT_Material = [PINT_Front_Material, PINT_Back_Material];
 
-var multi_material = [new THREE.MeshPhongMaterial(),new THREE.MeshPhongMaterial()]
-var mesh = new THREE.Mesh(new THREE.BoxGeometry(100,100,100),multi_material)
-mesh.geometry.faces[0].materialIndex = 1;
-mesh.geometry.faces[1].materialIndex = 1;
-scene.add(mesh)
 
-*/
+/************************   Charpente   *****************************/
+
+var CH1T_Texture = textureLoader.load("img/openings/CH1T.png");
+var CH1T_Top_Material = new THREE.MeshLambertMaterial({
+    map: CH1T_Texture,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+
+export var CH1T_Material = [CH1T_Top_Material, CH1T_Top_Material, CH1T_Top_Material, CH1T_Top_Material, CH1T_Top_Material, CH1T_Top_Material];

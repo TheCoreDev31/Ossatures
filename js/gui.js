@@ -6,10 +6,10 @@ import {
 } from "./objects.js"
 
 import {
-    creerToitTexture,
     glassMaterial,
     pignonMaterial,
     wallMaterial,
+    roofMaterial,
     MPL_Material,
     MPE_Material,
     MF1_Material,
@@ -19,6 +19,8 @@ import {
     MPI_Material,
     MPG1_Material,
     PEXT_Material,
+    PINT_Material,
+    CH1T_Material,
     COLOR_ARRAY
 }
 from "./materials.js"
@@ -55,7 +57,13 @@ export function unSelect() {
                 if (objet.name.includes('Portique')) {
                     objet.material = wallMaterial;
                 } else {
-                    objet.material = glassMaterial;
+                    if (objet.name.includes('PINT')) {
+                        for (var k = 0; k < 12; k++) {
+                            objet.geometry.faces[k].color.set(COLOR_ARRAY['blanc']);
+                        }
+
+                    } else
+                        objet.material = glassMaterial;
                 }
             } else
                 objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
@@ -225,12 +233,20 @@ export function displayContextualMenu(objet, x, y) {
         if (objet.name.includes('plancher')) {
             addMenu("Positionner la trappe d'accès", 'chooseFloorHole');
         } else {
-            var nomFace = extraireFace(objet.name);
-            // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
-            if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
-                addMenu("Créer une ouverture", 'addOpening', false);
-            else
-                addMenu("Créer une ouverture", 'addOpening');
+
+            if (objet.name.includes('PINT')) {
+                if (objet.material == PEXT_Material)
+                    addMenu("Créer une ouverture", 'addPignonOpening');
+                else
+                    addMenu("Supprimer cette ouverture", 'deletePignonOpening');
+            } else {
+                var nomFace = extraireFace(objet.name);
+                // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
+                if (tableauTravees[extraireNomTravee(objet.name)]['nb_ouvertures_' + nomFace] > 0)
+                    addMenu("Créer une ouverture", 'addOpening', false);
+                else
+                    addMenu("Créer une ouverture", 'addOpening');
+            }
         }
     }
     addSeparator();
@@ -309,6 +325,10 @@ export function displayGui() {
                 voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = false;
                 voisine.children[indiceToit].children[indicePignonDroit].visible = false;
 
+                // Le pignon séparant les 2 travées devient un pignon intérieur, donc sélectionnable.
+                travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+
                 recalculerCotes('largeur');
                 scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
             }
@@ -363,24 +383,20 @@ export function displayGui() {
 
     var guiEnv = myGui.addFolder("Réglages d'affichage");
 
-    guiEnv.add(controller, 'afficherToit').onChange(function (value) {
+    guiEnv.add(controller, 'afficherToit').onChange(function (actif) {
 
         for (var j = 1; j <= nbTravees; j++) {
             var leToit = scene.getObjectByName(PREFIXE_TRAVEE + j + '>Toit');
-            if (!value) {
+            if (!actif) {
                 for (var i = 0; i < leToit.children.length; i++) {
                     if (leToit.children[i].name.includes('toit')) {
-                        leToit.children[i].material.wireframe = true;
-                        var newName = leToit.children[i].name.replace('excluded', 'transparent');
-                        leToit.children[i].name = newName;
+                        leToit.children[i].visible = false;
                     }
                 }
             } else {
                 for (var i = 0; i < leToit.children.length; i++) {
                     if (leToit.children[i].name.includes('toit')) {
-                        leToit.children[i].material.wireframe = false;
-                        var newName = leToit.children[i].name.replace('transparent', 'excluded');
-                        leToit.children[i].name = newName;
+                        leToit.children[i].visible = true;
                     }
                 }
             }
@@ -388,8 +404,8 @@ export function displayGui() {
     });
 
 
-    guiEnv.add(controller, 'afficherPlancher').onChange(function (value) {
-        if (!value) {
+    guiEnv.add(controller, 'afficherPlancher').onChange(function (actif) {
+        if (!actif) {
             for (var i = 1; i <= nbTravees; i++) {
                 var travee = scene.getObjectByName(PREFIXE_TRAVEE + i);
                 travee.children[indiceRoof].visible = false;
@@ -405,12 +421,12 @@ export function displayGui() {
     });
 
 
-    guiEnv.add(controller, 'afficherCotes').onChange(function (value) {
+    guiEnv.add(controller, 'afficherCotes').onChange(function (actif) {
 
         var cotesX = scene.getObjectByName('CoteX');
         var cotesY = scene.getObjectByName('CoteY');
 
-        if (!value) {
+        if (!actif) {
             if (cotesX) cotesX.visible = false;
             if (cotesY) cotesY.visible = false;
         } else {
@@ -424,15 +440,6 @@ export function displayGui() {
 
         var isTravee = new RegExp("^" + PREFIXE_TRAVEE + "[1-8]>AV|AR|PGAV|PGAR|PDAV|PDAR$");
 
-        // Tout d'abord, on masque/affiche le toit.
-        if (afficherBois) {
-            if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
-                $("span:contains('afficherToit')").click();
-        } else {
-            if (!$("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
-                $("span:contains('afficherToit')").click();
-        }
-
         scene.traverse(function (child) {
 
             if (afficherBois) {
@@ -440,8 +447,8 @@ export function displayGui() {
                 if ((child instanceof THREE.Mesh) && (!child.name.includes('Vitre') && !child.name.includes('Porte'))) {
 
                     switch (child.material) {
-                        case wallMaterial:
 
+                        case wallMaterial:
                             if (isTravee.test(child.name)) {
                                 child.material = MPL_Material;
                                 // Il faut récupérer le type d'ouverture présent sur le module.
@@ -479,8 +486,14 @@ export function displayGui() {
 
                         case pignonMaterial:
                             child.material = PEXT_Material;
-                            //                            child.geometry.faces[0].materialIndex = 1;
                             break;
+
+                        case roofMaterial:
+                            child.material = CH1T_Material;
+                            var newName = child.name.replace('excluded', 'transparent');
+                            child.name = newName;
+                            break;
+
                     }
                 }
 
@@ -488,6 +501,7 @@ export function displayGui() {
                     child.visible = false;
                 }
             } else {
+
                 // Texture d'origine
                 if (child instanceof THREE.Mesh) {
                     if (!child.name.includes('Vitre') && !child.name.includes('Porte')) {
@@ -498,6 +512,12 @@ export function displayGui() {
 
                     if (child.material == PEXT_Material) {
                         child.material = pignonMaterial;
+                    }
+
+                    if (child.material == CH1T_Material) {
+                        child.material = roofMaterial;
+                        var newName = child.name.replace('transparent', 'excluded');
+                        child.name = newName;
                     }
                 }
 

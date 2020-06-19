@@ -1,9 +1,9 @@
 import {
     COLOR_ARRAY,
-    creerToitTexture,
     glassMaterial,
     windowMaterial,
     doorMaterial,
+    roofMaterial,
     garageDoorMaterial,
     wallMaterial,
     pignonMaterial,
@@ -14,6 +14,7 @@ import {
     SOLT_Material,
     MPL_Material,
     PEXT_Material,
+    PINT_Material,
     createText
 } from "./materials.js"
 
@@ -303,11 +304,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 
 export function creerToit(nomTravee) {
     var roofGrp = new THREE.Group();
-    var texture = creerToitTexture();
-    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, LARGEUR_TRAVEE * 1.256, 0.2), new THREE.MeshLambertMaterial({
-        map: texture,
-        color: COLOR_ARRAY['gris_clair']
-    }));
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, LARGEUR_TRAVEE * 1.256, 0.2), roofMaterial);
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
@@ -335,13 +332,13 @@ export function creerToit(nomTravee) {
     leftPignon.geometry.faces[2].materialIndex = leftPignon.geometry.faces[3].materialIndex = 1;
     leftPignon.rotation.y = Math.PI / 2;
     leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    leftPignon.name = 'pignonGauche_excluded';
+    leftPignon.name = 'PEXT_gauche_excluded';
 
     var rightPignon = new THREE.Mesh(new THREE.ExtrudeGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     rightPignon.geometry.faces[2].materialIndex = rightPignon.geometry.faces[3].materialIndex = 1;
     rightPignon.rotation.y = -Math.PI / 2;
     rightPignon.position.set((LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    rightPignon.name = 'pignonDroit_excluded';
+    rightPignon.name = 'PEXT_droite_excluded';
 
     roofGrp.add(leftPignon);
     roofGrp.add(rightPignon);
@@ -402,39 +399,58 @@ export function decalerTravee(nomTravee, direction) {
         }
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
-        if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAR].visible = true;
-                    traveeGauche.children[indicePDAV].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
-
-                } else {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
-                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
-                }
-            }
-        }
-
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
             if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
+                // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
                     traveeDroite.children[indicePGAV].visible = travee.children[indicePGAR].visible = travee.children[indicePDAV].visible = true;
                     travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = true;
+
+                    // Gestion des pignons
+                    travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droite_excluded";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+
+                    travee.children[indiceToit].children[indicePignonDroit].material = traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
+
+                    // Gestion des pignons
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                }
+            }
+        }
+
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                // On teste la position du décalage entre travées AVANT le décalage.
+                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
+
+                    // Gestion des pignons
+                    travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_excluded";
+                    travee.children[indiceToit].children[indicePignonGauche].material = traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                } else {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+
+                    // Gestion des pignons
+                    travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                    travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                 }
             }
         }
@@ -453,24 +469,6 @@ export function decalerTravee(nomTravee, direction) {
         }
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
-        if (traveeGauche) {
-            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
-            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
-                return;
-            } else {
-                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
-                    traveeGauche.children[indicePDAR].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
-                } else {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
-                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
-                }
-            }
-        }
-
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
             if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
@@ -488,6 +486,29 @@ export function decalerTravee(nomTravee, direction) {
                 }
             }
         }
+
+        if (traveeGauche) {
+            var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+            if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
+                alerte("Impossible de réaliser un tel décalage.");
+                return;
+            } else {
+                if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
+                    traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
+
+                    // Gestion des pignons
+                    travee.children[indiceToit].children[indicePignonGauche].material = traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+
+                } else {
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+                }
+            }
+        }
+
 
         travee.position.z -= (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['positionZ'] -= (LONGUEUR_TRAVEE / 2);
