@@ -325,8 +325,7 @@ export function creerToit(nomTravee) {
     pignonGeometry.lineTo(0, 0);
     var extrudeSettings = {
         depth: EPAISSEUR_MUR,
-        bevelEnabled: false,
-        material: PEXT_Material
+        bevelEnabled: false
     };
     var leftPignon = new THREE.Mesh(new THREE.ExtrudeGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     leftPignon.geometry.faces[2].materialIndex = leftPignon.geometry.faces[3].materialIndex = 1;
@@ -338,7 +337,7 @@ export function creerToit(nomTravee) {
     rightPignon.geometry.faces[2].materialIndex = rightPignon.geometry.faces[3].materialIndex = 1;
     rightPignon.rotation.y = -Math.PI / 2;
     rightPignon.position.set((LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    rightPignon.name = 'PEXT_droite_excluded';
+    rightPignon.name = 'PEXT_droit_excluded';
 
     roofGrp.add(leftPignon);
     roofGrp.add(rightPignon);
@@ -411,17 +410,18 @@ export function decalerTravee(nomTravee, direction) {
                     travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = true;
 
-                    // Gestion des pignons
-                    travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droite_excluded";
-                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+                    // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
+                    travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
 
-                    travee.children[indiceToit].children[indicePignonDroit].material = traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
 
-                    // Gestion des pignons
+                    // Gestion des pignons (changement de nom + de texture)
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                 }
@@ -440,15 +440,18 @@ export function decalerTravee(nomTravee, direction) {
                     traveeGauche.children[indicePDAV].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
-                    // Gestion des pignons
-                    travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_excluded";
-                    travee.children[indiceToit].children[indicePignonGauche].material = traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+                    travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
 
-                    // Gestion des pignons
+                    // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                 }
@@ -475,14 +478,27 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
+                // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
                     travee.children[indicePDAR].visible = traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = true;
+
+                    // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
+                    travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
+
+                    // Gestion des pignons (changement de nom + de texture)
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                 }
             }
         }
@@ -493,18 +509,27 @@ export function decalerTravee(nomTravee, direction) {
                 alerte("Impossible de réaliser un tel décalage.");
                 return;
             } else {
+                // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
                     traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
-                    // Gestion des pignons
-                    travee.children[indiceToit].children[indicePignonGauche].material = traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
+                    travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
 
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+
+                    // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                    travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                 }
             }
         }
