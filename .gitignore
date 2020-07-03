@@ -3,3 +3,10 @@
 /Notice_MK_Bois_PROVISOIRE.pdf
 /MKBois_MODULES.html
 /css/menus.css
+/jsreportapp/logs/
+/jsreportapp/node_modules/
+/jsreportapp/jsreport.config.json
+/jsreportapp/package-lock.json
+/jsreportapp/package.json
+/jsreportapp/server.js
+/jsreportapp/data/settings

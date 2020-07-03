@@ -1,0 +1,26 @@
+<style>{#asset /Maninghem/styles.css @encoding=utf8}</style>
+
+<h1>Votre projet</h1>
+
+<h2>Etude de construction à ossature bois Maninghem</h2>
+<div>
+    <span>Client : </span>
+    <span>{{client}}</span>
+</div>
+<br/>
+<table>
+    <thead>
+        <tr>
+            <th>Module</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each modules}}
+        <tr>
+            <td width="10%">{{code}}</td>
+            <td>{{quantité}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
