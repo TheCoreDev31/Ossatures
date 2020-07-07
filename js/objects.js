@@ -14,7 +14,8 @@ import {
     SOLT_Material,
     MPL_Material,
     PEXT_Material,
-    PINT_Material,
+    PINT_Droite_Material,
+    PINT_Gauche_Material,
     createText
 } from "./materials.js"
 
@@ -26,6 +27,7 @@ import {
     retirerObjetModifiable,
     initialiserScoresVT,
     recalculerConstructions,
+    simulerCalculConstructions,
     modifierIncrustation
 } from "./main.js"
 
@@ -303,6 +305,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 
 
 export function creerToit(nomTravee) {
+    var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
     var roofGrp = new THREE.Group();
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, LARGEUR_TRAVEE * 1.256, 0.2), roofMaterial);
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
@@ -331,13 +334,13 @@ export function creerToit(nomTravee) {
     leftPignon.geometry.faces[2].materialIndex = leftPignon.geometry.faces[3].materialIndex = 1;
     leftPignon.rotation.y = Math.PI / 2;
     leftPignon.position.set(-(LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    leftPignon.name = 'PEXT_gauche_excluded';
+    leftPignon.name = prefixe + '>PEXT_gauche_excluded';
 
     var rightPignon = new THREE.Mesh(new THREE.ExtrudeGeometry(pignonGeometry, extrudeSettings), pignonMaterial);
     rightPignon.geometry.faces[2].materialIndex = rightPignon.geometry.faces[3].materialIndex = 1;
     rightPignon.rotation.y = -Math.PI / 2;
     rightPignon.position.set((LARGEUR_TRAVEE / 2), (HAUTEUR_TRAVEE / 2), 0);
-    rightPignon.name = 'PEXT_droit_excluded';
+    rightPignon.name = prefixe + '>PEXT_droit_excluded';
 
     roofGrp.add(leftPignon);
     roofGrp.add(rightPignon);
@@ -391,12 +394,17 @@ export function decalerTravee(nomTravee, direction) {
     if (direction == 'front') { // décalage vers l'avant
 
         tableauDecalages[numTravee - 1] += 1;
-        var nbConstructionSimule = recalculerConstructions(tableauDecalages);
+        var resultatsSimulation = simulerCalculConstructions(tableauDecalages);
+        var nbConstructionSimule = resultatsSimulation[0];
+        var nbMaxtravees = resultatsSimulation[1];
         if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
-            alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+            alerte("Décalage refusé : nombre maximum de constructions atteint (" + NB_CONSTRUCTIONS_MAXI + ").");
             return;
         }
-
+        if (nbMaxtravees > NB_TRAVEES_MAXI) {
+            alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
+            return;
+        }
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];

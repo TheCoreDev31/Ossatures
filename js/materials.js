@@ -390,27 +390,51 @@ var PEXT_Back_Material = new THREE.MeshLambertMaterial({
 export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];
 
 
-var PINT_Front_Texture = textureLoader.load("img/openings/PINT_F.png");
-PINT_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
-PINT_Front_Texture.repeat.set(0.014, 0.039);
-PINT_Front_Texture.offset.set(0.5, 0);
-var PINT_Front_Material = new THREE.MeshLambertMaterial({
-    map: PINT_Front_Texture,
+
+var PINT_Droite_Front_Texture = textureLoader.load("img/openings/PINT_droite_F.png");
+PINT_Droite_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Droite_Front_Texture.repeat.set(0.014, 0.039);
+PINT_Droite_Front_Texture.offset.set(0.5, 0);
+var PINT_Droite_Front_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Droite_Front_Texture,
     vertexColors: true,
     color: COLOR_ARRAY['bois'],
     transparent: true
 });
-var PINT_Back_Texture = textureLoader.load("img/openings/PINT_B.png");
-PINT_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
-PINT_Back_Texture.repeat.set(0.014, 0.039);
-PINT_Back_Texture.offset.set(0.5, 0);
-var PINT_Back_Material = new THREE.MeshLambertMaterial({
-    map: PINT_Back_Texture,
+var PINT_Droite_Back_Texture = textureLoader.load("img/openings/PINT_droite_B.png");
+PINT_Droite_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Droite_Back_Texture.repeat.set(0.014, 0.039);
+PINT_Droite_Back_Texture.offset.set(0.5, 0);
+var PINT_Droite_Back_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Droite_Back_Texture,
     vertexColors: true,
     color: COLOR_ARRAY['bois'],
     transparent: true
 });
-export var PINT_Material = [PINT_Front_Material, PINT_Back_Material];
+export var PINT_Droite_Material = [PINT_Droite_Front_Material, PINT_Droite_Back_Material];
+
+
+var PINT_Gauche_Front_Texture = textureLoader.load("img/openings/PINT_gauche_F.png");
+PINT_Gauche_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Gauche_Front_Texture.repeat.set(0.014, 0.039);
+PINT_Gauche_Front_Texture.offset.set(0.5, 0);
+var PINT_Gauche_Front_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Gauche_Front_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+var PINT_Gauche_Back_Texture = textureLoader.load("img/openings/PINT_gauche_B.png");
+PINT_Gauche_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
+PINT_Gauche_Back_Texture.repeat.set(0.014, 0.039);
+PINT_Gauche_Back_Texture.offset.set(0.5, 0);
+var PINT_Gauche_Back_Material = new THREE.MeshLambertMaterial({
+    map: PINT_Gauche_Back_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+export var PINT_Gauche_Material = [PINT_Gauche_Front_Material, PINT_Gauche_Back_Material];
 
 
 /************************   Charpente   *****************************/

@@ -19,7 +19,8 @@ import {
     MPI_Material,
     MPG1_Material,
     PEXT_Material,
-    PINT_Material,
+    PINT_Droite_Material,
+    PINT_Gauche_Material,
     CH1T_Material,
     COLOR_ARRAY
 }
@@ -158,6 +159,16 @@ export function chooseFloorHole(traveeSelectionnee) {
     $("#overlay").show();
 }
 
+
+export function displayPignonOpenings(traveeSelectionnee) {
+    $("#popup-pignon").css({
+        left: (window.innerWidth / 2) - ($("#popup-pignon").width() / 2) + 'px',
+        top: (window.innerHeight / 2) - ($("#popup-pignon").height() / 2) + 'px'
+    });
+    $("#popup-pignon").show();
+    $("#traveeSelectionnee").val(traveeSelectionnee);
+    $("#overlay").show();
+}
 
 
 export function displayOpenings(traveeSelectionnee, face) {
@@ -326,7 +337,7 @@ export function displayGui() {
                 voisine.children[indiceToit].children[indicePignonDroit].visible = false;
 
                 // Le pignon séparant les 2 travées devient un pignon intérieur, donc sélectionnable.
-                travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
+                travee.children[indiceToit].children[indicePignonGauche].name = travee.name + ">PINT";
                 travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
 
                 recalculerCotes('largeur');

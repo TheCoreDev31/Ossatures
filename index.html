@@ -134,6 +134,27 @@
         <div class="popup-ouverture" id="popup-ouverture-in">
             <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
             <div class="container-images">
+                <figure id="PE" class="normal"><img src="icons/MPE.jpg" class="popup-ouverture-image" alt="Porte de service 90x215" />
+                    <figcaption>Porte de service<br>90x215cm</figcaption>
+                </figure>
+                <figure id="PF" class="normal"><img src="icons/MPF.jpg" class="popup-ouverture-image" alt="Porte vitrée 180x215" />
+                    <figcaption>Porte vitrée<br>180x215cm</figcaption>
+                </figure>
+                <figure id="PO" class="normal"><img src="icons/MPI.jpg" class="popup-ouverture-image" alt="Portique intérieur" />
+                    <figcaption>Portique<br>intérieur</figcaption>
+                </figure>
+            </div>
+            <span class="popup-ouverture-texte">* Les éléments grisés ne sont pas disponibles pour des raisons de contrainte technique.</span>
+            <div class="boutons-popup">
+                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
+            </div>
+            <input type="hidden" id="traveeSelectionnee">
+        </div>
+
+        <!--
+                <div class="popup-ouverture" id="popup-ouverture-in">
+            <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
+            <div class="container-images">
                 <figure id="F1" class="normal"><img src="icons/MF1.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65" />
                     <figcaption>Fenêtre<br>45x65cm</figcaption>
                 </figure>
@@ -162,6 +183,7 @@
             </div>
             <input type="hidden" id="traveeSelectionnee">
         </div>
+-->
 
         <div class="popup-ouverture" id="popup-plancher">
             <span id="titre-popup">Où souhaitez-vous positionner la trappe d'accès ?</span>
@@ -170,16 +192,16 @@
                     <figcaption>Pas de trappe</figcaption>
                 </figure>
                 <figure id="haut-gauche" class="normal"><img src="icons/SOLE_hg.jpg" class="popup-ouverture-image" alt="Ouverture haut gauche" />
-                    <figcaption>Escalier<br>haut gauche</figcaption>
+                    <figcaption>Trémie d'escalier<br>haut gauche</figcaption>
                 </figure>
                 <figure id="haut-droite" class="normal"><img src="icons/SOLE_hd.jpg" class="popup-ouverture-image" alt="Ouverture haut droite" />
-                    <figcaption>Escalier<br>haut droite</figcaption>
+                    <figcaption>Trémie d'escalier<br>haut droite</figcaption>
                 </figure>
                 <figure id="bas-gauche" class="normal"><img src="icons/SOLE_bg.jpg" class="popup-ouverture-image" alt="Ouverture bas gauche" />
-                    <figcaption>Escalier<br>bas gauche</figcaption>
+                    <figcaption>Trémie d'escalier<br>bas gauche</figcaption>
                 </figure>
                 <figure id="bas-droite" class="normal"><img src="icons/SOLE_bd.jpg" class="popup-ouverture-image" alt="Ouverture bas droite" />
-                    <figcaption>Escalier<br>bas droite</figcaption>
+                    <figcaption>Trémie d'escalier<br>bas droite</figcaption>
                 </figure>
                 <figure id="haut-centre" class="normal"><img src="icons/SOLT_h.jpg" class="popup-ouverture-image" alt="Ouverture haut centré" />
                     <figcaption>Trappe en haut</figcaption>
@@ -189,6 +211,22 @@
                 </figure>
             </div>
             <br>
+            <div class="boutons-popup">
+                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
+            </div>
+            <input type="hidden" id="traveeSelectionnee">
+        </div>
+
+        <div class="popup-ouverture" id="popup-pignon">
+            <span id="titre-popup">Quel type de pignon intérieur voulez-vous ajouter ?</span>
+            <div class="container-images">
+                <figure id="gauche" class="normal"><img src="icons/PINT_gauche.jpg" class="popup-ouverture-image" alt="Ouverture façade avant" />
+                    <figcaption>Ouverture vers<br>façade avant</figcaption>
+                </figure>
+                <figure id="droite" class="normal"><img src="icons/PINT_droite.jpg" class="popup-ouverture-image" alt="Ouverture façade arrière" />
+                    <figcaption>Ouverture vers<br>façade arrière</figcaption>
+                </figure>
+            </div>
             <div class="boutons-popup">
                 <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
             </div>

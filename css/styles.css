@@ -60,7 +60,7 @@ body {
     position: absolute;
     align-items: flex-end;
     bottom: 10px;
-    right: -660px;
+    right: -650px;
     z-index: 200;
     margin: 10px;
     opacity: 90%;
@@ -205,11 +205,15 @@ body {
 }
 
 #popup-ouverture-in {
-    width: 750px;
+    width: 600px;
 }
 
 #popup-plancher {
     width: 800px;
+}
+
+#popup-pignon {
+    width: 500px;
 }
 
 .popup-ouverture #titre-popup {
@@ -226,7 +230,7 @@ body {
     width: 90%;
     align-items: flex-start;
     text-align: center;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 0px 30px;
 }
 

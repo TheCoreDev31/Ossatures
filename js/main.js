@@ -249,7 +249,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['hauteur'] = 6.5;
     PRODUITS['F1']['epaisseur'] = 3;
     PRODUITS['F1']['elevation'] = 14.8;
-    PRODUITS['F1']['interieur'] = true;
+    PRODUITS['F1']['interieur'] = false;
     PRODUITS['F1']['exterieur'] = true;
     PRODUITS['F1']['decalageX'] = -8.8;
     PRODUITS['F1']['codeModule'] = 'MF1';
@@ -260,7 +260,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['hauteur'] = 11.5;
     PRODUITS['F2']['epaisseur'] = 3;
     PRODUITS['F2']['elevation'] = 10;
-    PRODUITS['F2']['interieur'] = true;
+    PRODUITS['F2']['interieur'] = false;
     PRODUITS['F2']['exterieur'] = true;
     PRODUITS['F2']['decalageX'] = -0.5;
     PRODUITS['F2']['codeModule'] = 'MF2';
@@ -282,7 +282,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['hauteur'] = 20;
     PRODUITS['PG1']['epaisseur'] = 3;
     PRODUITS['PG1']['elevation'] = 0;
-    PRODUITS['PG1']['interieur'] = true;
+    PRODUITS['PG1']['interieur'] = false;
     PRODUITS['PG1']['exterieur'] = true;
     PRODUITS['PG1']['decalageX'] = 0.5;
     PRODUITS['PG1']['codeModule'] = 'MPG1';
@@ -293,7 +293,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG2']['hauteur'] = 20;
     PRODUITS['PG2']['epaisseur'] = 3;
     PRODUITS['PG2']['elevation'] = 0;
-    PRODUITS['PG2']['interieur'] = true;
+    PRODUITS['PG2']['interieur'] = false;
     PRODUITS['PG2']['exterieur'] = true;
     PRODUITS['PG2']['decalageX'] = 0.5;
     PRODUITS['PG2']['codeModule'] = 'MPG2';
@@ -304,7 +304,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['hauteur'] = 0;
     PRODUITS['PE+F1']['epaisseur'] = 0;
     PRODUITS['PE+F1']['elevation'] = 0;
-    PRODUITS['PE+F1']['interieur'] = true;
+    PRODUITS['PE+F1']['interieur'] = false;
     PRODUITS['PE+F1']['exterieur'] = true;
     PRODUITS['PE+F1']['decalageX'] = 0;
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
@@ -889,17 +889,29 @@ export function initialiserScoresVT(nomTravee) {
 }
 
 
+export function simulerCalculConstructions(tableauDecalages) {
+    return recalculerConstructions(tableauDecalages);
+}
+
 export function recalculerConstructions(tableauDecalages = null) {
 
     if (nbTravees > 0) {
+
+        var nbTraveesParConstruction = 0;
+        var nbMaxTravees = 0;
 
         // Mode "simulation"
         if (tableauDecalages != null) {
             var resultatSimulation = 1;
             for (var i = 1; i < tableauDecalages.length; i++) {
-                if (tableauDecalages[i] != tableauDecalages[i - 1]) resultatSimulation++;
+                nbTraveesParConstruction++;
+                if (tableauDecalages[i] != tableauDecalages[i - 1]) {
+                    resultatSimulation++;
+                    if (nbTraveesParConstruction > nbMaxTravees) nbMaxTravees = nbTraveesParConstruction;
+                    nbTraveesParConstruction = 0;
+                }
             }
-            return resultatSimulation;
+            return [resultatSimulation, nbMaxTravees];
 
         } else {
 

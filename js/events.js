@@ -14,7 +14,8 @@ import {
     SOLP_Material,
     SOLT_Material,
     PEXT_Material,
-    PINT_Material
+    PINT_Gauche_Material,
+    PINT_Droite_Material
 } from "./materials.js"
 
 import {
@@ -34,6 +35,7 @@ import {
 import {
     displayContextualMenu,
     displayOpenings,
+    displayPignonOpenings,
     chooseFloorHole,
     unSelect,
     changePointOfView
@@ -83,13 +85,10 @@ $(".liste-deroulante").click(function (e) {
             unSelect();
             break;
         case 'addPignonOpening':
-            // On remplace la texture du pignon intérieur concerné
-            var pignon = scene.getObjectByName(objetSelectionne);
-            pignon.material = PINT_Material;
-            unSelect();
+            displayPignonOpenings(objetSelectionne);
             break;
         case 'deletePignonOpening':
-            // On remplace la texture du pignon intérieur concerné
+            // On remplace la texture du pignon intérieur par celle d'un pignon plein
             var pignon = scene.getObjectByName(objetSelectionne);
             pignon.material = PEXT_Material;
             unSelect();
@@ -99,6 +98,31 @@ $(".liste-deroulante").click(function (e) {
             break;
     }
     $("#div-menu-contextuel").hide();
+});
+
+
+/*******************************  Gestion des clics dans la popup des pignons  *********************************/
+$("#popup-pignon").click(function (e) {
+    e.stopImmediatePropagation();
+    if ($(e.target).attr('id') == 'popup-alerte-annuler') {
+        $(".popup-ouverture").hide();
+        $("#overlay").hide();
+        unSelect();
+        return;
+    }
+
+    var pignonSelectionne = scene.getObjectByName(objetSelectionne);
+    switch ($(e.target).parent().attr('id')) {
+        case "gauche":
+            pignonSelectionne.material = PINT_Gauche_Material;
+            break;
+        case "droite":
+            pignonSelectionne.material = PINT_Droite_Material;
+            break;
+    }
+    $(".popup-ouverture").hide();
+    $("#overlay").hide();
+    unSelect();
 });
 
 
@@ -317,7 +341,7 @@ export function onMouseDoubleClick(event) {
 
     // On n'intercepte volontairement pas certains objets
     if (objetTouche.name.includes('excluded')) return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
-    if (objetTouche.name.startsWith('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < FACE_EXTERNE) return; // Façade != façade avant du mur
+    //    if (objetTouche.name.startsWith('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < FACE_EXTERNE) return; // Façade != façade avant du mur
 
     // Pour le cas particulier du toit, qui doit laisser passer le raycast, on recherche le prochain objet ni transparent ni exclu.
     var trouve = false;
