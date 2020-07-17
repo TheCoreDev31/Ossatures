@@ -34,7 +34,9 @@ import {
     retirerObjetModifiable,
     extraireFace,
     extraireNomTravee,
-    verifierContraintes
+    verifierContraintes,
+    importScene,
+    exportScene
 } from "./main.js"
 
 import {
@@ -281,6 +283,67 @@ export function displayGui() {
         this.afficherPlancher = true;
         this.afficherCotes = true;
         this.ossatureBois = false;
+
+        this.exporter = function () {
+            /*
+            scene.updateMatrixWorld();
+            exportScene();
+            */
+        };
+
+        this.importer = function () {
+            /*
+            // Pour demander à l'utilisateur de choisir son fichier local
+            $('#file-input').trigger('click');
+            alert($('#file-input'));
+
+
+            for (var i = 0; i < nbTravees; i++) {
+                scene.remove(scene.getObjectByName(PREFIXE_TRAVEE + parseInt(i + 1)));
+            }
+
+            importScene('./js/import/scene.json');
+            scene.updateMatrixWorld();
+            */
+        };
+
+        this.genererDevis = function () {
+
+            log(tableauTravees);
+
+            var coordonneesClient = prompt("Veuillez indiquer le nom et prénom à faire figurer dans le devis SVP.", "Client sans nom");
+
+            jsreport.serverUrl = 'https://vps777206.ovh.net:5488';
+
+            var donneesBrutes = {},
+                module = {},
+                modules = [],
+                donneesJSON;
+            donneesBrutes.client = coordonneesClient;
+            for (var i = 0; i <= nbOuvertures; i++) {
+                module.code = "MPL";
+                module.quantité = 1;
+                modules.push(module);
+            }
+            donneesBrutes.modules = modules;
+            donneesJSON = JSON.stringify(donneesBrutes);
+
+
+            var request = {
+                template: {
+                    name: "devis",
+                    recipe: "phantom-pdf",
+                    engine: "handlebars"
+                },
+                data: donneesJSON
+            };
+
+            jsreport.renderAsync(request).then(function (res) {
+                //window.open(res.toDataURI())
+                res.download('devis_maninghem.pdf')
+            });
+
+        };
     };
 
     var options = {
@@ -538,8 +601,14 @@ export function displayGui() {
             }
         });
     });
-
     guiEnv.open();
-    //        guiEnv.close();
+
+
+    var guiMisc = myGui.addFolder("Divers");
+
+    guiMisc.add(controller, 'exporter');
+    guiMisc.add(controller, 'importer');
+    guiMisc.add(controller, 'genererDevis');
+    guiMisc.open();
 
 }

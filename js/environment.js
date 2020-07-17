@@ -55,7 +55,9 @@ scene.add(boussole);
 
 
 // Eclairage
-scene.add(new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.45));
+var ambient = new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.45);
+ambient.name = "ambientLight";
+scene.add(ambient);
 
 // Une lampe derrière pour l'ombre des bâtiments
 const reference = 200;
@@ -69,22 +71,26 @@ rearLight.shadow.camera.left = rearLight.shadow.camera.bottom = -reference;
 rearLight.shadow.camera.right = rearLight.shadow.camera.top = reference;
 rearLight.shadow.camera.near = 1;
 rearLight.shadow.camera.far = reference * 2;
+rearLight.name = "rearLight";
 scene.add(rearLight);
 
 // Une lampe devant pour éclairer la façade
 export var frontLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.2);
 frontLight.position.set(10, HAUTEUR_TRAVEE, 300);
 frontLight.castShadow = false;
+frontLight.name = "frontLight";
 scene.add(frontLight);
 
 export var leftLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.1);
 leftLight.position.set(-300, HAUTEUR_TRAVEE, 0);
 leftLight.castShadow = false;
+leftLight.name = "leftLight";
 scene.add(leftLight);
 
 export var rightLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.05);
 rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
 rightLight.castShadow = false;
+rightLight.name = "rightight";
 scene.add(rightLight);
 
 

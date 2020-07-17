@@ -240,6 +240,8 @@ $("#changement-vue div").click(function (e) {
 
         $("#changement-vue div#aerien").addClass('actif');
 
+        $("div:contains('Close Controls')").click();
+
         // On masque toit et plancher (si pas déjà masqués)
         if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
             $("span:contains('afficherToit')").click();
@@ -270,6 +272,7 @@ $("#changement-vue div").click(function (e) {
 $("#vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#vue-aerienne").hide();
+    $("div:contains('Open Controls')").click();
 
     $("#changement-vue div#aerien").removeClass("actif");
     activeCamera = camera;
@@ -384,7 +387,8 @@ export function onMouseDoubleClick(event) {
 
 
 export function onMouseClick(event) {
-    event.preventDefault();
+
+    if (!event.srcElement.localName == 'a') event.preventDefault();
 
     if (activeCamera != camera)
         camera.zoom = 1;

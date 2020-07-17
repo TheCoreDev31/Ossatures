@@ -1,4 +1,11 @@
 import {
+    GLTFLoader
+} from './export/GLTFLoader.js';
+import {
+    GLTFExporter
+} from './export/GLTFExporter.js';
+
+import {
     renderer,
     camera,
     cameraOrtho
@@ -977,3 +984,65 @@ $(document).ready(function () {
     //    document.addEventListener('mousemove', onMouseMove, false);
 
 });
+
+
+
+/**********************************************************************************************************/
+
+
+export function importScene(inp) {
+    var loader = new GLTFLoader();
+    loader.load(
+        "./js/import/scene.gltf",
+        function (gltf) {
+
+            gltf.scene.traverse(function (child) {
+                if (child.name.includes('Travee')) {
+                    var newName = child.name.replace("Travee_", "Travee ");
+                    child.name = newName;
+
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+
+                    scene.add(child);
+                }
+            });
+        },
+        function (xhr) {
+            // called while loading is progressing
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        function (error) {
+            // called when loading has errors
+            console.log('An error happened');
+        }
+    );
+    incrusterCotes();
+    console.log(scene);
+}
+
+export function exportScene() {
+    var exporter = new GLTFExporter();
+    var options = {
+        trs: true,
+        onlyVisible: false,
+        truncateDrawRange: false,
+        embedImages: false
+    };
+
+    // On exporte toute la scène.... on fera le tri à l'import
+    exporter.parse(scene, function (gltf) {
+
+        if (gltf instanceof ArrayBuffer) {
+            saveArrayBuffer(gltf, 'scene.glb');
+        } else {
+            var output = JSON.stringify(gltf, null, 2);
+            saveString(output, 'scene.gltf');
+        }
+
+        console.log(scene);
+
+    }, options);
+}

@@ -394,6 +394,18 @@ div#droite i {
     bottom: 270px;
 }
 
+#vue-aerienne #legende {
+    position: relative;
+    bottom: 300px;
+}
+
+#vue-aerienne #legende span {
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+}
+
 #quitter-vue-aerienne {
     display: flex;
     width: 280px;

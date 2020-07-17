@@ -311,14 +311,14 @@ export function creerToit(nomTravee) {
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
-    frontPan.name = 'toit_excluded';
+    frontPan.name = prefixe + '>toit_excluded';
     roofGrp.add(frontPan);
 
     var rearPan = frontPan.clone();
     rearPan.rotateX(2 * degrees_to_radians(55));
     rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 17.5);
     rearPan.castShadow = true;
-    rearPan.name = 'toit_excluded';
+    rearPan.name = prefixe + '>toit_excluded';
     roofGrp.add(rearPan);
 
     var pignonGeometry = new THREE.Shape();

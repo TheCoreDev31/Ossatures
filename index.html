@@ -15,6 +15,7 @@
 
 <body>
     <div id="container">
+        <script src="js/jsreport.js"></script>
         <script src="js/jquery-3.4.1.min.js"></script>
         <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
@@ -89,7 +90,7 @@
 
         <div class="logo">
             <img src="icons/logo.png" class="image-logo">
-            <h4>Version : 1.2</h4>
+            <h4>Version : 1.3</h4>
         </div>
 
         <!--
@@ -150,40 +151,6 @@
             </div>
             <input type="hidden" id="traveeSelectionnee">
         </div>
-
-        <!--
-                <div class="popup-ouverture" id="popup-ouverture-in">
-            <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
-            <div class="container-images">
-                <figure id="F1" class="normal"><img src="icons/MF1.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65" />
-                    <figcaption>Fenêtre<br>45x65cm</figcaption>
-                </figure>
-                <figure id="F2" class="normal"><img src="icons/MF2.jpg" class="popup-ouverture-image" alt="Fenêtre 2 vantaux 105x115" />
-                    <figcaption>Fenêtre<br>105x115cm</figcaption>
-                </figure>
-                <figure id="PE" class="normal"><img src="icons/MPE.jpg" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
-                    <figcaption>Porte entrée<br>90x215cm</figcaption>
-                </figure>
-                <figure id="PF" class="normal"><img src="icons/MPF.jpg" class="popup-ouverture-image" alt="Porte fenêtre 180x215" />
-                    <figcaption>Porte fenêtre<br>180x215cm</figcaption>
-                </figure>
-                <figure id="PG1" class="normal"><img src="icons/MPG1.jpg" class="popup-ouverture-image" alt="Porte de garage 240x200" />
-                    <figcaption>Porte garage<br>240x200cm</figcaption>
-                </figure>
-                <figure id="PE+F1" class="normal"><img src="icons/MPEF.jpg" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
-                    <figcaption>Porte entrée<br>+ fenêtre</figcaption>
-                </figure>
-                <figure id="PO" class="normal"><img src="icons/MPI.jpg" class="popup-ouverture-image" alt="Portique intérieur" />
-                    <figcaption>Portique<br>intérieur</figcaption>
-                </figure>
-            </div>
-            <span class="popup-ouverture-texte">* Les éléments grisés ne sont pas disponibles pour des raisons de contrainte technique.</span>
-            <div class="boutons-popup">
-                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
-            </div>
-            <input type="hidden" id="traveeSelectionnee">
-        </div>
--->
 
         <div class="popup-ouverture" id="popup-plancher">
             <span id="titre-popup">Où souhaitez-vous positionner la trappe d'accès ?</span>
@@ -246,6 +213,17 @@
         </div>
 
         <div id="vue-aerienne">
+            <div id="legende">
+                <span style="text-decoration: underline">Légende</span></br>
+                <span>MPL : Mur plein</span></br>
+                <span>MPE : Porte d'entrée</span></br>
+                <span>MF1 : Fenêtre 45x65</span></br>
+                <span>MF2 : Fenêtre 105x115</span></br>
+                <span>MPF : Porte fenêtre</span></br>
+                <span>MPG1 : Porte de garage 240x200</span></br>
+                <span>MPEF : Porte d'entrée + fenêtre 45x65</span></br>
+                <span>MPI : Portique intérieur</span></br>
+            </div>
             <div id="zoom">
                 <button id="dezoom">-</button>
                 <button id="zoom">+</button>
@@ -254,6 +232,8 @@
                 <span>Quittez le plan d'implantation</span>
             </div>
         </div>
+
+        <input id="file-input" type="file" name="name" style="display: none;" />
 
         <!--
         <div id="generer-doc">
