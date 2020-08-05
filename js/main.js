@@ -231,13 +231,14 @@ export function mergeGroups(porte, fenetre) {
 function initCaracteristiquesOuvertures() {
 
     // Tableau fixe des produits
-    var nbCaract = 7;
+    var nbCaract = 8;
     PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
     PRODUITS['MU']['VT'] = 3;
     PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['elevation'] = 0;
     PRODUITS['MU']['interieur'] = PRODUITS['MU']['exterieur'] = true;
     PRODUITS['MU']['epaisseur'] = 2;
     PRODUITS['MU']['codeModule'] = 'MPL';
+    PRODUITS['MU']['libelleModule'] = 'Mur plein';
 
     PRODUITS['PE'] = new Array(nbCaract);
     PRODUITS['PE']['VT'] = 2;
@@ -249,6 +250,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['exterieur'] = true;
     PRODUITS['PE']['decalageX'] = 0.1;
     PRODUITS['PE']['codeModule'] = 'MPE';
+    PRODUITS['PE']['libelleModule'] = 'Porte entrée 90x215';
 
     PRODUITS['F1'] = new Array(nbCaract);
     PRODUITS['F1']['VT'] = 2;
@@ -260,6 +262,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['exterieur'] = true;
     PRODUITS['F1']['decalageX'] = -8.8;
     PRODUITS['F1']['codeModule'] = 'MF1';
+    PRODUITS['F1']['libelleModule'] = 'Fenêtre 45x65';
 
     PRODUITS['F2'] = new Array(nbCaract);
     PRODUITS['F2']['VT'] = 2;
@@ -271,6 +274,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['exterieur'] = true;
     PRODUITS['F2']['decalageX'] = -0.5;
     PRODUITS['F2']['codeModule'] = 'MF2';
+    PRODUITS['F2']['libelleModule'] = 'Fenêtre 105x115';
 
     PRODUITS['PF'] = new Array(nbCaract);
     PRODUITS['PF']['VT'] = 1.4;
@@ -282,6 +286,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['exterieur'] = true;
     PRODUITS['PF']['decalageX'] = -0.5;
     PRODUITS['PF']['codeModule'] = 'MPF';
+    PRODUITS['PF']['libelleModule'] = 'Porte fenêtre 180x215';
 
     PRODUITS['PG1'] = new Array(nbCaract);
     PRODUITS['PG1']['VT'] = 0;
@@ -293,6 +298,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['exterieur'] = true;
     PRODUITS['PG1']['decalageX'] = 0.5;
     PRODUITS['PG1']['codeModule'] = 'MPG1';
+    PRODUITS['PG1']['libelleModule'] = 'Porte de garage 240x200';
 
     PRODUITS['PG2'] = new Array(nbCaract);
     PRODUITS['PG2']['VT'] = 0;
@@ -304,6 +310,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG2']['exterieur'] = true;
     PRODUITS['PG2']['decalageX'] = 0.5;
     PRODUITS['PG2']['codeModule'] = 'MPG2';
+    PRODUITS['PG2']['libelleModule'] = 'Porte de garage 240x200';
 
     PRODUITS['PE+F1'] = new Array(nbCaract);
     PRODUITS['PE+F1']['VT'] = 0.5;
@@ -315,6 +322,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['exterieur'] = true;
     PRODUITS['PE+F1']['decalageX'] = 0;
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
+    PRODUITS['PE+F1']['libelleModule'] = 'Porte entrée + fenêtre 45x65';
 
     PRODUITS['PO'] = new Array(nbCaract);
     PRODUITS['PO']['VT'] = 0;
@@ -326,6 +334,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['exterieur'] = false;
     PRODUITS['PO']['decalageX'] = 0;
     PRODUITS['PO']['codeModule'] = 'MPI';
+    PRODUITS['PO']['libelleModule'] = 'Portique intérieur';
 }
 
 function initMatricesScoreVT() {
@@ -964,6 +973,7 @@ $(document).ready(function () {
     $(".popup-ouverture").hide();
     $("#div-menu-contextuel").hide();
     $("#vue-aerienne").hide();
+    $("#popup-attente").hide();
     $("#overlay").hide();
 
     initCaracteristiquesOuvertures();

@@ -29,7 +29,8 @@ import {
     retirerObjetModifiable,
     faceInterieureOuExterieure,
     modifierIncrustation,
-    toggleIncrustations
+    toggleIncrustations,
+    animate
 } from "./main.js"
 
 import {
@@ -38,7 +39,8 @@ import {
     displayPignonOpenings,
     chooseFloorHole,
     unSelect,
-    changePointOfView
+    changePointOfView,
+    afficherVueAerienne
 } from "./gui.js"
 
 import {
@@ -237,30 +239,7 @@ $("#changement-vue div").click(function (e) {
 
     var direction = $(e.target).parent().attr('id');
     if (direction == "aerien") {
-
-        $("#changement-vue div#aerien").addClass('actif');
-
-        $("div:contains('Close Controls')").click();
-
-        // On masque toit et plancher (si pas déjà masqués)
-        if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
-            $("span:contains('afficherToit')").click();
-
-        if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
-            $("span:contains('afficherPlancher')").click();
-
-        var borne;
-        if (nbTravees === 1) borne = 100;
-        else borne = (150 * 0.5) * nbTravees;
-        cameraOrtho.left = -(borne * aspectRatio) / 2;
-        cameraOrtho.right = (borne * aspectRatio) / 2;
-        cameraOrtho.top = borne / 2;
-        cameraOrtho.bottom = -borne / 2;
-        activeCamera = cameraOrtho;
-
-        $("#changement-vue div#aerien").addClass('actif');
-        toggleIncrustations();
-        $("#vue-aerienne").show();
+        afficherVueAerienne();
     } else {
         $(e.target).parent().addClass('actif');
         changePointOfView(direction);
@@ -269,7 +248,7 @@ $("#changement-vue div").click(function (e) {
 });
 
 /*******************************    Clic pour quitter le mode vue aérienne    **************************************/
-$("#vue-aerienne").click(function (e) {
+$("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#vue-aerienne").hide();
     $("div:contains('Open Controls')").click();

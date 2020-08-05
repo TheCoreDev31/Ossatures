@@ -292,6 +292,35 @@ body {
     border-radius: 0px;
 }
 
+
+/********************    Popup d'attente pour les traitements longs (génération du devis)  ************************/
+
+#popup-attente {
+    display: flex;
+    position: fixed;
+    width: 500px;
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+
+    height: auto;
+    padding: 20px;
+
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all .5s ease-in;
+    box-shadow: 0 0 12px black;
+}
+
+#popup-attente .texte-attente {
+    margin-left: 20px;
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 18px;
+    text-align: justify-all;
+}
+
+
 /**********************************    Changement d'angle de vue   *************************************/
 #changement-vue {
     display: grid;

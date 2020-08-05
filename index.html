@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="" />
     <meta name="keywords" content="" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <link rel="icon" href="icons/favicon.ico" />
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/menus.css" rel="stylesheet">
@@ -16,6 +17,7 @@
 <body>
     <div id="container">
         <script src="js/jsreport.js"></script>
+        <script src="js/html2canvas.min.js"></script>
         <script src="js/jquery-3.4.1.min.js"></script>
         <script src="js/three.min.js"></script>
         <script src="js/OrbitControls.js"></script>
@@ -37,10 +39,10 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = true;
+            var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
-                LONGUEUR_TRAVEE = 72,
+                LONGUEUR_TRAVEE = 74.8,
                 HAUTEUR_TRAVEE = 25,
                 EPAISSEUR_MUR = 2;
             var DOWN = true;
@@ -68,6 +70,7 @@
             var objetsModifiables = new Array();
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
+
         </script>
 
         <div class="div-aide">
@@ -203,7 +206,7 @@
         <div id="overlay"></div>
 
         <div id="changement-vue">
-            <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i></div>
+            <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane" data-toggle="tooltip" data-placement="top" title="Tooltip on top" id="bouton-vue-aerienne"></i></div>
             <div class="bouton-fleche" id="gauche" alt="Vue de gauche"><i class="fa fa-arrow-right"></i></div>
             <div class="bouton-fleche" id="dessus" alt="Vue de dessus"><i class="fa fa-arrow-down"></i></div>
             <div class="bouton-fleche" id="arriere" alt="Vue arrière"><i class="fa fa-arrow-left"></i></div>
@@ -235,11 +238,15 @@
 
         <input id="file-input" type="file" name="name" style="display: none;" />
 
-        <!--
-        <div id="generer-doc">
-            <button id="btn-generer-doc"></button>
-        </div>-->
+        <div id="popup-attente">
+            <div class="spinner-border text-success" role="status">
+                <span class="sr-only">Spinner</span>
+            </div>
+            <span class="texte-attente">Veuillez patienter,<br>nous sommes en train de préparer votre devis...</span>
+        </div>
 
     </div>
 
-</body></html>
+</body>
+
+</html>

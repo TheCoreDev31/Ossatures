@@ -7,8 +7,11 @@ import {
 
 // Renderer
 export var renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    preserveDrawingBuffer: true
 });
+
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.outputEncoding = THREE.sRGBEncoding;

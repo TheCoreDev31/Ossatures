@@ -36,12 +36,17 @@ import {
     extraireNomTravee,
     verifierContraintes,
     importScene,
-    exportScene
+    exportScene,
+    toggleIncrustations,
+    animate
 } from "./main.js"
 
 import {
     camera,
-    cameraOrtho
+    cameraOrtho,
+    canvas,
+    renderer,
+    aspectRatio
 } from "./environment.js"
 
 export function unSelect() {
@@ -115,6 +120,33 @@ export function changePointOfView(direction) {
             camera.lookAt(scene.position);
             break;
     }
+}
+
+
+export function afficherVueAerienne() {
+    $("#changement-vue div#aerien").addClass('actif');
+
+    $("div:contains('Close Controls')").click();
+
+    // On masque toit et plancher (si pas déjà masqués)
+    if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+        $("span:contains('afficherToit')").click();
+
+    if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+        $("span:contains('afficherPlancher')").click();
+
+    var borne;
+    if (nbTravees === 1) borne = 150;
+    else borne = (150 * 0.5) * nbTravees;
+    cameraOrtho.left = -(borne * aspectRatio) / 2;
+    cameraOrtho.right = (borne * aspectRatio) / 2;
+    cameraOrtho.top = borne / 2;
+    cameraOrtho.bottom = -borne / 2;
+    activeCamera = cameraOrtho;
+
+    $("#changement-vue div#aerien").addClass('actif');
+    toggleIncrustations();
+    $("#vue-aerienne").show();
 }
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
@@ -276,6 +308,35 @@ export function displayContextualMenu(objet, x, y) {
 }
 
 
+
+function saveAsImage() {
+    var imgData, imgNode;
+    var strDownloadMime = "image/octet-stream";
+
+    try {
+        var strMime = "image/jpeg";
+        imgData = renderer.domElement.toDataURL(strMime);
+
+        return imgData.replace(strMime, strDownloadMime);
+    } catch (e) {
+        console.log(e);
+        return;
+    }
+}
+
+var saveFile = function (strData, filename) {
+    var link = document.createElement('a');
+    if (typeof link.download === 'string') {
+        document.body.appendChild(link); //Firefox requires the link to be in the body
+        link.download = filename;
+        link.href = strData;
+        link.click();
+        document.body.removeChild(link); //remove the link when done
+    } else {
+        location.replace(uri);
+    }
+}
+
 export function displayGui() {
 
     var controller = new function () {
@@ -309,40 +370,218 @@ export function displayGui() {
 
         this.genererDevis = function () {
 
-            log(tableauTravees);
+            var screenshot1, screenshot2, screenshot3, screenshot4, screenshot5, screenshot6, screenshot7, screenshot8, screenshot9;
 
             var coordonneesClient = prompt("Veuillez indiquer le nom et prénom à faire figurer dans le devis SVP.", "Client sans nom");
+            if (coordonneesClient === null) return;
+            var maintenant = new Date();
 
+
+            $("#popup-attente").css({
+                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
+                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
+            });
+            $("#overlay").show();
+            $("#popup-attente").show();
+
+            // On prend tous les screenshots dans le bon ordre...
+            activeCamera = cameraOrtho;
+            if (!$("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('ossatureBois')").click();
+
+            // 1 - la vue d'implantation
+            afficherVueAerienne();
+            animate();
+            screenshot1 = saveAsImage();
+            $("#quitter-vue-aerienne").click();
+
+            // 2 - une vue aérienne du plancher
+            activeCamera = cameraOrtho;
+            changePointOfView("dessus");
+            if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherToit')").click();
+            animate();
+            screenshot2 = saveAsImage();
+            $("span:contains('afficherToit')").click();
+
+            // 3 - une vue aérienne avec charpente
+            if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherPlancher')").click();
+            animate();
+            screenshot3 = saveAsImage();
+
+            // Les vues suivantes n'auront pas de cotes.
+            activeCamera = camera;
+            if ($("span:contains('afficherCotes')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherCotes')").click();
+
+            // 4 - une vue de face
+            changePointOfView("avant");
+            animate();
+            screenshot4 = saveAsImage();
+
+            // 5 - une vue de derrière
+            changePointOfView("arriere");
+            animate();
+            screenshot5 = saveAsImage();
+
+            // 6 - une vue de gauche
+            changePointOfView("gauche");
+            animate();
+            screenshot6 = saveAsImage();
+
+            // 7 - une vue de droite
+            changePointOfView("droite");
+            animate();
+            screenshot7 = saveAsImage();
+
+            // Enfin, quelques vues en perspective
+            if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherToit')").click();
+            camera.position.set(180, 100, 150);
+            camera.lookAt(scene.position);
+            animate();
+            screenshot8 = saveAsImage();
+
+            camera.position.set(-180, 100, -100);
+            camera.lookAt(scene.position);
+            animate();
+            screenshot9 = saveAsImage();
+
+
+            // Retour à la vue perspective
+            changePointOfView("perspective");
+
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('ossatureBois')").click();
+            if (!$("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherToit')").click();
+            if (!$("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherPlancher')").click();
+            animate();
+
+
+            // Génération du rapport PDF
             jsreport.serverUrl = 'https://vps777206.ovh.net:5488';
 
             var donneesBrutes = {},
-                module = {},
-                modules = [],
+                modules = new Array(),
                 donneesJSON;
-            donneesBrutes.client = coordonneesClient;
-            for (var i = 0; i <= nbOuvertures; i++) {
-                module.code = "MPL";
-                module.quantité = 1;
+            donneesBrutes.nomClient = coordonneesClient;
+            donneesBrutes.dateDevis = maintenant.toLocaleDateString('fr-FR');
+            donneesBrutes.referenceDevis = maintenant.getFullYear() + '' +
+                ((maintenant.getMonth() + 1) < 10 ? '0' + (maintenant.getMonth() + 1) : (maintenant.getMonth() + 1)) + '' +
+                maintenant.getDate() + '' + maintenant.getHours() + '' + maintenant.getMinutes();
+
+            var comptageModules = new Array();
+            for (var produit in PRODUITS) {
+                var leModule = PRODUITS[produit].codeModule;
+                comptageModules[leModule] = 0;
+            }
+            comptageModules['MPL'] = (nbTravees * 6) - ((nbTravees - 1) * 2) - nbOuvertures;
+
+            scene.traverse(function (child) {
+                var nomModule = child.name;
+
+                if (child.isGroup && nomModule.includes("Ouverture")) {
+                    var leModule = nomModule.substring(nomModule.indexOf("Ouverture ") + 10);
+                    switch (leModule) {
+                        case "PE":
+                            comptageModules.MPE++;
+                            break;
+                        case "F1":
+                            comptageModules.MF1++;
+                            break;
+                        case "F2":
+                            comptageModules.MF2++;
+                            break;
+                        case "PF":
+                            comptageModules.MPF++;
+                            break;
+                        case "PG1":
+                            comptageModules.MPG1++;
+                            break;
+                        case "PG2":
+                            comptageModules.MPG2++;
+                            break;
+                        case "PE+F1":
+                            comptageModules.MPEF++;
+                            break;
+                        case "PO":
+                            comptageModules.MPI++;
+                            break;
+                    }
+                }
+
+            });
+
+            for (var leModule in comptageModules) {
+                var module = {};
+                module.codeModule = leModule;
+                switch (leModule) {
+                    case "MPL":
+                        module.referenceModule = PRODUITS['MU']['libelleModule']
+                        break;
+                    case "MPE":
+                        module.referenceModule = PRODUITS['PE']['libelleModule']
+                        break;
+                    case "MF1":
+                        module.referenceModule = PRODUITS['F1']['libelleModule']
+                        break;
+                    case "MF2":
+                        module.referenceModule = PRODUITS['F2']['libelleModule']
+                        break;
+                    case "MPF":
+                        module.referenceModule = PRODUITS['PF']['libelleModule']
+                        break;
+                    case "MPG1":
+                        module.referenceModule = PRODUITS['PG1']['libelleModule']
+                        break;
+                    case "MPG2":
+                        module.referenceModule = PRODUITS['PG2']['libelleModule']
+                        break;
+                    case "MPEF":
+                        module.referenceModule = PRODUITS['PE+F1']['libelleModule']
+                        break;
+                    case "MPI":
+                        module.referenceModule = PRODUITS['PO']['libelleModule']
+                        break;
+                }
+                module.quantite = comptageModules[leModule];
                 modules.push(module);
             }
             donneesBrutes.modules = modules;
+            donneesBrutes.screenshot1 = screenshot1;
+            donneesBrutes.screenshot2 = screenshot2;
+            donneesBrutes.screenshot3 = screenshot3;
+            donneesBrutes.screenshot4 = screenshot4;
+            donneesBrutes.screenshot5 = screenshot5;
+            donneesBrutes.screenshot6 = screenshot6;
+            donneesBrutes.screenshot7 = screenshot7;
+            donneesBrutes.screenshot8 = screenshot8;
+            donneesBrutes.screenshot9 = screenshot9;
             donneesJSON = JSON.stringify(donneesBrutes);
-
 
             var request = {
                 template: {
                     name: "devis",
                     recipe: "phantom-pdf",
-                    engine: "handlebars"
+                    engine: "handlebars",
+                    phantom: {
+                        "format": "A4",
+                        "orientation": "portrait",
+                        "headerHeight": "3cm",
+                        "footer": "<h4>Mentions légales...</h4>"
+                    }
                 },
                 data: donneesJSON
             };
 
             jsreport.renderAsync(request).then(function (res) {
-                //window.open(res.toDataURI())
                 res.download('devis_maninghem.pdf')
+                $("#popup-attente").hide();
+                $("#overlay").hide();
             });
-
         };
     };
 
@@ -606,8 +845,8 @@ export function displayGui() {
 
     var guiMisc = myGui.addFolder("Divers");
 
-    guiMisc.add(controller, 'exporter');
-    guiMisc.add(controller, 'importer');
+    //    guiMisc.add(controller, 'exporter');
+    //    guiMisc.add(controller, 'importer');
     guiMisc.add(controller, 'genererDevis');
     guiMisc.open();
 

@@ -307,7 +307,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 export function creerToit(nomTravee) {
     var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
     var roofGrp = new THREE.Group();
-    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, LARGEUR_TRAVEE * 1.256, 0.2), roofMaterial);
+    var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) * 1.305, 0.2), roofMaterial);
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
@@ -571,13 +571,12 @@ export function creerTravee() {
     // Un module = 6 murs (AV + AR + 2 par pignon) + un sol + un plafond
     // IMPORTANT : on crée les murs avec la face extérieure DEVANT !!!!!!!!!!
     var wallAR = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
-    wallAR.position.z = -LARGEUR_TRAVEE + (EPAISSEUR_MUR / 2);
+    wallAR.position.z = -(LONGUEUR_TRAVEE / 2) + (EPAISSEUR_MUR / 2);
 
     var wallPDAR = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAR.rotation.y = -Math.PI / 2;
     wallPDAR.position.x = ((-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2) - 0.01;
     wallPDAR.position.z = -(LONGUEUR_TRAVEE / 4) + EPAISSEUR_MUR / 2;
-
     var wallPDAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPDAV.rotation.y = -Math.PI / 2;
     wallPDAV.position.x = (-EPAISSEUR_MUR / 2) + LARGEUR_TRAVEE / 2;
@@ -585,7 +584,7 @@ export function creerTravee() {
 
     var wallAV = new THREE.Mesh(new THREE.BoxGeometry(LARGEUR_TRAVEE, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallAV.rotation.y = Math.PI;
-    wallAV.position.z = LARGEUR_TRAVEE - (EPAISSEUR_MUR / 2);
+    wallAV.position.z = (LONGUEUR_TRAVEE / 2) - (EPAISSEUR_MUR / 2);
 
     var wallPGAV = new THREE.Mesh(new THREE.BoxGeometry(LONGUEUR_TRAVEE / 2 - EPAISSEUR_MUR, HAUTEUR_TRAVEE, EPAISSEUR_MUR), wallMaterial);
     wallPGAV.rotation.y = Math.PI / 2;
