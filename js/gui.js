@@ -96,22 +96,22 @@ export function changePointOfView(direction) {
             info("Vue de dessus");
             break;
         case 'avant':
-            camera.position.set(0, 5, 150);
+            camera.position.set(0, 10, 150);
             camera.lookAt(scene.position);
             info("Vue avant");
             break;
         case 'arriere':
-            camera.position.set(0, 5, -150);
+            camera.position.set(0, 10, -150);
             camera.lookAt(scene.position);
             info("Vue arrière");
             break;
         case 'gauche':
-            camera.position.set(-150, 5, 0);
+            camera.position.set(-150, 10, 0);
             camera.lookAt(scene.position);
             info("Vue de gauche");
             break;
         case 'droite':
-            camera.position.set(150, 5, 0);
+            camera.position.set(150, 10, 0);
             camera.lookAt(scene.position);
             info("Vue de droite");
             break;
@@ -336,6 +336,7 @@ var saveFile = function (strData, filename) {
         location.replace(uri);
     }
 }
+
 
 export function displayGui() {
 

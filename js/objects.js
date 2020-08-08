@@ -28,7 +28,8 @@ import {
     initialiserScoresVT,
     recalculerConstructions,
     simulerCalculConstructions,
-    modifierIncrustation
+    modifierIncrustation,
+    incrusterCotes
 } from "./main.js"
 
 import {
@@ -549,6 +550,7 @@ export function decalerTravee(nomTravee, direction) {
 
     }
     recalculerConstructions();
+    incrusterCotes();
     unSelect();
 }
 
