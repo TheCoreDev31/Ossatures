@@ -117,118 +117,178 @@ export function log(message) {
 
 
 /************************   Gestion des cotes affichées sur le plan   ***********************************************/
-export function recalculerCotes(direction = 'largeur') {
-
-    incrusterCotes();
-    /*
-    if (direction == 'largeur') {
-        if (scene.getObjectByName('CoteX')) {
-            scene.remove(scene.getObjectByName('CoteX'));
-            incrusterCotes('largeur');
-        }
-    } else {
-        if (scene.getObjectByName('CoteY')) {
-            scene.remove(scene.getObjectByName('CoteY'));
-            incrusterCotes('longueur');
-        }
-    }
-    */
-}
 
 export function incrusterCotes() {
 
-    var texte, texteCotes, xTexte;
+    var texte, texteCotes, xTexte, decalage, nbDecalages = 0;
+    var decalageActuel = tableauTravees['Travee 1'].decalage;
     var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
-    var cotesGrp = new THREE.Group();
+    var cotesGrpX = new THREE.Group();
 
     scene.remove(scene.getObjectByName('CoteX'));
     scene.remove(scene.getObjectByName('CoteY'));
 
-    // La première cote X va de la gauche de la première travée jusqu'à la droite de la dernière travée de la construction 1... on recherche donc le changement de construction.
+    // On recherche le changement de décalage, afin de déterminer le découpage horizontal et vertical des cotes.
     var derniereTraveeConstruction1 = 0,
         nbTraveesConstruction1 = 0;
     for (var laTravee in tableauTravees) {
+        if (tableauTravees[laTravee].decalage != decalageActuel) nbDecalages++;
         if (tableauTravees[laTravee].numConstruction == 1) {
             nbTraveesConstruction1++;
             derniereTraveeConstruction1 = tableauTravees[laTravee].nom;
         }
     }
+    if (nbDecalages > 0) {
+        var premiereTraveeConstruction2 = 0,
+            nbTraveesConstruction2 = 0,
+            derniereTraveeConstruction2;
+        for (var laTravee in tableauTravees) {
+            if (tableauTravees[laTravee].numConstruction == 2) {
+                nbTraveesConstruction2++;
+                if (premiereTraveeConstruction2 == 0) premiereTraveeConstruction2 = tableauTravees[laTravee].nom;
+                derniereTraveeConstruction2 = laTravee;
+            }
+        }
+    }
 
+    /************************      Calcul de la côte de largeur (en X)    ***********************/
     var points = [];
-    points.push(new THREE.Vector3(tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2), hauteurTexte, ((LONGUEUR_TRAVEE / 2)) + 1));
-    points.push(new THREE.Vector3(tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-    points.push(new THREE.Vector3(tableauTravees[derniereTraveeConstruction1].positionX + (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-    points.push(new THREE.Vector3(tableauTravees[derniereTraveeConstruction1].positionX + (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+    decalage = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
+    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, ((LONGUEUR_TRAVEE / 2)) + 1));
+    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    decalage = tableauTravees[derniereTraveeConstruction1].positionX + (LARGEUR_TRAVEE / 2);
+    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
-
-    cotesGrp.add(line);
+    cotesGrpX.add(line);
 
     texte = nbTraveesConstruction1 * (LARGEUR_TRAVEE * 100) + ' mm';
     texteCotes = createText(texte);
     texteCotes.rotation.x = -Math.PI / 2;
     xTexte = (tableauTravees['Travee 1'].positionX + tableauTravees[derniereTraveeConstruction1].positionX) / 2;
-    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8);
+    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
+    cotesGrpX.add(texteCotes);
 
-    // En fonction du décalage éventuel de la première construction, on peut décalder suivant Y.
-    log(tableauTravees['Travee 1'].decalage);
+    // On prend en compte un décalage éventuel de la première construction, et donc de la cote suivant Y.
+    switch (tableauTravees['Travee 1'].decalage) {
+        case 1:
+            line.position.z += LONGUEUR_TRAVEE / 2;
+            texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+            break;
+        case -1:
+            line.position.z -= LONGUEUR_TRAVEE / 2;
+            texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+            break;
+    }
 
-    cotesGrp.add(texteCotes);
 
-
-    // En fonction du nombre de constructions, on a une cote unique ou plusieurs cotes.
-    if (nbConstructions == 2) {
-        var premiereTraveeConstruction2 = 0,
-            nbTraveesConstruction2 = 0;
-        for (var laTravee in tableauTravees) {
-            if (tableauTravees[laTravee].numConstruction == 2) {
-                nbTraveesConstruction2++;
-                if (premiereTraveeConstruction2 == 0) premiereTraveeConstruction2 = tableauTravees[laTravee].nom;
-            }
-        }
-
+    // En fonction du nombre de décalages, on a une ou plusieurs cotes X.
+    if (nbDecalages > 0) {
         var points = [];
-        points.push(new THREE.Vector3(tableauTravees[premiereTraveeConstruction2].positionX - (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
-        points.push(new THREE.Vector3(tableauTravees[premiereTraveeConstruction2].positionX - (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-        points.push(new THREE.Vector3(tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX + (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
-        points.push(new THREE.Vector3(tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX + (LARGEUR_TRAVEE / 2), hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+        decalage = tableauTravees[premiereTraveeConstruction2].positionX - (LARGEUR_TRAVEE / 2);
+        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
+        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        decalage = tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
+        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
-        cotesGrp.add(line);
+        cotesGrpX.add(line);
 
         texte = nbTraveesConstruction2 * (LARGEUR_TRAVEE * 100) + ' mm';
         texteCotes = createText(texte);
         texteCotes.rotation.x = -Math.PI / 2;
         xTexte = (tableauTravees[premiereTraveeConstruction2].positionX + tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX) / 2;
-        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8);
-        cotesGrp.add(texteCotes);
+        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
+        cotesGrpX.add(texteCotes);
+
+        // En fonction du décalage éventuel de la première construction, on peut décaler suivant Y.
+        switch (tableauTravees[premiereTraveeConstruction2].decalage) {
+            case 1:
+                line.position.z += LONGUEUR_TRAVEE / 2;
+                texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+                break;
+            case -1:
+                line.position.z -= LONGUEUR_TRAVEE / 2;
+                texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+                break;
+        }
     }
+    cotesGrpX.name = 'CoteX';
+    cotesGrpX.visible = true;
+    scene.add(cotesGrpX);
 
 
-    cotesGrp.name = 'CoteX';
-    cotesGrp.visible = true;
-    scene.add(cotesGrp);
-
-    /*      Calcul de la côte de profondeur, plus complexe en raison des décalages éventuels    */
+    /************************      Calcul de la côte de profondeur (en Y)    ***********************/
+    decalage = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
     var texte = (LONGUEUR_TRAVEE * 100) + ' mm';
     var texteCotes = createText(texte);
     var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
-    var cotesGrp = new THREE.Group();
+    var cotesGrpY = new THREE.Group();
     texteCotes.rotation.z = -Math.PI / 2;
     texteCotes.rotation.x = Math.PI / 2;
     texteCotes.rotation.y = Math.PI;
-    texteCotes.position.set((LARGEUR_TRAVEE / 2) + 8, hauteurTexte, 0);
-    cotesGrp.add(texteCotes);
+    texteCotes.position.set(decalage - 13, hauteurTexte, 0);
+    cotesGrpY.add(texteCotes);
 
     var points = [];
-    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 1, hauteurTexte, LONGUEUR_TRAVEE / 2));
-    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 10, hauteurTexte, LONGUEUR_TRAVEE / 2));
-    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 10, hauteurTexte, -LONGUEUR_TRAVEE / 2));
-    points.push(new THREE.Vector3((LARGEUR_TRAVEE / 2) + 1, hauteurTexte, -LONGUEUR_TRAVEE / 2));
+    points.push(new THREE.Vector3(decalage - 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+    points.push(new THREE.Vector3(decalage - 10, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+    points.push(new THREE.Vector3(decalage - 10, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+    points.push(new THREE.Vector3(decalage - 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
-    cotesGrp.add(line);
-    cotesGrp.name = 'CoteY';
-    cotesGrp.visible = true;
-    scene.add(cotesGrp);
+    cotesGrpY.add(line);
+
+    // On prend en compte un décalage éventuel de la première construction, et donc de la cote suivant Y.
+    switch (tableauTravees['Travee 1'].decalage) {
+        case 1:
+            line.position.z += LONGUEUR_TRAVEE / 2;
+            texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+            break;
+        case -1:
+            line.position.z -= LONGUEUR_TRAVEE / 2;
+            texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+            break;
+    }
+
+    if (nbDecalages > 0) {
+        decalage = tableauTravees[derniereTraveeConstruction2].positionX + (LARGEUR_TRAVEE / 2);
+        var texte = (LONGUEUR_TRAVEE * 100) + ' mm';
+        var texteCotes = createText(texte);
+        var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
+        var cotesGrp = new THREE.Group();
+        texteCotes.rotation.z = -Math.PI / 2;
+        texteCotes.rotation.x = Math.PI / 2;
+        texteCotes.rotation.y = Math.PI;
+        texteCotes.position.set(decalage + 13, hauteurTexte, 0);
+        cotesGrpY.add(texteCotes);
+
+        var points = [];
+        points.push(new THREE.Vector3(decalage + 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+        points.push(new THREE.Vector3(decalage + 10, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+        points.push(new THREE.Vector3(decalage + 10, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+        points.push(new THREE.Vector3(decalage + 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+        var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
+        cotesGrpY.add(line);
+
+        // On prend en compte un décalage éventuel de la première construction, et donc de la cote suivant Y.
+        switch (tableauTravees[derniereTraveeConstruction2].decalage) {
+            case 1:
+                line.position.z += LONGUEUR_TRAVEE / 2;
+                texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+                break;
+            case -1:
+                line.position.z -= LONGUEUR_TRAVEE / 2;
+                texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+                break;
+        }
+    }
+
+    cotesGrpY.name = 'CoteY';
+    cotesGrpY.visible = true;
+    scene.add(cotesGrpY);
+
 }
+
 
 export function toggleIncrustations() {
     scene.traverse(function (child) {

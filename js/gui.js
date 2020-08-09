@@ -27,7 +27,6 @@ import {
 from "./materials.js"
 
 import {
-    recalculerCotes,
     info,
     alerte,
     log,
@@ -38,7 +37,9 @@ import {
     importScene,
     exportScene,
     toggleIncrustations,
-    animate
+    incrusterCotes,
+    animate,
+    recalculerConstructions
 } from "./main.js"
 
 import {
@@ -643,8 +644,8 @@ export function displayGui() {
                 travee.children[indiceToit].children[indicePignonGauche].name = travee.name + ">PINT";
                 travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
 
-                recalculerCotes('largeur');
-                scene.getObjectByName('CoteY').position.x += (LARGEUR_TRAVEE / 2);
+                recalculerConstructions();
+                incrusterCotes();
             }
         },
 
@@ -683,8 +684,8 @@ export function displayGui() {
             voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = true;
             voisine.children[indiceToit].children[indicePignonDroit].visible = true;
 
-            recalculerCotes('largeur');
-            scene.getObjectByName('CoteY').position.x -= (LARGEUR_TRAVEE / 2);
+            recalculerConstructions();
+            incrusterCotes();
         }
     }
 
