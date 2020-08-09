@@ -622,6 +622,20 @@ export function displayGui() {
                 }
                 scene.add(travee);
 
+                // A la création d'une travée, on reprend les préférences utilisateur (affichage toit, etc.)
+                if (!$("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked')) {
+                    var leToit = scene.getObjectByName(PREFIXE_TRAVEE + nbTravees + '>Toit');
+                    for (var i = 0; i < leToit.children.length; i++) {
+                        if (leToit.children[i].name.includes('toit')) {
+                            leToit.children[i].visible = false;
+                        }
+                    }
+                }
+                if (!$("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked')) {
+                    travee.children[indiceRoof].visible = false;
+                }
+
+
                 // La travée doit-elle être décalée suivant Z, car une nouvelle travée aura toujours le même décalage que sa voisine de gauche.
                 var decalageVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
                 if (decalageVoisine != 0) {
