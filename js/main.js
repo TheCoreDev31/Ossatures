@@ -116,6 +116,64 @@ export function log(message) {
 }
 
 
+
+export function traduireNomObjet(objet) {
+    var nomTravee = extraireNomTravee(objet.name);
+    var nomFace = extraireFace(objet.name);
+    var traduction = nomTravee + " : ";
+
+    log(objet);
+
+    // Gestion des murs
+    if (!objet.parent.name.includes('>') && !objet.name.includes('plancher')) {
+        var libelleFace;
+        switch (nomFace) {
+            case "AV":
+                libelleFace = "avant";
+                break;
+            case "AR":
+                libelleFace = "arrière";
+                break;
+            case "PGAV":
+                libelleFace = "avant-gauche";
+                break;
+            case "PGAR":
+                libelleFace = "arrière-gauche";
+                break;
+            case "PDAV":
+                libelleFace = "avant-droite";
+                break;
+            case "PDAR":
+                libelleFace = "arrière-droite";
+                break;
+        }
+        traduction += "façade " + libelleFace;
+    }
+
+    // Gestion des pignons
+    if (objet.name.includes('PINT')) {
+        traduction += "pignon intérieur";
+    }
+
+    if (objet.name.includes('plancher')) {
+        traduction += "plancher";
+    }
+
+    if (objet.name.includes('Ouverture ')) {
+        if (objet.parent.name.includes('PE+F1')) {
+            traduction += PRODUITS['PE+F1'].categorie + " " + PRODUITS['PE+F1'].codeModule;
+
+        } else {
+            var debut = objet.name.indexOf('Ouverture ');
+            var module = objet.name.substring(debut + ('Ouverture ').length, objet.name.lastIndexOf('>'));
+            traduction += PRODUITS[module].categorie + " " + PRODUITS[module].codeModule;
+        }
+    }
+
+    return traduction;
+}
+
+
 /************************   Gestion des cotes affichées sur le plan   ***********************************************/
 
 export function incrusterCotes() {
@@ -344,13 +402,14 @@ export function mergeGroups(porte, fenetre) {
 function initCaracteristiquesOuvertures() {
 
     // Tableau fixe des produits
-    var nbCaract = 8;
+    var nbCaract = 9;
     PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
     PRODUITS['MU']['VT'] = 3;
     PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['elevation'] = 0;
     PRODUITS['MU']['interieur'] = PRODUITS['MU']['exterieur'] = true;
     PRODUITS['MU']['epaisseur'] = 2;
     PRODUITS['MU']['codeModule'] = 'MPL';
+    PRODUITS['MU']['categorie'] = 'Mur';
     PRODUITS['MU']['libelleModule'] = 'Mur plein';
 
     PRODUITS['PE'] = new Array(nbCaract);
@@ -363,6 +422,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['exterieur'] = true;
     PRODUITS['PE']['decalageX'] = 0.1;
     PRODUITS['PE']['codeModule'] = 'MPE';
+    PRODUITS['PE']['categorie'] = "Porte d'entrée";
     PRODUITS['PE']['libelleModule'] = 'Porte entrée 90x215';
 
     PRODUITS['F1'] = new Array(nbCaract);
@@ -375,6 +435,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['exterieur'] = true;
     PRODUITS['F1']['decalageX'] = -8.8;
     PRODUITS['F1']['codeModule'] = 'MF1';
+    PRODUITS['F1']['categorie'] = 'Fenêtre';
     PRODUITS['F1']['libelleModule'] = 'Fenêtre 45x65';
 
     PRODUITS['F2'] = new Array(nbCaract);
@@ -387,6 +448,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['exterieur'] = true;
     PRODUITS['F2']['decalageX'] = -0.5;
     PRODUITS['F2']['codeModule'] = 'MF2';
+    PRODUITS['F2']['categorie'] = 'Fenêtre';
     PRODUITS['F2']['libelleModule'] = 'Fenêtre 105x115';
 
     PRODUITS['PF'] = new Array(nbCaract);
@@ -399,6 +461,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['exterieur'] = true;
     PRODUITS['PF']['decalageX'] = -0.5;
     PRODUITS['PF']['codeModule'] = 'MPF';
+    PRODUITS['PF']['categorie'] = 'Porte-fenêtre';
     PRODUITS['PF']['libelleModule'] = 'Porte fenêtre 180x215';
 
     PRODUITS['PG1'] = new Array(nbCaract);
@@ -411,19 +474,21 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['exterieur'] = true;
     PRODUITS['PG1']['decalageX'] = 0.5;
     PRODUITS['PG1']['codeModule'] = 'MPG1';
+    PRODUITS['PG1']['categorie'] = 'Porte de garage';
     PRODUITS['PG1']['libelleModule'] = 'Porte de garage 240x200';
 
     PRODUITS['PG2'] = new Array(nbCaract);
-    PRODUITS['PG2']['VT'] = 0;
+    PRODUITS['PG2']['VT'] = 3;
     PRODUITS['PG2']['largeur'] = 24;
     PRODUITS['PG2']['hauteur'] = 20;
     PRODUITS['PG2']['epaisseur'] = 3;
-    PRODUITS['PG2']['elevation'] = 0;
+    PRODUITS['PG2']['elevation'] = -1;
     PRODUITS['PG2']['interieur'] = false;
     PRODUITS['PG2']['exterieur'] = true;
-    PRODUITS['PG2']['decalageX'] = 0.5;
+    PRODUITS['PG2']['decalageX'] = 2.5;
     PRODUITS['PG2']['codeModule'] = 'MPG2';
-    PRODUITS['PG2']['libelleModule'] = 'Porte de garage 240x200';
+    PRODUITS['PG2']['categorie'] = 'Porte de garage';
+    PRODUITS['PG2']['libelleModule'] = 'Porte garage renforcée 240x200';
 
     PRODUITS['PE+F1'] = new Array(nbCaract);
     PRODUITS['PE+F1']['VT'] = 0.5;
@@ -435,6 +500,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['exterieur'] = true;
     PRODUITS['PE+F1']['decalageX'] = 0;
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
+    PRODUITS['PE+F1']['categorie'] = 'Porte fenêtre + fenêtre';
     PRODUITS['PE+F1']['libelleModule'] = 'Porte entrée + fenêtre 45x65';
 
     PRODUITS['PO'] = new Array(nbCaract);
@@ -447,6 +513,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['exterieur'] = false;
     PRODUITS['PO']['decalageX'] = 0;
     PRODUITS['PO']['codeModule'] = 'MPI';
+    PRODUITS['PO']['categorie'] = 'Portique intérieur';
     PRODUITS['PO']['libelleModule'] = 'Portique intérieur';
 }
 
@@ -995,6 +1062,27 @@ export function verifierContraintes(objet) {
     }
     coteFace = faceInterieureOuExterieure(objet);
     typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
+
+    // Cas particulier du MPG2 : on ne le propose qu'en façade, et uniquement pour les constructions à 1 ou 2 travées.
+    if (typesOuverturesAutorisees.indexOf("PG2") > -1) {
+        var aSupprimer = false;
+        if (nomFace != "AV" && nomFace != "AR") {
+            aSupprimer = true;
+        } else {
+            if (traveesMemeConstruction.length > 2) {
+                aSupprimer = true;
+            }
+        }
+        // Enfin, on ne propose pas les deux portails de garage ensemble.
+        if (typesOuverturesAutorisees.indexOf("PG1") > -1) {
+            aSupprimer = true;
+        }
+
+        if (aSupprimer) {
+            typesOuverturesAutorisees.splice(5, 1);
+        }
+
+    }
 
     if (DEBUG) {
         log('Score actuel du pignon complet = ' + scoreActuel + ' / Delta = ' + delta);

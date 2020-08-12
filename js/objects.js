@@ -176,9 +176,11 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
             windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
             windowGrp.add(windowGlass);
         } else {
-            if (typeOuverture == 'PG1')
+            if (typeOuverture.includes('PG1')) {
                 var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
-            else
+            } else if (typeOuverture.includes('PG2')) {
+                var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), garageDoorMaterial);
+            } else
                 var windowDoor = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), doorMaterial);
             windowDoor.position.set(.5, .5, 0);
             windowDoor.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Porte';
@@ -608,7 +610,7 @@ export function creerTravee() {
     top.rotation.x = -Math.PI / 2;
     top.position.set(0, (HAUTEUR_TRAVEE / 2) + .01, 0);
     top.visible = true;
-    top.name = 'plancher_' + prefixe;
+    top.name = prefixe + '>plancher';
 
     var wallsGrp = new THREE.Group();
     wallsGrp.add(wallAR);
@@ -669,6 +671,7 @@ export function creerTravee() {
 
     // Gestion de l'incrustation pour la vue d'implantation
     var lesMurs = new Array('AV', 'AR', 'PGAV', 'PGAR', 'PDAR', 'PDAV');
+    var DECALAGE_INCRUSTATION = 7;
     for (var i = 0; i < 6; i++) {
         var decalageIncrustationX = 0,
             decalageIncrustationZ = 0;
@@ -680,32 +683,32 @@ export function creerTravee() {
             case "AV":
                 positionX = wallAV.position.x;
                 positionZ = wallAV.position.z;
-                decalageIncrustationZ = 7;
+                decalageIncrustationZ = -DECALAGE_INCRUSTATION;
                 break;
             case "AR":
                 positionX = wallAR.position.x;
                 positionZ = wallAR.position.z;
-                decalageIncrustationZ = -7;
+                decalageIncrustationZ = +DECALAGE_INCRUSTATION;
                 break;
             case "PGAV":
                 positionX = wallPGAV.position.x;
                 positionZ = wallPGAV.position.z;
-                decalageIncrustationX = -10;
+                decalageIncrustationX = DECALAGE_INCRUSTATION;
                 break;
             case "PDAV":
                 positionX = wallPDAV.position.x;
                 positionZ = wallPDAV.position.z;
-                decalageIncrustationX = 10;
+                decalageIncrustationX = -DECALAGE_INCRUSTATION;
                 break;
             case "PGAR":
                 positionX = wallPGAR.position.x;
                 positionZ = wallPGAR.position.z;
-                decalageIncrustationX = -10;
+                decalageIncrustationX = DECALAGE_INCRUSTATION;
                 break;
             case "PDAR":
                 positionX = wallPDAR.position.x;
                 positionZ = wallPDAR.position.z;
-                decalageIncrustationX = 10;
+                decalageIncrustationX = -DECALAGE_INCRUSTATION;
                 break;
         }
         incrustation.position.set(positionX + decalageIncrustationX, -(HAUTEUR_TRAVEE / 2), positionZ + decalageIncrustationZ);

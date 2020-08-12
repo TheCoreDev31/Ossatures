@@ -103,6 +103,13 @@ export var doorMaterial = new THREE.MeshPhongMaterial({
     refractionRatio: 0.6
 });
 
+export var selectedDoorMaterial = new THREE.MeshPhongMaterial({
+    color: COLOR_ARRAY['highlight'],
+    shininess: 50,
+    specular: COLOR_ARRAY['ral7016'],
+    refractionRatio: 0.6
+});
+
 // Porte de garage
 var garageDoorTexture = new THREE.Texture();
 garageDoorTexture = textureLoader.load("img/textures/porte_garage.jpg");
@@ -349,7 +356,7 @@ var MPI_Material = new THREE.MeshLambertMaterial({
 });
 export var MPI_Material = [MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material, MPI_Material];
 
-/******   Porte de garage    ****/
+/******   Portes de garage    ****/
 var MPG1_Front_Texture = textureLoader.load("img/openings/MPG1_F.png");
 var MPG1_Front_Material = new THREE.MeshLambertMaterial({
     map: MPG1_Front_Texture,
@@ -365,6 +372,23 @@ var MPG1_Back_Material = new THREE.MeshLambertMaterial({
     color: COLOR_ARRAY['bois']
 });
 export var MPG1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPG1_Back_Material, MPG1_Front_Material];
+
+
+var MPG2_Front_Texture = textureLoader.load("img/openings/MPG2_F.png");
+var MPG2_Front_Material = new THREE.MeshLambertMaterial({
+    map: MPG2_Front_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+var MPG2_Back_Texture = textureLoader.load("img/openings/MPG2_B.png");
+var MPG2_Back_Material = new THREE.MeshLambertMaterial({
+    map: MPG2_Back_Texture,
+    vertexColors: true,
+    transparent: true,
+    color: COLOR_ARRAY['bois']
+});
+export var MPG2_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPG2_Back_Material, MPG2_Front_Material];
 
 
 /*************************    Pignons      *****************************/

@@ -7,6 +7,8 @@ import {
 
 import {
     glassMaterial,
+    doorMaterial,
+    garageDoorMaterial,
     pignonMaterial,
     wallMaterial,
     roofMaterial,
@@ -18,6 +20,7 @@ import {
     MPF_Material,
     MPI_Material,
     MPG1_Material,
+    MPG2_Material,
     PEXT_Material,
     PINT_Droite_Material,
     PINT_Gauche_Material,
@@ -59,25 +62,36 @@ export function unSelect() {
     $("#div-menu-contextuel").hide();
 
     if (objetSelectionne) {
-        var objet = scene.getObjectByName(objetSelectionne);
+        var objetTouche = scene.getObjectByName(objetSelectionne);
 
         for (var i = 0; i < facesSelectionnees.length; i++) {
-            if (objet.parent.name.includes('>')) {
-                if (objet.name.includes('Portique')) {
-                    objet.material = wallMaterial;
-                } else {
-                    if (objet.name.includes('PINT')) {
-                        for (var k = 0; k < 12; k++) {
-                            objet.geometry.faces[k].color.set(COLOR_ARRAY['blanc']);
-                        }
 
-                    } else
-                        objet.material = glassMaterial;
+            // Suivant l'objet touché...
+            if (!objetTouche.parent.name.includes('>')) { // Un mur            
+                objetTouche.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+            } else {
+
+                if (objetTouche.name.includes('Portique'))
+                    objetTouche.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+
+                if (objetTouche.name.includes('Vitre'))
+                    objetTouche.material = glassMaterial;
+
+                if (objetTouche.name.includes('Porte')) {
+                    if (objetTouche.name.includes('PG'))
+                        objetTouche.material = garageDoorMaterial;
+                    else
+                        objetTouche.material = doorMaterial;
                 }
-            } else
-                objet.geometry.faces[facesSelectionnees[i]].color.set(COLOR_ARRAY['blanc']);
+
+                if (objetTouche.name.includes('PINT')) { // Pignon intérieur
+                    for (var k = 0; k < 12; k++) {
+                        objetTouche.geometry.faces[k].color.set(COLOR_ARRAY['blanc']);
+                    }
+                }
+            }
         }
-        objet.geometry.elementsNeedUpdate = true;
+        objetTouche.geometry.elementsNeedUpdate = true;
     }
     facesSelectionnees.length = 0;
     objetSelectionne = '';
@@ -136,13 +150,14 @@ export function afficherVueAerienne() {
     if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
         $("span:contains('afficherPlancher')").click();
 
-    var borne;
-    if (nbTravees === 1) borne = 150;
-    else borne = (150 * 0.5) * nbTravees;
-    cameraOrtho.left = -(borne * aspectRatio) / 2;
-    cameraOrtho.right = (borne * aspectRatio) / 2;
-    cameraOrtho.top = borne / 2;
-    cameraOrtho.bottom = -borne / 2;
+    var ratioZoomBase = 150,
+        ratioZoom;
+    if (nbTravees === 1) ratioZoom = ratioZoomBase;
+    else ratioZoom = (ratioZoomBase * 0.5) * nbTravees;
+    cameraOrtho.left = -(ratioZoom * aspectRatio) / 2;
+    cameraOrtho.right = (ratioZoom * aspectRatio) / 2;
+    cameraOrtho.top = ratioZoom / 2;
+    cameraOrtho.bottom = -ratioZoom / 2;
     activeCamera = cameraOrtho;
 
     $("#changement-vue div#aerien").addClass('actif');
@@ -806,6 +821,9 @@ export function displayGui() {
                                                 break;
                                             case "PG1":
                                                 child.material = MPG1_Material;
+                                                break;
+                                            case "PG2":
+                                                child.material = MPG2_Material;
                                                 break;
                                         }
                                     }

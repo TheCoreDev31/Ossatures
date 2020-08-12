@@ -39,7 +39,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = true;
+            var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 74.8,
@@ -118,14 +118,17 @@
                 <figure id="PE" class="normal"><img src="icons/MPE.jpg" class="popup-ouverture-image" alt="Porte d'entrée 90x215" />
                     <figcaption>Porte entrée<br>90x215cm</figcaption>
                 </figure>
+                <figure id="PE+F1" class="normal"><img src="icons/MPEF.jpg" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
+                    <figcaption>Porte entrée<br>+ fenêtre</figcaption>
+                </figure>
                 <figure id="PF" class="normal"><img src="icons/MPF.jpg" class="popup-ouverture-image" alt="Porte fenêtre 180x215" />
                     <figcaption>Porte fenêtre<br>180x215cm</figcaption>
                 </figure>
                 <figure id="PG1" class="normal"><img src="icons/MPG1.jpg" class="popup-ouverture-image" alt="Porte de garage 240x200" />
                     <figcaption>Porte garage<br>240x200cm</figcaption>
                 </figure>
-                <figure id="PE+F1" class="normal"><img src="icons/MPEF.jpg" class="popup-ouverture-image" alt="Porte d'entrée + fenêtre" />
-                    <figcaption>Porte entrée<br>+ fenêtre</figcaption>
+                <figure id="PG2" class="normal"><img src="icons/MPG1.jpg" class="popup-ouverture-image" alt="Porte de garage renforcée 240x200" />
+                    <figcaption>Porte garage<br>renforcée</figcaption>
                 </figure>
             </div>
             <span class="popup-ouverture-texte">* Les éléments grisés ne sont pas disponibles pour des raisons de contrainte technique.</span>
@@ -217,47 +220,16 @@
 
         <div id="vue-aerienne">
             <div id="legende">
-                <table>
-                    <thead>
-                        <tr>
-                            <th colspan=2>Légende</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>MPL : Mur plein</td>
-                            <td>MPE : Porte d'entrée</td>
-                        </tr>
-                        <tr>
-                            <td>MF1 : Fenêtre 45x65</td>
-                            <td>MF2 : Fenêtre 105x115</td>
-                        </tr>
-                        <tr>
-                            <td>MPF : Porte fenêtre</td>
-                            <td>MPEF : Porte d'entrée + fenêtre 45x65</td>
-                        </tr>
-                        <tr>
-                            <td>MPG1 : Porte de garage 240x200</td>
-                            <td>MPG2 : Porte de garage renforcée 240x200</td>
-                        </tr>
-                        <tr>
-                            <td>MPI : Portique intérieur</td>
-                            <td></td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <!--
-                <span style="text-decoration: underline">Légende</span></br>
+                <span class="titre">Légende des modules</span></br>
                 <span>MPL : Mur plein</span></br>
                 <span>MPE : Porte d'entrée</span></br>
                 <span>MF1 : Fenêtre 45x65</span></br>
                 <span>MF2 : Fenêtre 105x115</span></br>
                 <span>MPF : Porte fenêtre</span></br>
                 <span>MPG1 : Porte de garage 240x200</span></br>
+                <span>MPG2 : Porte garage renforcée 240x200</span></br>
                 <span>MPEF : Porte d'entrée + fenêtre 45x65</span></br>
                 <span>MPI : Portique intérieur</span></br>
-//-->
             </div>
             <div id="zoom">
                 <button id="dezoom">-</button>

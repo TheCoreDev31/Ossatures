@@ -9,6 +9,7 @@ import {
     COLOR_ARRAY,
     glassMaterial,
     selectedGlassMaterial,
+    selectedDoorMaterial,
     SOLE_1_Material,
     SOLE_2_Material,
     SOLP_Material,
@@ -30,7 +31,8 @@ import {
     faceInterieureOuExterieure,
     modifierIncrustation,
     toggleIncrustations,
-    animate
+    animate,
+    traduireNomObjet
 } from "./main.js"
 
 import {
@@ -323,7 +325,6 @@ export function onMouseDoubleClick(event) {
 
     // On n'intercepte volontairement pas certains objets
     if (objetTouche.name.includes('excluded')) return; // Pour exclure certains objets de l'intersection (ex : cadre des fenêtres ou toit)
-    //    if (objetTouche.name.startsWith('Travee') && !objetTouche.parent.name.includes('>') && faceTouchee < FACE_EXTERNE) return; // Façade != façade avant du mur
 
     // Pour le cas particulier du toit, qui doit laisser passer le raycast, on recherche le prochain objet ni transparent ni exclu.
     var trouve = false;
@@ -346,20 +347,32 @@ export function onMouseDoubleClick(event) {
 
     for (var j = 0; j < 2; j++) {
         var numFace = face * 2 + j;
-        if (objetTouche.parent.name.includes('>') && !objetTouche.name.includes('PINT'))
-            objetTouche.material = selectedGlassMaterial;
-        else {
-            if (objetTouche.name.includes('PINT')) {
+
+        // Suivant l'objet touché...
+        if (!objetTouche.parent.name.includes('>')) { // Un mur            
+            objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+        } else {
+
+            if (objetTouche.name.includes('Portique'))
+                objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+
+            if (objetTouche.name.includes('Vitre'))
+                objetTouche.material = selectedGlassMaterial;
+
+            if (objetTouche.name.includes('Porte'))
+                objetTouche.material = selectedDoorMaterial;
+
+            if (objetTouche.name.includes('PINT')) { // Pignon intérieur
                 for (var k = 0; k < 12; k++) {
                     objetTouche.geometry.faces[k].color.set(COLOR_ARRAY['highlight']);
                 }
-            } else
-                objetTouche.geometry.faces[numFace].color.set(COLOR_ARRAY['highlight']);
+            }
         }
+
         objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
         objetSelectionne = objetTouche.name;
-        info(objetTouche);
+        info(traduireNomObjet(objetTouche));
         displayContextualMenu(objetTouche, mouse.left, mouse.top);
     }
 }
