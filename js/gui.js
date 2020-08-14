@@ -788,7 +788,11 @@ export function displayGui() {
 
             if (afficherBois) {
 
-                if ((child instanceof THREE.Mesh) && (!child.name.includes('Vitre') && !child.name.includes('Porte'))) {
+                if (child instanceof THREE.Mesh &&
+                    !child.name.includes('Vitre') &&
+                    !child.name.includes('Porte') &&
+                    child.name != 'ground' &&
+                    child.name != 'boussole') {
 
                     switch (child.material) {
 

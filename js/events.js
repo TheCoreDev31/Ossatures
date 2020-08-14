@@ -7,17 +7,25 @@ import {
 
 import {
     COLOR_ARRAY,
+    windowMaterial,
     glassMaterial,
     selectedGlassMaterial,
+    doorMaterial,
     selectedDoorMaterial,
+    SOLP_Material,
     SOLE_1_Material,
     SOLE_2_Material,
-    SOLP_Material,
     SOLT_Material,
-    PEXT_Material,
-    PINT_Gauche_Material,
-    PINT_Droite_Material
-} from "./materials.js"
+    MPE_Material,
+    MF1_Material,
+    MF2_Material,
+    MPEF_Material,
+    MPF_Material,
+    MPI_Material,
+    MPG1_Material,
+    MPG2_Material
+}
+from "./materials.js"
 
 import {
     info,
@@ -201,9 +209,48 @@ $(".popup-ouverture").click(function (e) {
     if (!$(e.target).parent().hasClass('disabled')) {
         var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
         var nomFace = extraireFace($("#traveeSelectionnee").val());
+        var nouvelleOuverture;
 
         if ($(e.target).parent().attr('id') != 'PE+F1') {
-            scene.add(creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id')));
+            nouvelleOuverture = creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id'));
+            scene.add(nouvelleOuverture);
+
+            // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
+            // que l'on vient de créer et afficher l'équivalent en ossature bois.
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
+
+                var module = nouvelleOuverture.name.substr(nouvelleOuverture.name.lastIndexOf(' ') + 1, nouvelleOuverture.name.length);
+                var mur = nouvelleOuverture.name.substring(0, nouvelleOuverture.name.lastIndexOf('>'));
+                var material;
+
+                if (module == 'PO') {
+                    scene.getObjectByName(mur).material = MPI_Material;
+                } else {
+                    scene.getObjectByName(nouvelleOuverture.name).visible = false;
+
+                    switch (module) {
+                        case "PE":
+                            material = MPE_Material;
+                            break;
+                        case "F1":
+                            material = MF1_Material;
+                            break;
+                        case "F2":
+                            material = MF2_Material;
+                            break;
+                        case "PF":
+                            material = MPF_Material;
+                            break;
+                        case "PG1":
+                            material = MPG1_Material;
+                            break;
+                        case "PG2":
+                            material = MPG2_Material;
+                            break;
+                    }
+                    scene.getObjectByName(mur).material = material;
+                }
+            }
         } else {
 
             // Cas particulier du combo PE + F1 :
@@ -225,7 +272,17 @@ $(".popup-ouverture").click(function (e) {
             retirerObjetModifiable(porte.name);
             scene.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
+
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
+                scene.getObjectByName(nouveauGroupe.name).visible = false;
+
+                var mur = nouveauGroupe.name.substring(0, nouveauGroupe.name.lastIndexOf('>'));
+                var material = MPEF_Material;
+                scene.getObjectByName(mur).material = material;
+            }
+
         }
+
         $(".popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();

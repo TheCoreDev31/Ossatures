@@ -204,7 +204,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
             break;
         case 'AR':
             windowGrp.rotation.y = Math.PI;
-            positionX = 0 + decalageX;
+            positionX = 0 - decalageX;
             positionZ = -(LONGUEUR_TRAVEE / 2) + (epaisseur / 2) - 0.5;
             break;
         case 'PGAV':

@@ -25,6 +25,7 @@ export function createText(texte, taillePolice = 2) {
         var geometry = new THREE.TextGeometry(texte, {
             font: font,
             size: taillePolice,
+            color: COLOR_ARRAY['blanc'],
             height: 0.1,
             curveSegments: 4,
             bevelEnabled: false
@@ -85,7 +86,7 @@ export var glassMaterial = new THREE.MeshPhongMaterial({
     shininess: 50,
     specular: COLOR_ARRAY['bleu_ciel'],
     refractionRatio: 0.7
-    
+
 });
 
 export var selectedGlassMaterial = new THREE.MeshPhongMaterial({
