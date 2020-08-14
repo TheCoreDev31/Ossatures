@@ -428,9 +428,39 @@ export function onMouseDoubleClick(event) {
 
         objetTouche.geometry.elementsNeedUpdate = true;
         facesSelectionnees.push(numFace);
-        objetSelectionne = objetTouche.name;
-        info(traduireNomObjet(objetTouche));
-        displayContextualMenu(objetTouche, mouse.left, mouse.top);
+
+        var modeOssatureBois = $("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked');
+        var ouvertureDansMur;
+
+        /* En mode "Ossature bois", il n'est pas possible de sélectionner une ouverture (puisqu'elles n'apparaissent pas) donc, en cas de sélection d'un mur possédant une ouverture, on présume que c'est sur l'ouverture que l'on veut jouer. */
+        if (modeOssatureBois) {
+
+            ouvertureDansMur = false;
+            // On recherche s'il existe une ouverture sur ce mur
+            for (var objet in objetsModifiables) {
+                if (objetsModifiables[objet].name.indexOf(objetTouche.name + '>Ouverture ') != -1) {
+                    for (var child in objetsModifiables[objet].children) {
+                        if (objetsModifiables[objet].children[child].name != "excluded") {
+                            objetSelectionne = objetsModifiables[objet].children[child].name;
+                            ouvertureDansMur = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (ouvertureDansMur) {
+                var nouvelObjetTouche = scene.getObjectByName(objetSelectionne);
+                info(traduireNomObjet(nouvelObjetTouche));
+                displayContextualMenu(nouvelObjetTouche, mouse.left, mouse.top);
+            }
+        }
+
+        if (!modeOssatureBois || (modeOssatureBois && !ouvertureDansMur)) {
+
+            objetSelectionne = objetTouche.name;
+            info(traduireNomObjet(objetTouche));
+            displayContextualMenu(objetTouche, mouse.left, mouse.top);
+        }
     }
 }
 

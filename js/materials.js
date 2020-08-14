@@ -167,7 +167,6 @@ var SOLP_Up_Material = new THREE.MeshLambertMaterial({
     vertexColors: true,
     color: COLOR_ARRAY['bois'],
     transparent: true
-
 });
 var SOLP_Down_Material = new THREE.MeshStandardMaterial({
     map: SOLP_Down_Texture,
@@ -243,6 +242,11 @@ var SOLT_Down_Material = new THREE.MeshStandardMaterial({
     transparent: true
 });
 export var SOLT_Material = [SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Up_Material, SOLT_Down_Material];
+
+
+
+
+
 
 /************************    Modules   *******************/
 

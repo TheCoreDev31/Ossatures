@@ -122,8 +122,6 @@ export function traduireNomObjet(objet) {
     var nomFace = extraireFace(objet.name);
     var traduction = nomTravee + " : ";
 
-    log(objet);
-
     // Gestion des murs
     if (!objet.parent.name.includes('>') && !objet.name.includes('plancher')) {
         var libelleFace;

@@ -80,10 +80,21 @@ export function supprimerOuverture(nomObjet) {
     tableauTravees[travee]['nb_ouvertures_' + face]--;
     tableauTravees[travee]['vt_' + face] = PRODUITS['MU']['VT'];
 
+    // Si l'on est en vue "Ossature bois", il faut également rafraichir la texture du mur sur lequel on vient de supprimer l'ouverture.
+    var modeOssatureBois = $("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked');
+
+    if (modeOssatureBois) {
+        var mur = nomObjet.substring(0, nomObjet.lastIndexOf('>'));
+        scene.getObjectByName(mur).material = MPL_Material;
+        objetSelectionne = travee + ">" + face;
+    }
+
     // et enfin, déselectionner l'objet.
     retirerObjetModifiable(objet.name);
-    objetSelectionne = '';
+    if (!modeOssatureBois) objetSelectionne = '';
     unSelect();
+    if (modeOssatureBois) objetSelectionne = '';
+
     if (DEBUG) {
         log('tableauTravee APRES supprimerOuverture :');
         log(tableauTravees);
