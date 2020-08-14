@@ -85,6 +85,7 @@ export var glassMaterial = new THREE.MeshPhongMaterial({
     shininess: 50,
     specular: COLOR_ARRAY['bleu_ciel'],
     refractionRatio: 0.7
+    
 });
 
 export var selectedGlassMaterial = new THREE.MeshPhongMaterial({

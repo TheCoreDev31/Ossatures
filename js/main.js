@@ -769,7 +769,7 @@ export function modifierIncrustation(travee, face, remplacant = null) {
     var nbEnfants = groupe.children.length;
 
     for (var i = nbEnfants - 1; i >= 0; i--) {
-        if (groupe.children[i].name.includes(face + ">Incrustation")) {
+        if (groupe.children[i].name.includes(">" + face + ">Incrustation")) {
             var positionX = groupe.children[i].position.x;
             var positionY = groupe.children[i].position.y;
             var positionZ = groupe.children[i].position.z;
