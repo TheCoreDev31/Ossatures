@@ -6,6 +6,7 @@ import {
 } from "./objects.js"
 
 import {
+    createText,
     glassMaterial,
     doorMaterial,
     garageDoorMaterial,
@@ -150,18 +151,46 @@ export function afficherVueAerienne() {
     if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
         $("span:contains('afficherPlancher')").click();
 
-    var ratioZoomBase = 150,
-        ratioZoom;
-    if (nbTravees === 1) ratioZoom = ratioZoomBase;
-    else ratioZoom = (ratioZoomBase * 0.5) * nbTravees;
-    cameraOrtho.left = -(ratioZoom * aspectRatio) / 2;
-    cameraOrtho.right = (ratioZoom * aspectRatio) / 2;
-    cameraOrtho.top = ratioZoom / 2;
-    cameraOrtho.bottom = -ratioZoom / 2;
+
+    // On calcule les limites gauche, droite, haut et bas de la construciton, afin de cadrer au mieux.
+    var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
+    var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
+    var MARGE = 50;
+    cameraOrtho.left = gauche - MARGE;
+    cameraOrtho.right = droite + MARGE;
+    cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+    cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     activeCamera = cameraOrtho;
+
+    // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
+    // que de supprimer/recréer les incrustations.
+    scene.traverse(function (child) {
+        if (child.name.includes(">Incrustation")) {
+            log(cameraOrtho.zoom);
+            if (cameraOrtho.zoom <= 0.5 && cameraOrtho.zoom > 0.4) {
+                child.position.y = 10;
+            }
+            if (cameraOrtho.zoom <= 0.4 && cameraOrtho.zoom > 0.3) {
+                child.position.y = 20;
+            }
+            if (cameraOrtho.zoom <= 0.3 && cameraOrtho.zoom > 0.2) {
+                child.position.y = 30;
+            }
+            scene.updateMatrixWorld();
+            /*
+            var texteActuel = child.geometry.parameters.text;
+            var parent = child.parent;
+            var nouveauTexte = createText(texteActuel, 4);
+            scene.add(nouveauTexte);
+            */
+        }
+    });
+
+
 
     $("#changement-vue div#aerien").addClass('actif');
     toggleIncrustations();
+    $("#legende").hide();
     $("#vue-aerienne").show();
 }
 

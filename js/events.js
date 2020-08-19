@@ -310,6 +310,8 @@ $("#changement-vue div").click(function (e) {
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#vue-aerienne").hide();
+    if ($("#overlay").is(":visible")) $("#overlay").hide();
+
     $("div:contains('Open Controls')").click();
 
     $("#changement-vue div#aerien").removeClass("actif");
@@ -330,16 +332,54 @@ $("#zoom").click(function (e) {
     if (cameraOrtho.zoom < 4)
         cameraOrtho.zoom += 0.1;
     e.stopImmediatePropagation();
+
+    if (DEBUG) log("Zoom caméra = " + cameraOrtho.zoom);
 });
 
 $("#dezoom").click(function (e) {
     if (cameraOrtho.zoom > 0.2)
         cameraOrtho.zoom -= 0.1;
     e.stopImmediatePropagation();
+
+    if (scene.getObjectByName('Travee 1>AV>Incrustation')) {
+        scene.getObjectByName('Travee 1>AV>Incrustation').position.y = 100;
+    }
+
+    /*
+        scene.traverse(function (child) {
+            if (child.name.includes(">Incrustation")) {
+                if (cameraOrtho.zoom <= 0.5 && cameraOrtho.zoom > 0.4) {
+                    child.position.y = 10;
+                }
+                if (cameraOrtho.zoom <= 0.4 && cameraOrtho.zoom > 0.3) {
+                    child.position.y = 20;
+                }
+                if (cameraOrtho.zoom <= 0.3 && cameraOrtho.zoom > 0.2) {
+                    child.position.y = 30;
+                }
+            }
+        });
+    */
+
+    scene.updateMatrixWorld();
+    animate();
+
+    if (DEBUG) log("Zoom caméra = " + cameraOrtho.zoom);
 });
 
 
+/*********************************   Dans la vue d'implantation, affichage de la légende   ****************************/
+$("#boutons > #legende").click(function (e) {
+    e.preventDefault();
 
+    if (!$("#legende").is(":visible")) {
+        $("#legende").show();
+        $("#overlay").show();
+    } else {
+        $("#legende").hide();
+        $("#overlay").hide();
+    }
+});
 
 
 

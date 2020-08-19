@@ -39,7 +39,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 74.8,
@@ -47,7 +47,7 @@
                 EPAISSEUR_MUR = 2;
             var DOWN = true;
 
-            var taillePoliceIncrustations = 3;
+            var taillePoliceIncrustations = 2;
 
             // Quelques constantes pratiques pour repérer les faces
             var indicePDAR = 1,
@@ -70,7 +70,6 @@
             var objetsModifiables = new Array();
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
-
         </script>
 
         <div class="div-aide">
@@ -221,17 +220,20 @@
         <div id="vue-aerienne">
             <div id="legende">
                 <span class="titre">Légende des modules</span></br>
-                <span>MPL : Mur plein</span></br>
-                <span>MPE : Porte d'entrée</span></br>
-                <span>MF1 : Fenêtre 45x65</span></br>
-                <span>MF2 : Fenêtre 105x115</span></br>
-                <span>MPF : Porte fenêtre</span></br>
-                <span>MPG1 : Porte de garage 240x200</span></br>
-                <span>MPG2 : Porte garage renforcée 240x200</span></br>
-                <span>MPEF : Porte d'entrée + fenêtre 45x65</span></br>
-                <span>MPI : Portique intérieur</span></br>
+                <div id="legende-modules">
+                    <span>MPL : Mur plein</span></br>
+                    <span>MPE : Porte d'entrée</span></br>
+                    <span>MF1 : Fenêtre 45x65</span></br>
+                    <span>MF2 : Fenêtre 105x115</span></br>
+                    <span>MPF : Porte fenêtre</span></br>
+                    <span>MPG1 : Porte de garage 240x200</span></br>
+                    <span>MPG2 : Porte garage renforcée</span></br>
+                    <span>MPEF : Porte d'entrée + fenêtre</span></br>
+                    <span>MPI : Portique intérieur</span></br>
+                </div>
             </div>
-            <div id="zoom">
+            <div id="boutons">
+                <button id="legende"></button>
                 <button id="dezoom">-</button>
                 <button id="zoom">+</button>
             </div>
@@ -251,6 +253,4 @@
 
     </div>
 
-</body>
-
-</html>
+</body></html>

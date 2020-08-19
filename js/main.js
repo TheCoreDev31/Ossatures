@@ -1064,22 +1064,15 @@ export function verifierContraintes(objet) {
     // Cas particulier du MPG2 : on ne le propose qu'en façade, et uniquement pour les constructions à 1 ou 2 travées.
     if (typesOuverturesAutorisees.indexOf("PG2") > -1) {
         var aSupprimer = false;
-        if (nomFace != "AV" && nomFace != "AR") {
+        if (nomFace != "AV" && nomFace != "AR")
             aSupprimer = true;
-        } else {
-            if (traveesMemeConstruction.length > 2) {
+        else {
+            if (traveesMemeConstruction.length > 2)
                 aSupprimer = true;
-            }
-        }
-        // Enfin, on ne propose pas les deux portails de garage ensemble.
-        if (typesOuverturesAutorisees.indexOf("PG1") > -1) {
-            aSupprimer = true;
         }
 
-        if (aSupprimer) {
+        if (aSupprimer)
             typesOuverturesAutorisees.splice(5, 1);
-        }
-
     }
 
     if (DEBUG) {

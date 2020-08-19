@@ -105,7 +105,6 @@ body {
 }
 
 .texte-aide > li:before {
-
     font-family: "FontAwesome";
     content: "\f105";
     margin-right: 8px;
@@ -422,17 +421,19 @@ div#droite i {
     position: fixed;
     right: 20px;
     bottom: 270px;
+    z-index: 300;
+    width: 300px;
 }
 
 #vue-aerienne #legende {
     position: relative;
-    bottom: 200px;
+    margin-bottom: 40px;
 }
 
 #vue-aerienne #legende span,
 th {
     font-family: "Avenir Next", "Avenir", sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: white;
     padding-right: 20px;
@@ -440,18 +441,19 @@ th {
 
 #vue-aerienne #legende span.titre {
     text-decoration: underline;
+    text-align: right;
 }
+
 
 #quitter-vue-aerienne {
     display: flex;
     width: 280px;
     height: 50px;
     justify-content: center;
-    align-content: center;
     background-color: red;
     border-radius: 15px;
     cursor: pointer;
-    box-shadow: -20px 20px 25px;
+    box-shadow: -10px 10px 20px;
 }
 
 #quitter-vue-aerienne span {
@@ -463,23 +465,29 @@ th {
     justify-self: center !important;
 }
 
-
-#zoom {
-    display: flex;
-    justify-content: center;
+#boutons {
+    display: inline-flex;
     margin-bottom: 10px;
 }
 
+#boutons > #legende {
+    margin-right: 40px;
+}
 
-#zoom button {
+#boutons > #legende:before {
+    font-family: "FontAwesome";
+    content: "\f0ca";
+    margin-right: 20px;
+}
+
+#boutons button {
+    text-align: center;
     font-size: 30px;
     color: red;
     width: 45px;
     height: 45px;
     border: none;
     border-radius: 100%;
-    align-items: center;
-    justify-items: center;
     background-color: rgba(255, 255, 255, 0.8);
     margin-left: 15px;
 }
