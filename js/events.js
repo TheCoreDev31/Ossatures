@@ -23,7 +23,8 @@ import {
     MPF_Material,
     MPI_Material,
     MPG1_Material,
-    MPG2_Material
+    MPG2_Material,
+    createText
 }
 from "./materials.js"
 
@@ -40,7 +41,9 @@ import {
     modifierIncrustation,
     toggleIncrustations,
     animate,
-    traduireNomObjet
+    traduireNomObjet,
+    calculerTaillePoliceOptimale,
+    reecrireIncrustations
 } from "./main.js"
 
 import {
@@ -303,14 +306,22 @@ $("#changement-vue div").click(function (e) {
         $(e.target).parent().addClass('actif');
         changePointOfView(direction);
     }
-
 });
+
+
+$("#transparent-overlay").click(function (e) {
+    e.preventDefault();
+    if ($("#transparent-overlay").is(":visible"))
+        alerte("Pour quitter cette vue, cliquez sur le bouton rouge.");
+});
+
 
 /*******************************    Clic pour quitter le mode vue aérienne    **************************************/
 $("#quitter-vue-aerienne").click(function (e) {
     e.preventDefault();
     $("#vue-aerienne").hide();
     if ($("#overlay").is(":visible")) $("#overlay").hide();
+    if ($("#transparent-overlay").is(":visible")) $("#transparent-overlay").hide();
 
     $("div:contains('Open Controls')").click();
 
@@ -333,38 +344,28 @@ $("#zoom").click(function (e) {
         cameraOrtho.zoom += 0.1;
     e.stopImmediatePropagation();
 
-    if (DEBUG) log("Zoom caméra = " + cameraOrtho.zoom);
+    // On redimensionne la police des incrustations
+    var aTraiter = new Array();
+    scene.traverse(function (child) {
+        if (child.name.includes(">Incrustation"))
+            aTraiter.push(child.name);
+    });
+    reecrireIncrustations(aTraiter, calculerTaillePoliceOptimale());
 });
 
 $("#dezoom").click(function (e) {
+
     if (cameraOrtho.zoom > 0.2)
         cameraOrtho.zoom -= 0.1;
     e.stopImmediatePropagation();
 
-    if (scene.getObjectByName('Travee 1>AV>Incrustation')) {
-        scene.getObjectByName('Travee 1>AV>Incrustation').position.y = 100;
-    }
-
-    /*
-        scene.traverse(function (child) {
-            if (child.name.includes(">Incrustation")) {
-                if (cameraOrtho.zoom <= 0.5 && cameraOrtho.zoom > 0.4) {
-                    child.position.y = 10;
-                }
-                if (cameraOrtho.zoom <= 0.4 && cameraOrtho.zoom > 0.3) {
-                    child.position.y = 20;
-                }
-                if (cameraOrtho.zoom <= 0.3 && cameraOrtho.zoom > 0.2) {
-                    child.position.y = 30;
-                }
-            }
-        });
-    */
-
-    scene.updateMatrixWorld();
-    animate();
-
-    if (DEBUG) log("Zoom caméra = " + cameraOrtho.zoom);
+    // On redimensionne la police des incrustations
+    var aTraiter = new Array();
+    scene.traverse(function (child) {
+        if (child.name.includes(">Incrustation"))
+            aTraiter.push(child.name);
+    });
+    reecrireIncrustations(aTraiter, calculerTaillePoliceOptimale());
 });
 
 

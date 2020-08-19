@@ -787,6 +787,49 @@ export function modifierIncrustation(travee, face, remplacant = null) {
 }
 
 
+export function reecrireIncrustations(aTraiter, nouvelleTaille) {
+    aTraiter.forEach(function (item) {
+        var child = scene.getObjectByName(item);
+        var nomTravee = child.parent.name,
+            travee;
+        var nouveauTexte = createText(child.geometry.parameters.text, nouvelleTaille);
+        var x = child.position.x,
+            y = child.position.y,
+            z = child.position.z;
+
+        travee = scene.getObjectByName(nomTravee);
+        travee.remove(child);
+        nouveauTexte.position.set(x, y, z);
+        nouveauTexte.name = item;
+        nouveauTexte.rotation.x = -Math.PI / 2;
+        travee.add(nouveauTexte);
+    });
+}
+
+
+export function calculerTaillePoliceOptimale() {
+    var nouvelleTaille = 2;
+    var zoom = cameraOrtho.zoom.toPrecision(1);
+
+    if (DEBUG) log("Zoom caméra = " + zoom);
+
+    if ((zoom <= 0.6 && zoom > 0.3) || (nbTravees == 4))
+        nouvelleTaille = 3;
+
+    if ((zoom <= 0.3) || (nbTravees == 5))
+        nouvelleTaille = 4;
+
+    if ((zoom <= 0.2) || (nbTravees == 6))
+        nouvelleTaille = 5;
+
+    if ((zoom <= 0.1) || (nbTravees > 6))
+        nouvelleTaille = 6;
+
+    return nouvelleTaille;
+}
+
+
+
 /******************   Fonctions métier   *****************/
 
 export function retirerObjetModifiable(nomObjet) {
@@ -1167,6 +1210,7 @@ $(document).ready(function () {
     $("#vue-aerienne").hide();
     $("#popup-attente").hide();
     $("#overlay").hide();
+    $("#transparent-overlay").hide();
 
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();

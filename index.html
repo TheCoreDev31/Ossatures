@@ -39,7 +39,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = true;
+            var DEBUG = false;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 74.8,
@@ -206,6 +206,7 @@
         </div>
 
         <div id="overlay"></div>
+        <div id="transparent-overlay"></div>
 
         <div id="changement-vue">
             <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane" data-toggle="tooltip" data-placement="top" title="Tooltip on top" id="bouton-vue-aerienne"></i></div>

@@ -192,6 +192,7 @@ export function afficherVueAerienne() {
     toggleIncrustations();
     $("#legende").hide();
     $("#vue-aerienne").show();
+    $("#transparent-overlay").show();
 }
 
 /*******************************    Gestion du menu contextuel    ***********************************************/
