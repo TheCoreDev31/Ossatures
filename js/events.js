@@ -39,7 +39,8 @@ import {
     retirerObjetModifiable,
     faceInterieureOuExterieure,
     modifierIncrustation,
-    toggleIncrustations,
+    showIncrustations,
+    hideIncrustations,
     animate,
     traduireNomObjet,
     calculerTaillePoliceOptimale,
@@ -325,12 +326,12 @@ $("#quitter-vue-aerienne").click(function (e) {
 
     $("div:contains('Open Controls')").click();
 
-    $("#changement-vue div#aerien").removeClass("actif");
+    $("#changement-vue div#aerien").removeClass('surligne');
     activeCamera = camera;
     camera.position.set(60, 40, 160);
     cameraOrtho.zoom = 1;
 
-    toggleIncrustations();
+    hideIncrustations();
 
     // On raffiche toit et plancher
     $("span:contains('afficherToit')").click();

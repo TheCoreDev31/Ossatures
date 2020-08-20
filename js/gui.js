@@ -26,7 +26,9 @@ import {
     PINT_Droite_Material,
     PINT_Gauche_Material,
     CH1T_Material,
-    COLOR_ARRAY
+    COLOR_ARRAY,
+    blankMaterial,
+    groundMaterial
 }
 from "./materials.js"
 
@@ -40,12 +42,14 @@ import {
     verifierContraintes,
     importScene,
     exportScene,
-    toggleIncrustations,
+    showIncrustations,
+    hideIncrustations,
     incrusterCotes,
     animate,
     recalculerConstructions,
     calculerTaillePoliceOptimale,
-    redimensionnerIncrustations
+    redimensionnerIncrustations,
+    changerCouleurTextes
 } from "./main.js"
 
 import {
@@ -142,9 +146,9 @@ export function changePointOfView(direction) {
 
 
 export function afficherVueAerienne() {
-    $("#changement-vue div#aerien").addClass('actif');
 
     $("div:contains('Close Controls')").click();
+    $("#changement-vue div#aerien").addClass('actif');
 
     // On masque toit et plancher (si pas déjà masqués)
     if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
@@ -155,17 +159,19 @@ export function afficherVueAerienne() {
 
 
     // On calcule les limites gauche, droite, haut et bas de la construciton, afin de cadrer au mieux.
-    var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
-    var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
+    var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
+    var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
     var MARGE = 50;
+    if (nbTravees == 1) MARGE = 50; // Eventuellement, cas particulier de la construction à 1 travée
     cameraOrtho.left = gauche - MARGE;
     cameraOrtho.right = droite + MARGE;
     cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     activeCamera = cameraOrtho;
 
-    $("#changement-vue div#aerien").addClass('actif');
-    toggleIncrustations();
+    // Rendre actifs les contrôles de vues
+    $("#changement-vue div#aerien").addClass('surligne');
+    showIncrustations();
 
     // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
     // que de supprimer/recréer les incrustations.
@@ -412,13 +418,21 @@ export function displayGui() {
             $("#overlay").show();
             $("#popup-attente").show();
 
-            // On prend tous les screenshots dans le bon ordre...
-            activeCamera = cameraOrtho;
+            // On prend tous les screenshots dans le bon ordre et dans le bon mode...
             if (!$("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('ossatureBois')").click();
+            if (!$("span:contains('afficherCotes')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('afficherCotes')").click();
+            scene.getObjectByName('ground').material = blankMaterial;
 
             // 1 - la vue d'implantation
             afficherVueAerienne();
+            scene.getObjectByName('boussole').material.color = COLOR_ARRAY['noir'];
+            changerCouleurTextes(COLOR_ARRAY['noir']);
+            scene.traverse(function (child) {
+                if (child.name.includes('floor_excluded'))
+                    child.visible = false;
+            });
             animate();
             screenshot1 = saveAsImage();
             $("#quitter-vue-aerienne").click();
@@ -439,6 +453,13 @@ export function displayGui() {
             screenshot3 = saveAsImage();
 
             // Les vues suivantes n'auront pas de cotes.
+            scene.getObjectByName('ground').material = groundMaterial;
+            scene.traverse(function (child) {
+                if (child.name.includes('floor_excluded'))
+                    child.visible = true;
+            });
+            scene.getObjectByName('boussole').material.color = COLOR_ARRAY['blanc'];
+            changerCouleurTextes(COLOR_ARRAY['blanc']);
             activeCamera = camera;
             if ($("span:contains('afficherCotes')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherCotes')").click();
@@ -597,9 +618,9 @@ export function displayGui() {
                     engine: "handlebars",
                     phantom: {
                         "format": "A4",
-                        "orientation": "portrait",
-                        "headerHeight": "3cm",
-                        "footer": "<h4>Mentions légales...</h4>"
+                        "orientation": "landscape",
+                        "headerHeight": "2cm",
+                        "footer": "<h4>Texte des mentions légales...</h4>"
                     }
                 },
                 data: donneesJSON
@@ -686,6 +707,9 @@ export function displayGui() {
 
                 recalculerConstructions();
                 incrusterCotes();
+
+                // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
+                scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
             }
         },
 
@@ -726,6 +750,9 @@ export function displayGui() {
 
             recalculerConstructions();
             incrusterCotes();
+
+            // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
+            scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
         }
     }
 

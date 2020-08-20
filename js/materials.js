@@ -1,4 +1,5 @@
 export var COLOR_ARRAY = new Array(THREE.Color);
+COLOR_ARRAY['noir'] = (new THREE.Color(0x000000).convertSRGBToLinear());
 COLOR_ARRAY['bleu_ciel'] = (new THREE.Color(0xc0dfff).convertSRGBToLinear());
 COLOR_ARRAY['ral7016'] = (new THREE.Color(0x303438).convertSRGBToLinear());
 COLOR_ARRAY['blanc'] = (new THREE.Color(0xffffff).convertSRGBToLinear());
@@ -59,6 +60,12 @@ export var groundMaterial = new THREE.MeshLambertMaterial({
     reflectivity: 0.2,
     color: COLOR_ARRAY['vert']
 });
+
+
+export var blankMaterial = new THREE.MeshBasicMaterial({
+    color: COLOR_ARRAY['blanc'],
+});
+
 
 
 // Toit

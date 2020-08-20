@@ -348,7 +348,7 @@ body {
     transition: all .5s ease-in-out;
 }
 
-#changement-vue div.actif {
+#changement-vue div.surligne {
     color: red;
     font-size: 30px !important;
 }

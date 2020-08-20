@@ -174,6 +174,24 @@ export function traduireNomObjet(objet) {
 
 /************************   Gestion des cotes affichées sur le plan   ***********************************************/
 
+export function changerCouleurTextes(couleur) {
+    var coteX, coteY;
+
+    coteX = scene.getObjectByName('CoteX');
+    coteX.children[0].material.color = couleur;
+    coteX.children[1].material.color = couleur;
+
+    coteY = scene.getObjectByName('CoteY');
+    coteY.children[0].material.color = couleur;
+    coteY.children[1].material.color = couleur;
+
+    scene.traverse(function (child) {
+        if (child.name.includes(">Incrustation"))
+            child.geometry.color = couleur;
+    });
+}
+
+
 export function incrusterCotes() {
 
     var texte, texteCotes, xTexte, decalage, nbDecalages = 0;
@@ -350,14 +368,23 @@ export function incrusterCotes() {
 }
 
 
-export function toggleIncrustations() {
+export function hideIncrustations() {
+    scene.traverse(function (child) {
+        if (child.name.includes(">Incrustation")) {
+            child.visible = false;
+        }
+    });
+}
+
+
+export function showIncrustations() {
     scene.traverse(function (child) {
         if (child.name.includes(">Incrustation")) {
 
             // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche l'incrustation
             var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
             if (moduleLie.visible)
-                child.visible = !child.visible;
+                child.visible = true;
             else
                 child.visible = false;
         }
@@ -802,7 +829,6 @@ export function redimensionnerIncrustations() {
 
     var aTraiter = new Array();
     scene.traverse(function (child) {
-        //        if (child.name.includes(">Incrustation") || child.name.includes("Cote"))
         if (child.geometry && child.geometry.type == "TextGeometry")
             aTraiter.push(child.name);
     });
@@ -1126,8 +1152,8 @@ export function verifierContraintes(objet) {
     }
 
 
-    // On calcule si la face est une face intérieure ou extérieure (pour pouvoir filtrer les types d'ouvertures proposées),
-    // et on détermine le score minimum pour la face concernée.
+    /* On calcule si la face est une face intérieure ou extérieure (pour pouvoir filtrer les types
+       d'ouvertures proposées), et on détermine le score minimum pour la face concernée. */
     var delta = 0;
 
     if (traveesMemeConstruction.length == 1) {

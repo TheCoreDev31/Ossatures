@@ -614,7 +614,7 @@ export function creerTravee() {
     var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(LARGEUR_TRAVEE, LONGUEUR_TRAVEE), floorMaterial);
     floor.position.set(0, (-HAUTEUR_TRAVEE / 2) + .01, 0);
     floor.rotation.x = -Math.PI / 2;
-    floor.name = 'excluded';
+    floor.name = 'floor_excluded';
 
     var topGeometry = new THREE.BoxGeometry(LARGEUR_TRAVEE - 0.2, LONGUEUR_TRAVEE - 0.2, 0.2);
     var top = new THREE.Mesh(topGeometry, SOLP_Material);

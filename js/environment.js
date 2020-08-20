@@ -53,7 +53,7 @@ scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 200, 1000);
 var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(16, 16), boussoleMaterial);
 boussole.name = 'boussole';
 boussole.rotation.x = -Math.PI / 2;
-boussole.position.set(0, -(HAUTEUR_TRAVEE / 2) + 0.1, 100);
+boussole.position.set(50, -(HAUTEUR_TRAVEE / 2) + 0.1, 0);
 scene.add(boussole);
 
 
