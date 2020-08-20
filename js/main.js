@@ -220,6 +220,7 @@ export function incrusterCotes() {
 
     texte = nbTraveesConstruction1 * (LARGEUR_TRAVEE * 100) + ' mm';
     texteCotes = createText(texte);
+    texteCotes.name = "CoteX_1>texte";
     texteCotes.rotation.x = -Math.PI / 2;
     xTexte = (tableauTravees['Travee 1'].positionX + tableauTravees[derniereTraveeConstruction1].positionX) / 2;
     texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
@@ -252,6 +253,7 @@ export function incrusterCotes() {
 
         texte = nbTraveesConstruction2 * (LARGEUR_TRAVEE * 100) + ' mm';
         texteCotes = createText(texte);
+        texteCotes.name = "CoteX_2>texte";
         texteCotes.rotation.x = -Math.PI / 2;
         xTexte = (tableauTravees[premiereTraveeConstruction2].positionX + tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX) / 2;
         texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
@@ -284,6 +286,7 @@ export function incrusterCotes() {
     texteCotes.rotation.x = Math.PI / 2;
     texteCotes.rotation.y = Math.PI;
     texteCotes.position.set(decalage - 13, hauteurTexte, 0);
+    texteCotes.name = "CoteY_1>texte";
     cotesGrpY.add(texteCotes);
 
     var points = [];
@@ -316,6 +319,7 @@ export function incrusterCotes() {
         texteCotes.rotation.x = Math.PI / 2;
         texteCotes.rotation.y = Math.PI;
         texteCotes.position.set(decalage + 13, hauteurTexte, 0);
+        texteCotes.name = "CoteY_2>texte";
         cotesGrpY.add(texteCotes);
 
         var points = [];
@@ -348,11 +352,14 @@ export function incrusterCotes() {
 
 export function toggleIncrustations() {
     scene.traverse(function (child) {
-        if (child.name.includes("Incrustation")) {
+        if (child.name.includes(">Incrustation")) {
 
             // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche l'incrustation
-            if (scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>'))).visible)
+            var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
+            if (moduleLie.visible)
                 child.visible = !child.visible;
+            else
+                child.visible = false;
         }
     });
 }
@@ -787,21 +794,38 @@ export function modifierIncrustation(travee, face, remplacant = null) {
 }
 
 
-export function reecrireIncrustations(aTraiter, nouvelleTaille) {
+export function redimensionnerIncrustations() {
+
+    var nouvelleTaille = calculerTaillePoliceOptimale();
+    var positionX, positionY, positionZ;
+    var rotationX, rotationY, rotationZ;
+
+    var aTraiter = new Array();
+    scene.traverse(function (child) {
+        //        if (child.name.includes(">Incrustation") || child.name.includes("Cote"))
+        if (child.geometry && child.geometry.type == "TextGeometry")
+            aTraiter.push(child.name);
+    });
+
     aTraiter.forEach(function (item) {
         var child = scene.getObjectByName(item);
         var nomTravee = child.parent.name,
             travee;
+
         var nouveauTexte = createText(child.geometry.parameters.text, nouvelleTaille);
-        var x = child.position.x,
-            y = child.position.y,
-            z = child.position.z;
+        positionX = child.position.x;
+        positionY = child.position.y;
+        positionZ = child.position.z;
+        rotationX = child.rotation.x;
+        rotationY = child.rotation.y;
+        rotationZ = child.rotation.z;
 
         travee = scene.getObjectByName(nomTravee);
         travee.remove(child);
-        nouveauTexte.position.set(x, y, z);
+
         nouveauTexte.name = item;
-        nouveauTexte.rotation.x = -Math.PI / 2;
+        nouveauTexte.position.set(positionX, positionY, positionZ);
+        nouveauTexte.rotation.set(rotationX, rotationY, rotationZ);
         travee.add(nouveauTexte);
     });
 }
@@ -813,17 +837,40 @@ export function calculerTaillePoliceOptimale() {
 
     if (DEBUG) log("Zoom caméra = " + zoom);
 
-    if ((zoom <= 0.6 && zoom > 0.3) || (nbTravees == 4))
-        nouvelleTaille = 3;
+    switch (nbTravees) {
+        case 1:
+            nouvelleTaille = 2;
+            break;
+        case 2:
+            nouvelleTaille = 2;
+            break;
+        case 3:
+            nouvelleTaille = 2;
+            break;
+        case 4:
+            nouvelleTaille = 2;
+            break;
+        case 5:
+            nouvelleTaille = 3;
+            break;
+        case 6:
+            nouvelleTaille = 3;
+            break;
+        case 7:
+            nouvelleTaille = 3;
+            break;
+        case 8:
+            nouvelleTaille = 4;
+            break;
+    }
+    if (zoom <= 0.6 && zoom > 0.3)
+        nouvelleTaille += 1;
 
-    if ((zoom <= 0.3) || (nbTravees == 5))
-        nouvelleTaille = 4;
+    if (zoom <= 0.3)
+        nouvelleTaille += 2;
 
-    if ((zoom <= 0.2) || (nbTravees == 6))
-        nouvelleTaille = 5;
-
-    if ((zoom <= 0.1) || (nbTravees > 6))
-        nouvelleTaille = 6;
+    if (zoom <= 0.1)
+        nouvelleTaille += 3;
 
     return nouvelleTaille;
 }

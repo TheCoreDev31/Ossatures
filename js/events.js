@@ -43,7 +43,7 @@ import {
     animate,
     traduireNomObjet,
     calculerTaillePoliceOptimale,
-    reecrireIncrustations
+    redimensionnerIncrustations
 } from "./main.js"
 
 import {
@@ -345,12 +345,7 @@ $("#zoom").click(function (e) {
     e.stopImmediatePropagation();
 
     // On redimensionne la police des incrustations
-    var aTraiter = new Array();
-    scene.traverse(function (child) {
-        if (child.name.includes(">Incrustation"))
-            aTraiter.push(child.name);
-    });
-    reecrireIncrustations(aTraiter, calculerTaillePoliceOptimale());
+    redimensionnerIncrustations();
 });
 
 $("#dezoom").click(function (e) {
@@ -360,12 +355,7 @@ $("#dezoom").click(function (e) {
     e.stopImmediatePropagation();
 
     // On redimensionne la police des incrustations
-    var aTraiter = new Array();
-    scene.traverse(function (child) {
-        if (child.name.includes(">Incrustation"))
-            aTraiter.push(child.name);
-    });
-    reecrireIncrustations(aTraiter, calculerTaillePoliceOptimale());
+    redimensionnerIncrustations();
 });
 
 
@@ -393,6 +383,7 @@ export function onMouseDoubleClick(event) {
     var FACE_EXTERNE = 10;
 
     if ($("#vue-aerienne").css("display") == "flex") return;
+    if ($("#quitter-vue-aerienne").is(":visible")) return;
 
     event.preventDefault();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

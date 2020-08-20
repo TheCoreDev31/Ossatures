@@ -43,7 +43,9 @@ import {
     toggleIncrustations,
     incrusterCotes,
     animate,
-    recalculerConstructions
+    recalculerConstructions,
+    calculerTaillePoliceOptimale,
+    redimensionnerIncrustations
 } from "./main.js"
 
 import {
@@ -162,34 +164,13 @@ export function afficherVueAerienne() {
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     activeCamera = cameraOrtho;
 
-    // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
-    // que de supprimer/recréer les incrustations.
-    scene.traverse(function (child) {
-        if (child.name.includes(">Incrustation")) {
-            log(cameraOrtho.zoom);
-            if (cameraOrtho.zoom <= 0.5 && cameraOrtho.zoom > 0.4) {
-                child.position.y = 10;
-            }
-            if (cameraOrtho.zoom <= 0.4 && cameraOrtho.zoom > 0.3) {
-                child.position.y = 20;
-            }
-            if (cameraOrtho.zoom <= 0.3 && cameraOrtho.zoom > 0.2) {
-                child.position.y = 30;
-            }
-            scene.updateMatrixWorld();
-            /*
-            var texteActuel = child.geometry.parameters.text;
-            var parent = child.parent;
-            var nouveauTexte = createText(texteActuel, 4);
-            scene.add(nouveauTexte);
-            */
-        }
-    });
-
-
-
     $("#changement-vue div#aerien").addClass('actif');
     toggleIncrustations();
+
+    // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
+    // que de supprimer/recréer les incrustations.
+    redimensionnerIncrustations();
+
     $("#legende").hide();
     $("#vue-aerienne").show();
     $("#transparent-overlay").show();
