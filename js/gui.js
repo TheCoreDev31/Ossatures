@@ -521,6 +521,7 @@ export function displayGui() {
             scene.getObjectByName('ground').material = blankMaterial;
 
             // 1 - la vue d'implantation
+            activeCamera = cameraOrtho;
             scene.getObjectByName('boussole').material.color = COLOR_ARRAY['noir'];
             changerCouleurTextes(COLOR_ARRAY['noir']);
             scene.traverse(function (child) {
@@ -608,7 +609,6 @@ export function displayGui() {
 
 
             // Génération du rapport PDF
-            //            jsreport.serverUrl = 'https://vps777206.ovh.net:5488';
             jsreport.serverUrl = 'https://boutique-fanny.com:5488';
 
             var donneesBrutes = {},

@@ -74,7 +74,7 @@ scene.add(boussole);
 
 
 // Eclairage
-var ambient = new THREE.AmbientLight(COLOR_ARRAY['blanc'], 0.5);
+var ambient = new THREE.AmbientLight(COLOR_ARRAY['jaune'], 0.45);
 ambient.name = "ambientLight";
 scene.add(ambient);
 

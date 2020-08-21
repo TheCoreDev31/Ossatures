@@ -9,6 +9,7 @@ COLOR_ARRAY['bois'] = (new THREE.Color(0xfce7dc).convertSRGBToLinear());
 COLOR_ARRAY['gris_clair'] = (new THREE.Color(0xb3b7b3).convertSRGBToLinear());
 COLOR_ARRAY['vert'] = (new THREE.Color(0x55a06d).convertSRGBToLinear());
 COLOR_ARRAY['highlight'] = (new THREE.Color(0xfd6868).convertSRGBToLinear());
+COLOR_ARRAY['jaune'] = (new THREE.Color(0xf8fac8).convertSRGBToLinear());
 
 
 var textureLoader = new THREE.TextureLoader();
