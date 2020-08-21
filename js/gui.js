@@ -608,7 +608,8 @@ export function displayGui() {
 
 
             // Génération du rapport PDF
-            jsreport.serverUrl = 'https://vps777206.ovh.net:5488';
+            //            jsreport.serverUrl = 'https://vps777206.ovh.net:5488';
+            jsreport.serverUrl = 'https://boutique-fanny.com:5488';
 
             var donneesBrutes = {},
                 modules = new Array(),

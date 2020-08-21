@@ -499,7 +499,6 @@ export function onMouseDoubleClick(event) {
 
 
 export function onMouseClick(event) {
-
     if (!event.srcElement.localName == 'a') event.preventDefault();
 
     if (activeCamera != camera)
@@ -520,8 +519,6 @@ export function onMouseMove(event) {
         var intersects = raycaster.intersectObjects(objetsModifiables, true);
         alerte(intersects[0].name);
     }
-    log(camera.position);
-
 }
 
 export function onWindowResize() {

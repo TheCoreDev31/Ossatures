@@ -36,13 +36,11 @@ import {
     createText,
 } from "./materials.js"
 
-
 // Fonctions communes
 function render() {
 
     if (activeCamera === camera) {
         camera.fov = 50;
-        camera.far = 600;
         camera.updateProjectionMatrix();
     } else {
         cameraOrtho.far = 300;
@@ -64,12 +62,9 @@ function init() {
     activeCamera = camera;
     controls = new THREE.OrbitControls(activeCamera, renderer.domElement);
     controls.maxPolarAngle = Math.PI * 0.5;
-    controls.minDistance = 1;
     controls.maxDistance = 500;
-
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
-
 }
 
 

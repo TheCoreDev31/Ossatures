@@ -22,7 +22,7 @@ renderer.gammaFactor = 2.2;
 
 export var aspectRatio = window.innerWidth / window.innerHeight;
 // Camera
-export var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 600);
+export var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
 camera.position.set(60, 40, 160);
 camera.aspect = aspectRatio;
 camera.lookAt(scene.position);
@@ -35,7 +35,7 @@ cameraOrtho.lookAt(scene.position);
 
 
 // Environnement
-var ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), groundMaterial);
+var ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(1200, 1200), groundMaterial);
 ground.position.y = -12.5;
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -46,7 +46,23 @@ ground.name = 'ground';
 scene.add(ground);
 
 scene.background = COLOR_ARRAY['bleu_ciel'];
-scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 1000);
+
+/*********************    SkyBox    ******************/
+var path = "/img/skybox/";
+var format = '.png';
+var imgArray = [
+    path + 'front' + format,
+    path + 'back' + format,
+    path + 'top' + format,
+    path + 'bottom' + format,
+    path + 'right' + format,
+    path + 'left' + format
+];
+var textureCube = new THREE.CubeTextureLoader().load(imgArray);
+textureCube.encoding = THREE.sRGBEncoding;
+scene.background = textureCube;
+/*****************************************************/
+
 
 
 // Repère face avant
