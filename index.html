@@ -39,7 +39,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 74.8,
@@ -70,23 +70,22 @@
             var objetsModifiables = new Array();
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
-
         </script>
 
         <div class="div-aide">
             <div class="div-icone"><img src="icons/help.ico" class="image-aide"></div>
             <div class="div-contenu">
                 <ul class="texte-aide">
-                    <h3>Manipulation d'objets</h3>
-                    <li>Pour <strong>sélectionner</strong> un élément, double-cliquez sur celui-ci.</li>
-                    <li>Pour <strong>avancer ou reculer</strong> une travée, sélectionnez sa face avant ou arrière.</li>
-                    <li>Le <strong>bouton "Ajouter"</strong> permet de créer une nouvelle travée sur la droite de votre construction.</li>
-                    <li>Le <strong>bouton "Supprimer"</strong> supprimera la travée la plus à droite de votre construction.</li>
-                    <br>
                     <h3>Orientation</h3>
-                    <li>La <strong>boussole au sol</strong> indique TOUJOURS la face avant de votre construction.</li>
-                    <li><strong>Pour tourner</strong> autour de votre construction, <strong>cliquez</strong> à l'écran puis, tout en maintenant<br>le bouton de votre souris appuyé, <strong>déplacez cette dernière</strong>.</li>
-                    <li>Il vous est également possible de choisir des <strong>vues prédéfinies</strong> (dont le plan d'implantation<br>comportant le nom des modules choisis) en utilisant les flèches se trouvant autour de la<br><strong>petite maison</strong>, à gauche de cette aide.</li>
+                    <li>Notez que la <strong>boussole</strong> est TOUJOURS placée à <strong>droite</strong> de votre construction.</li>
+                    <li><strong>Pour tourner</strong> autour de votre construction, <strong>cliquez</strong> à l'écran puis, tout en maintenant<br>le bouton de votre souris appuyé, <strong>déplacez votre souris</strong>.</li>
+                    <li>Il vous est également possible de choisir des <strong>vues prédéfinies</strong> en utilisant les flèches se trouvant autour de la <strong>petite maison</strong>, au-dessus de notre logo.</li>
+                    <br>
+                    <h3>Manipulation d'objets</h3>
+                    <li>Pour <strong>sélectionner</strong> un élément (mur, ouverture, ...), <strong>double-cliquez</strong> sur l'élément en question.</li>
+                    <li>Pour <strong>avancer ou reculer</strong> une travée, sélectionnez sa <strong>face avant ou arrière</strong> puis choisissez l'action de votre choix dans le menu déroulant.</li>
+                    <li>Le <strong>bouton "Ajouter"</strong> permet de créer une nouvelle travée <strong>sur la droite</strong> de votre construction.</li>
+                    <li>Le <strong>bouton "Supprimer"</strong> supprimera la <strong>travée la plus à droite</strong> de votre construction.</li>
                 </ul>
             </div>
         </div>
@@ -255,6 +254,4 @@
 
     </div>
 
-</body>
-
-</html>
+</body></html>

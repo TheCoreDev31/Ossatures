@@ -109,7 +109,26 @@ export function unSelect() {
 
 
 
-export function changePointOfView(direction) {
+export function changePointOfView(direction, modePDF = false) {
+
+    // On calcule les contours de notre construction
+    var left = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
+    var right = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
+    var front = LONGUEUR_TRAVEE / 2;
+    var back = -(LONGUEUR_TRAVEE / 2);
+
+    var decalageGauche = tableauTravees['Travee 1'].decalage * (LONGUEUR_TRAVEE / 2);
+    var decalageDroite = tableauTravees['Travee ' + nbTravees].decalage * (LONGUEUR_TRAVEE / 2);
+    if (decalageGauche < 0 || decalageDroite < 0)
+        back = -LONGUEUR_TRAVEE;
+
+    if (decalageGauche > 0 || decalageDroite > 0)
+        front = LONGUEUR_TRAVEE;
+
+    if (modePDF)
+        activeCamera = cameraOrtho;
+    else
+        activeCamera = camera;
 
     switch (direction) {
         case 'dessus':
@@ -118,23 +137,99 @@ export function changePointOfView(direction) {
             info("Vue de dessus");
             break;
         case 'avant':
-            camera.position.set(0, 10, 150);
-            camera.lookAt(scene.position);
+            if (modePDF) {
+                cameraOrtho.position.set(0, HAUTEUR_TRAVEE / 2, 80);
+                cameraOrtho.lookAt(0, HAUTEUR_TRAVEE / 2, 0);
+
+                cameraOrtho.left = tableauTravees['Travee 1'].positionX - 40;
+                cameraOrtho.right = tableauTravees['Travee ' + nbTravees].positionX + 40;
+                cameraOrtho.top = (((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.bottom = -(((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.far = 100;
+                cameraOrtho.near = -100;
+            } else {
+                camera.position.set(0, 10, 100 + front + (Math.log(nbTravees) * 50));
+                camera.lookAt(scene.position);
+            }
             info("Vue avant");
             break;
         case 'arriere':
-            camera.position.set(0, 10, -150);
-            camera.lookAt(scene.position);
+            if (modePDF) {
+                cameraOrtho.position.set(0, HAUTEUR_TRAVEE / 2, -80);
+                cameraOrtho.lookAt(0, HAUTEUR_TRAVEE / 2, 0);
+
+                cameraOrtho.left = tableauTravees['Travee 1'].positionX - 40;
+                cameraOrtho.right = tableauTravees['Travee ' + nbTravees].positionX + 40;
+                cameraOrtho.top = (((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.bottom = -(((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.far = 100;
+                cameraOrtho.near = -100;
+            } else {
+                camera.position.set(0, 10, -100 + back - (Math.log(nbTravees) * 50));
+                camera.lookAt(scene.position);
+            }
             info("Vue arrière");
             break;
         case 'gauche':
-            camera.position.set(-150, 10, 0);
-            camera.lookAt(scene.position);
+            if (modePDF) {
+                var posLeft = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
+                cameraOrtho.position.set(posLeft - 50, HAUTEUR_TRAVEE / 2, (decalageGauche + decalageDroite) / 2);
+                cameraOrtho.lookAt(0, HAUTEUR_TRAVEE / 2, (decalageGauche + decalageDroite) / 2);
+
+                cameraOrtho.left = -80;
+                cameraOrtho.right = 80;
+                cameraOrtho.top = (((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.bottom = -(((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.near = tableauTravees['Travee 1'].positionX - 20;
+                cameraOrtho.far = tableauTravees['Travee ' + nbTravees].positionX + 20;
+
+                if (DEBUG) {
+                    log("cameraOrtho.left=" + cameraOrtho.left + " / cameraOrtho.right=" + cameraOrtho.right + " / cameraOrtho.near=" + cameraOrtho.near + " / cameraOrtho.far=" + cameraOrtho.far);
+                    log("decalageGauche=" + decalageGauche + " / decalageDroite=" + decalageDroite);
+                    log("cameraPosition=");
+                    log(cameraOrtho.position);
+                }
+            } else {
+                var z;
+                if (decalageDroite == 0)
+                    z = -decalageGauche * 2;
+                else
+                    z = decalageDroite * 2;
+
+                camera.position.set(-100 + left, 10, z);
+                camera.lookAt(scene.position);
+            }
             info("Vue de gauche");
             break;
         case 'droite':
-            camera.position.set(150, 10, 0);
-            camera.lookAt(scene.position);
+            if (modePDF) {
+                var posRight = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
+                cameraOrtho.position.set(posRight + 50, HAUTEUR_TRAVEE / 2, (decalageGauche + decalageDroite) / 2);
+                cameraOrtho.lookAt(0, HAUTEUR_TRAVEE / 2, (decalageGauche + decalageDroite) / 2);
+
+                cameraOrtho.left = -80;
+                cameraOrtho.right = 80;
+                cameraOrtho.top = (((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.bottom = -(((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2) + 10;
+                cameraOrtho.near = tableauTravees['Travee 1'].positionX - 20;
+                cameraOrtho.far = tableauTravees['Travee ' + nbTravees].positionX + 20;
+
+                if (DEBUG) {
+                    log("cameraOrtho.left=" + cameraOrtho.left + " / cameraOrtho.right=" + cameraOrtho.right + " / cameraOrtho.near=" + cameraOrtho.near + " / cameraOrtho.far=" + cameraOrtho.far);
+                    log("decalageGauche=" + decalageGauche + " / decalageDroite=" + decalageDroite);
+                    log("cameraPosition=");
+                    log(cameraOrtho.position);
+                }
+            } else {
+                var z;
+                if (decalageGauche == 0)
+                    z = -decalageDroite * 2;
+                else
+                    z = decalageGauche * 2;
+
+                camera.position.set(100 + right, 10, z);
+                camera.lookAt(0, 0, -z);
+            }
             info("Vue de droite");
             break;
         case 'perspective':
@@ -145,7 +240,7 @@ export function changePointOfView(direction) {
 }
 
 
-export function afficherVueAerienne() {
+export function afficherVueAerienne(modePDF = false) {
 
     $("div:contains('Close Controls')").click();
     $("#changement-vue div#aerien").addClass('actif');
@@ -169,13 +264,12 @@ export function afficherVueAerienne() {
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     activeCamera = cameraOrtho;
 
-    // Rendre actifs les contrôles de vues
     $("#changement-vue div#aerien").addClass('surligne');
     showIncrustations();
 
     // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
     // que de supprimer/recréer les incrustations.
-    redimensionnerIncrustations();
+    if (!modePDF) redimensionnerIncrustations();
 
     $("#legende").hide();
     $("#vue-aerienne").show();
@@ -404,6 +498,7 @@ export function displayGui() {
 
         this.genererDevis = function () {
 
+            var modePDF = true;
             var screenshot1, screenshot2, screenshot3, screenshot4, screenshot5, screenshot6, screenshot7, screenshot8, screenshot9;
 
             var coordonneesClient = prompt("Veuillez indiquer le nom et prénom à faire figurer dans le devis SVP.", "Client sans nom");
@@ -426,20 +521,21 @@ export function displayGui() {
             scene.getObjectByName('ground').material = blankMaterial;
 
             // 1 - la vue d'implantation
-            afficherVueAerienne();
             scene.getObjectByName('boussole').material.color = COLOR_ARRAY['noir'];
             changerCouleurTextes(COLOR_ARRAY['noir']);
             scene.traverse(function (child) {
                 if (child.name.includes('floor_excluded'))
                     child.visible = false;
             });
+            afficherVueAerienne(true);
             animate();
             screenshot1 = saveAsImage();
             $("#quitter-vue-aerienne").click();
 
-            // 2 - une vue aérienne du plancher
             activeCamera = cameraOrtho;
-            changePointOfView("dessus");
+
+            // 2 - une vue aérienne du plancher
+            changePointOfView("dessus", true);
             if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherToit')").click();
             animate();
@@ -460,29 +556,30 @@ export function displayGui() {
             });
             scene.getObjectByName('boussole').material.color = COLOR_ARRAY['blanc'];
             changerCouleurTextes(COLOR_ARRAY['blanc']);
-            activeCamera = camera;
             if ($("span:contains('afficherCotes')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherCotes')").click();
 
             // 4 - une vue de face
-            changePointOfView("avant");
+            changePointOfView("avant", modePDF);
             animate();
             screenshot4 = saveAsImage();
 
             // 5 - une vue de derrière
-            changePointOfView("arriere");
+            changePointOfView("arriere", modePDF);
             animate();
             screenshot5 = saveAsImage();
 
             // 6 - une vue de gauche
-            changePointOfView("gauche");
+            changePointOfView("gauche", modePDF);
             animate();
             screenshot6 = saveAsImage();
 
             // 7 - une vue de droite
-            changePointOfView("droite");
+            changePointOfView("droite", modePDF);
             animate();
             screenshot7 = saveAsImage();
+
+            activeCamera = camera;
 
             // Enfin, quelques vues en perspective
             if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))

@@ -46,7 +46,7 @@ ground.name = 'ground';
 scene.add(ground);
 
 scene.background = COLOR_ARRAY['bleu_ciel'];
-scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 200, 1000);
+scene.fog = new THREE.Fog(COLOR_ARRAY['bleu_ciel'], 100, 1000);
 
 
 // Repère face avant

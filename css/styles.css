@@ -58,6 +58,7 @@ body {
 .div-aide {
     display: flex;
     position: absolute;
+    width: 690px;
     align-items: flex-end;
     bottom: 10px;
     right: -660px;

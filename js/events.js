@@ -520,7 +520,7 @@ export function onMouseMove(event) {
         var intersects = raycaster.intersectObjects(objetsModifiables, true);
         alerte(intersects[0].name);
     }
-
+    log(camera.position);
 
 }
 

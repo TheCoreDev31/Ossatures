@@ -300,9 +300,9 @@ export function incrusterCotes() {
     var texteCotes = createText(texte);
     var hauteurTexte = -(HAUTEUR_TRAVEE / 2) + 0.2;
     var cotesGrpY = new THREE.Group();
-    texteCotes.rotation.z = -Math.PI / 2;
     texteCotes.rotation.x = Math.PI / 2;
     texteCotes.rotation.y = Math.PI;
+    texteCotes.rotation.z = -Math.PI / 2;
     texteCotes.position.set(decalage - 13, hauteurTexte, 0);
     texteCotes.name = "CoteY_1>texte";
     cotesGrpY.add(texteCotes);
@@ -824,8 +824,8 @@ export function modifierIncrustation(travee, face, remplacant = null) {
 export function redimensionnerIncrustations() {
 
     var nouvelleTaille = calculerTaillePoliceOptimale();
-    var positionX, positionY, positionZ;
-    var rotationX, rotationY, rotationZ;
+    var posX, posY, posZ;
+    var rotX, rotY, rotZ;
 
     var aTraiter = new Array();
     scene.traverse(function (child) {
@@ -839,19 +839,20 @@ export function redimensionnerIncrustations() {
             travee;
 
         var nouveauTexte = createText(child.geometry.parameters.text, nouvelleTaille);
-        positionX = child.position.x;
-        positionY = child.position.y;
-        positionZ = child.position.z;
-        rotationX = child.rotation.x;
-        rotationY = child.rotation.y;
-        rotationZ = child.rotation.z;
+        posX = child.position.x;
+        posY = child.position.y;
+        posZ = child.position.z;
+        rotX = child.rotation.x;
+        rotY = child.rotation.y;
+        rotZ = child.rotation.z;
 
         travee = scene.getObjectByName(nomTravee);
         travee.remove(child);
 
+
         nouveauTexte.name = item;
-        nouveauTexte.position.set(positionX, positionY, positionZ);
-        nouveauTexte.rotation.set(rotationX, rotationY, rotationZ);
+        nouveauTexte.position.set(posX, posY, posZ);
+        nouveauTexte.rotation.set(rotX, rotY, rotZ);
         travee.add(nouveauTexte);
     });
 }
@@ -889,6 +890,7 @@ export function calculerTaillePoliceOptimale() {
             nouvelleTaille = 4;
             break;
     }
+
     if (zoom <= 0.6 && zoom > 0.3)
         nouvelleTaille += 1;
 
