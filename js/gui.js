@@ -718,7 +718,8 @@ export function displayGui() {
                         "format": "A4",
                         "orientation": "landscape",
                         "headerHeight": "2cm",
-                        "footer": "<h4>Texte des mentions légales...</h4>"
+                        "footer": "<div style='text-align:center'>Page {#pageNum}/{#numPages}</div>",
+                        "footerHeight": "1cm"
                     }
                 },
                 data: donneesJSON
