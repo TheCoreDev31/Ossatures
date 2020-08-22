@@ -57,7 +57,8 @@ import {
     cameraOrtho,
     canvas,
     renderer,
-    aspectRatio
+    aspectRatio,
+    initPositionCamera
 } from "./environment.js"
 
 export function unSelect() {
@@ -528,7 +529,7 @@ export function displayGui() {
                 if (child.name.includes('floor_excluded'))
                     child.visible = false;
             });
-            afficherVueAerienne(true);
+            afficherVueAerienne(modePDF);
             animate();
             screenshot1 = saveAsImage();
             $("#quitter-vue-aerienne").click();
@@ -536,7 +537,7 @@ export function displayGui() {
             activeCamera = cameraOrtho;
 
             // 2 - une vue aérienne du plancher
-            changePointOfView("dessus", true);
+            changePointOfView("dessus", modePDF);
             if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherToit')").click();
             animate();
@@ -580,6 +581,7 @@ export function displayGui() {
             animate();
             screenshot7 = saveAsImage();
 
+            initPositionCamera(cameraOrtho);
             activeCamera = camera;
 
             // Enfin, quelques vues en perspective
@@ -717,8 +719,8 @@ export function displayGui() {
                     phantom: {
                         "format": "A4",
                         "orientation": "landscape",
-                        "headerHeight": "2cm",
-                        "footer": "<div style='text-align:center'>Page {#pageNum}/{#numPages}</div>",
+                        "headerHeight": "1.5cm",
+                        "footer": "<div style='text-align:center;font-size:12px'>Page {#pageNum}/{#numPages}</div>",
                         "footerHeight": "1cm"
                     }
                 },

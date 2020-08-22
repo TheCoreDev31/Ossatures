@@ -21,17 +21,14 @@ renderer.gammaFactor = 2.2;
 
 
 export var aspectRatio = window.innerWidth / window.innerHeight;
+var frustumSize = 300;
+
 // Camera
 export var camera = new THREE.PerspectiveCamera(50, aspectRatio, 1, 1000);
-camera.position.set(60, 40, 160);
-camera.aspect = aspectRatio;
-camera.lookAt(scene.position);
+initPositionCamera(camera);
 
-var frustumSize = 300;
 export var cameraOrtho = new THREE.OrthographicCamera(frustumSize * aspectRatio / -2, frustumSize * aspectRatio / 2, frustumSize / 2, frustumSize / -2, 1, 500);
-cameraOrtho.position.set(0, 200, 0);
-camera.aspect = aspectRatio;
-cameraOrtho.lookAt(scene.position);
+initPositionCamera(cameraOrtho);
 
 
 // Environnement
@@ -111,6 +108,20 @@ rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
 rightLight.castShadow = false;
 rightLight.name = "rightight";
 scene.add(rightLight);
+
+
+export function initPositionCamera(cameraActuelle) {
+    if (cameraActuelle == cameraOrtho) {
+        cameraOrtho.position.set(0, 200, 0);
+        camera.aspect = aspectRatio;
+        cameraOrtho.lookAt(scene.position);
+    } else {
+        camera.position.set(60, 40, 160);
+        camera.aspect = aspectRatio;
+        camera.lookAt(scene.position);
+    }
+}
+
 
 
 document.body.appendChild(renderer.domElement);
