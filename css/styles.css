@@ -73,6 +73,10 @@ body {
     transition-delay: 0.8s;
 }
 
+.div-aide.affiche {
+    transform: translateX(-660px);
+}
+
 .div-aide .div-icone {
     width: 46px;
     padding: 8px;
@@ -114,6 +118,27 @@ body {
 .image-aide {
     margin-right: 10px;
     align-content: center;
+}
+
+#fermer-popup-aide {
+    position: relative;
+    right: -40px;
+    top: -10px;
+}
+
+#fermer-popup-aide > span {
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    color: white;
+    font-size: 18px;
+    font-weight: bolder;
+    margin-left: -400px;
+}
+
+#fermer-popup-aide > span::after {
+    margin-left: 20px;
+    font-family: "FontAwesome";
+    font-size: 30px;
+    content: "\f0a9";
 }
 
 

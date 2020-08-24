@@ -295,6 +295,14 @@ $(".popup-ouverture").click(function (e) {
 
 
 
+$("#fermer-popup-aide").click(function (e) {
+    $("#fermer-popup-aide").hide();
+    $(".div-aide").removeClass("affiche");
+});
+
+
+
+
 /**********************************  Changement d'angle de vue  ***********************************/
 $("#changement-vue div").click(function (e) {
     e.stopImmediatePropagation();

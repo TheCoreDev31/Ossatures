@@ -1281,6 +1281,7 @@ $(document).ready(function () {
     $("#popup-attente").hide();
     $("#overlay").hide();
     $("#transparent-overlay").hide();
+    $(".div-aide").addClass("affiche");
 
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();
@@ -1298,6 +1299,7 @@ $(document).ready(function () {
     document.addEventListener('dblclick', onMouseDoubleClick);
     document.addEventListener('click', onMouseClick);
     //    document.addEventListener('mousemove', onMouseMove, false);
+
 
 });
 
