@@ -294,15 +294,6 @@ $(".popup-ouverture").click(function (e) {
 });
 
 
-
-$("#fermer-popup-aide").click(function (e) {
-    $("#fermer-popup-aide").hide();
-    $(".div-aide").removeClass("affiche");
-});
-
-
-
-
 /**********************************  Changement d'angle de vue  ***********************************/
 $("#changement-vue div").click(function (e) {
     e.stopImmediatePropagation();
@@ -507,7 +498,10 @@ export function onMouseDoubleClick(event) {
 
 
 export function onMouseClick(event) {
+
     if (!event.srcElement.localName == 'a') event.preventDefault();
+
+    if ($(".div-aide").hasClass("affiche")) $(".div-aide").removeClass("affiche");
 
     if (activeCamera != camera)
         camera.zoom = 1;
