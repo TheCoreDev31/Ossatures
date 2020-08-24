@@ -267,15 +267,12 @@ export function afficherVueAerienne(modePDF = false) {
 
     // On tient compte aussi des éventuels décalages en Z.
     var decalage = tableauTravees['Travee 1'].decalage - tableauTravees['Travee ' + nbTravees].decalage;
+    if (DEBUG) log("decalage=" + decalage);
     if (decalage < 0) {
-        //        cameraOrtho.left -= (LONGUEUR_TRAVEE / 2);
-        //        cameraOrtho.right += (LONGUEUR_TRAVEE / 2);
         cameraOrtho.top -= (LONGUEUR_TRAVEE / 4);
         cameraOrtho.bottom -= (LONGUEUR_TRAVEE / 4);
     }
     if (decalage > 0) {
-        //        cameraOrtho.left -= (LONGUEUR_TRAVEE / 2);
-        //        cameraOrtho.right += (LONGUEUR_TRAVEE / 2);
         cameraOrtho.top += (LONGUEUR_TRAVEE / 4);
         cameraOrtho.bottom += (LONGUEUR_TRAVEE / 4);
     }
@@ -736,9 +733,9 @@ export function displayGui() {
                     phantom: {
                         "format": "A4",
                         "orientation": "landscape",
-                        "headerHeight": "1.5cm",
+                        "headerHeight": "1cm",
                         "footer": "<div style='text-align:center;font-size:12px'>Page {#pageNum}/{#numPages}</div>",
-                        "footerHeight": "1cm"
+                        "footerHeight": "0.5cm"
                     }
                 },
                 data: donneesJSON
