@@ -23,7 +23,7 @@ export var textMaterial = new THREE.MeshBasicMaterial({
 export function createText(texte, taillePolice = 2) {
     var cotes = new THREE.Mesh();
     var loader = new THREE.FontLoader();
-    loader.load('./fonts/helvetiker_regular.typeface.json', function (font) {
+    loader.load('fonts/helvetiker_regular.typeface.json', function (font) {
         var geometry = new THREE.TextGeometry(texte, {
             font: font,
             size: taillePolice,

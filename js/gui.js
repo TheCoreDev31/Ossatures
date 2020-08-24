@@ -258,11 +258,28 @@ export function afficherVueAerienne(modePDF = false) {
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
     var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
     var MARGE = 50;
-    if (nbTravees == 1) MARGE = 50; // Eventuellement, cas particulier de la construction à 1 travée
+    if (nbTravees == 1) MARGE = 100; // Eventuellement, cas particulier de la construction à 1 travée
+
     cameraOrtho.left = gauche - MARGE;
     cameraOrtho.right = droite + MARGE;
     cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+
+    // On tient compte aussi des éventuels décalages en Z.
+    var decalage = tableauTravees['Travee 1'].decalage - tableauTravees['Travee ' + nbTravees].decalage;
+    if (decalage < 0) {
+        //        cameraOrtho.left -= (LONGUEUR_TRAVEE / 2);
+        //        cameraOrtho.right += (LONGUEUR_TRAVEE / 2);
+        cameraOrtho.top -= (LONGUEUR_TRAVEE / 4);
+        cameraOrtho.bottom -= (LONGUEUR_TRAVEE / 4);
+    }
+    if (decalage > 0) {
+        //        cameraOrtho.left -= (LONGUEUR_TRAVEE / 2);
+        //        cameraOrtho.right += (LONGUEUR_TRAVEE / 2);
+        cameraOrtho.top += (LONGUEUR_TRAVEE / 4);
+        cameraOrtho.bottom += (LONGUEUR_TRAVEE / 4);
+    }
+
     activeCamera = cameraOrtho;
 
     $("#changement-vue div#aerien").addClass('surligne');
