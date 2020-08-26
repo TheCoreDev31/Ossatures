@@ -113,11 +113,18 @@ scene.add(rightLight);
 export function initPositionCamera(cameraActuelle) {
     if (cameraActuelle == cameraOrtho) {
         cameraOrtho.position.set(0, 200, 0);
+        cameraOrtho.left = -100;
+        cameraOrtho.right = 100;
+        cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+        cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+        cameraOrtho.near = 1;
+        cameraOrtho.far = 300;
         camera.aspect = aspectRatio;
         cameraOrtho.lookAt(scene.position);
     } else {
         camera.position.set(60, 40, 160);
         camera.aspect = aspectRatio;
+        camera.fov = 50;
         camera.lookAt(scene.position);
     }
 }

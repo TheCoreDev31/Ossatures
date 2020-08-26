@@ -257,6 +257,7 @@ export function afficherVueAerienne(modePDF = false) {
     if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
         $("span:contains('afficherPlancher')").click();
 
+    initPositionCamera(cameraOrtho);
 
     // On calcule les limites gauche, droite, haut et bas de la construciton, afin de cadrer au mieux.
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
@@ -810,17 +811,6 @@ export function displayGui() {
 
                 recalculerConstructions();
                 incrusterCotes();
-
-                /*  A SUPPRIMER
-                // MAJ de l'inventaire, en fonction de la position de la travée en cours dans le projet
-                if (tableauTravees[travee.name].rangDansConstruction > 1) {
-                    inventaire["PINT"] += 1;
-                    inventaire["CH2T"] += 1;
-                } else {
-                    inventaire["CH1T"] += 1;
-                    inventaire["PEXT"] += 2;
-                }
-                */
 
                 // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
                 scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
