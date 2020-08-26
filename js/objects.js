@@ -29,6 +29,7 @@ import {
     recalculerConstructions,
     simulerCalculConstructions,
     modifierIncrustation,
+    hidePignonIncrustations,
     incrusterCotes
 } from "./main.js"
 
@@ -57,6 +58,10 @@ export function supprimerToutesOuvertures() {
     for (var i = 0; i < aSupprimer.length; i++) {
         supprimerOuverture(aSupprimer[i]);
     }
+
+    inventaire["MPE"] = inventaire["MPFE"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPF"] = inventaire["MPI"] = 0;
+
+    inventaire["MPL"] = nbTravees * 6;
 }
 
 export function supprimerOuverture(nomObjet) {
@@ -64,6 +69,7 @@ export function supprimerOuverture(nomObjet) {
     var travee = extraireNomTravee(nomObjet);
     var face = extraireFace(nomObjet);
     var objet = scene.getObjectByName(nomObjet);
+    var nomModule = nomObjet.substr(nomObjet.lastIndexOf(' ') + 1);
 
     // Pour le cas particulier du portique intérieur, on raffiche la cloison précédemment masquée.
     if (nomObjet.includes("PO")) {
@@ -94,6 +100,10 @@ export function supprimerOuverture(nomObjet) {
     if (!modeOssatureBois) objetSelectionne = '';
     unSelect();
     if (modeOssatureBois) objetSelectionne = '';
+
+    // On met à jour l'inventaire du projet.
+    inventaire[PRODUITS[nomModule].codeModule]--;
+    inventaire["MPL"]++;
 
     if (DEBUG) {
         log('tableauTravee APRES supprimerOuverture :');
@@ -314,6 +324,11 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
         log('tableauTravee APRES creerOuverture :');
         log(tableauTravees);
     }
+
+    // On met à jour l'inventaire du projet.
+    inventaire[PRODUITS[typeOuverture]['codeModule']]++;
+    inventaire["MPL"]--;
+
     return windowGrp;
 }
 
@@ -359,6 +374,10 @@ export function creerToit(nomTravee) {
     roofGrp.add(leftPignon);
     roofGrp.add(rightPignon);
     roofGrp.name = nomTravee + '>Toit';
+
+    inventaire["SOLP"] += 1;
+    // Le reste de la MAJ de l'inventaire est traité dans la méthode appelante.
+
     return roofGrp;
 }
 
@@ -438,7 +457,9 @@ export function decalerTravee(nomTravee, direction) {
 
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+
                 } else {
+
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
@@ -446,6 +467,7 @@ export function decalerTravee(nomTravee, direction) {
                     // Gestion des pignons (changement de nom + de texture)
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+
                 }
             }
         }
@@ -728,7 +750,26 @@ export function creerTravee() {
         wallsGrp.add(incrustation);
     }
 
+    // Incrustation pour les pignons de toiture
+    var positionX, positionY, positionZ = 0;
+    var incrustation = createText('PEXT', taillePoliceIncrustations);
+    incrustation.rotation.x = -Math.PI / 2;
+    positionX = -(LARGEUR_TRAVEE / 2) + 6;
+    positionY = (HAUTEUR_TRAVEE / 2) + 0.1;
+    incrustation.position.set(positionX, positionY, positionZ);
+    incrustation.name = prefixe + '>PG>Incrustation';
+    wallsGrp.add(incrustation);
+
+    var incrustation = createText('PEXT', taillePoliceIncrustations);
+    incrustation.rotation.x = -Math.PI / 2;
+    positionX = (LARGEUR_TRAVEE / 2) - 6;
+    incrustation.position.set(positionX, positionY, positionZ);
+    incrustation.name = prefixe + '>PD>Incrustation';
+    wallsGrp.add(incrustation);
+    hidePignonIncrustations();
+
     initialiserScoresVT(PREFIXE_TRAVEE + nbTravees);
+    inventaire["MPL"] += 6;
 
     if (DEBUG) {
         log('tableauTravees dans creerTravee : ');

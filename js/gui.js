@@ -42,14 +42,18 @@ import {
     verifierContraintes,
     importScene,
     exportScene,
-    showIncrustations,
-    hideIncrustations,
+    showMainIncrustations,
+    hideMainIncrustations,
+    showPignonIncrustations,
+    hidePignonIncrustations,
     incrusterCotes,
     animate,
     recalculerConstructions,
     calculerTaillePoliceOptimale,
     redimensionnerIncrustations,
-    changerCouleurTextes
+    changerCouleurTextes,
+    verifierControlesMetier,
+    modifierIncrustation
 } from "./main.js"
 
 import {
@@ -280,11 +284,13 @@ export function afficherVueAerienne(modePDF = false) {
     activeCamera = cameraOrtho;
 
     $("#changement-vue div#aerien").addClass('surligne');
-    showIncrustations();
+    showMainIncrustations();
+    hidePignonIncrustations();
 
     // On adapte la taille des incrustations au niveau de zoom : pour ça, pas d'autre choix
     // que de supprimer/recréer les incrustations.
-    if (!modePDF) redimensionnerIncrustations();
+    if (!modePDF)
+        redimensionnerIncrustations();
 
     $("#legende").hide();
     $("#vue-aerienne").show();
@@ -513,6 +519,8 @@ export function displayGui() {
 
         this.genererDevis = function () {
 
+            if (!verifierControlesMetier()) return;
+
             var modePDF = true;
             var screenshot1, screenshot2, screenshot3, screenshot4, screenshot5, screenshot6, screenshot7, screenshot8, screenshot9;
 
@@ -533,10 +541,10 @@ export function displayGui() {
                 $("span:contains('ossatureBois')").click();
             if (!$("span:contains('afficherCotes')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherCotes')").click();
-            scene.getObjectByName('ground').material = blankMaterial;
 
             // 1 - la vue d'implantation
             activeCamera = cameraOrtho;
+            scene.getObjectByName('ground').material = blankMaterial;
             scene.getObjectByName('boussole').material.color = COLOR_ARRAY['noir'];
             changerCouleurTextes(COLOR_ARRAY['noir']);
             scene.traverse(function (child) {
@@ -544,6 +552,8 @@ export function displayGui() {
                     child.visible = false;
             });
             afficherVueAerienne(modePDF);
+            showMainIncrustations();
+            hidePignonIncrustations();
             animate();
             screenshot1 = saveAsImage();
             $("#quitter-vue-aerienne").click();
@@ -551,6 +561,7 @@ export function displayGui() {
             activeCamera = cameraOrtho;
 
             // 2 - une vue aérienne du plancher
+            showPignonIncrustations();
             changePointOfView("dessus", modePDF);
             if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherToit')").click();
@@ -559,6 +570,7 @@ export function displayGui() {
             $("span:contains('afficherToit')").click();
 
             // 3 - une vue aérienne avec charpente
+            hidePignonIncrustations();
             if ($("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('afficherPlancher')").click();
             animate();
@@ -636,84 +648,53 @@ export function displayGui() {
                 ((maintenant.getMonth() + 1) < 10 ? '0' + (maintenant.getMonth() + 1) : (maintenant.getMonth() + 1)) + '' +
                 maintenant.getDate() + '' + maintenant.getHours() + '' + maintenant.getMinutes();
 
-            var comptageModules = new Array();
-            for (var produit in PRODUITS) {
-                var leModule = PRODUITS[produit].codeModule;
-                comptageModules[leModule] = 0;
+
+            // C'est ici qu'on calcule le nombre de charpentes et de pignons : c'est plus simple.
+            inventaire["CH1T"] = inventaire["CH2T"] = inventaire["PEXT"] = inventaire["PINT"] = 0;
+            for (var travee in tableauTravees) {
+                var numTraveeSuivante = parseInt(travee.substr(travee.indexOf(" ") + 1)) + 1;
+                var traveeSuivante = tableauTravees["Travee " + numTraveeSuivante];
+
+                if (tableauTravees[travee].rangDansConstruction === 1) {
+                    inventaire["CH1T"]++;
+                    inventaire["PEXT"]++;
+                }
+
+                if (traveeSuivante) {
+                    if (traveeSuivante.numConstruction != tableauTravees[travee].numConstruction) {
+                        // On se trouve sur la dernière travée de cette construction.
+                        inventaire["PEXT"]++;
+                    } else {
+                        // Il existe une autre travée dans la même construction
+                        inventaire["PINT"]++;
+                        inventaire["CH2T"]++;
+                    }
+                } else {
+                    inventaire["PEXT"]++;
+                }
             }
-            comptageModules['MPL'] = (nbTravees * 6) - ((nbTravees - 1) * 2) - nbOuvertures;
 
-            scene.traverse(function (child) {
-                var nomModule = child.name;
-
-                if (child.isGroup && nomModule.includes("Ouverture")) {
-                    var leModule = nomModule.substring(nomModule.indexOf("Ouverture ") + 10);
-                    switch (leModule) {
-                        case "PE":
-                            comptageModules.MPE++;
-                            break;
-                        case "F1":
-                            comptageModules.MF1++;
-                            break;
-                        case "F2":
-                            comptageModules.MF2++;
-                            break;
-                        case "PF":
-                            comptageModules.MPF++;
-                            break;
-                        case "PG1":
-                            comptageModules.MPG1++;
-                            break;
-                        case "PG2":
-                            comptageModules.MPG2++;
-                            break;
-                        case "PE+F1":
-                            comptageModules.MPEF++;
-                            break;
-                        case "PO":
-                            comptageModules.MPI++;
-                            break;
+            // On récupère la liste des modules présents sur le projet et on estime le coût global.
+            var coutEstime = 0;
+            var keys = Object.keys(inventaire).sort();
+            for (var i = 0, key = keys[0]; i < keys.length; key = keys[++i]) {
+                var correspondance = key;
+                var module = {};
+                for (var produit in PRODUITS) {
+                    if (PRODUITS[produit].codeModule == key) {
+                        correspondance = produit;
+                        break;
                     }
                 }
-
-            });
-
-            for (var leModule in comptageModules) {
-                var module = {};
-                module.codeModule = leModule;
-                switch (leModule) {
-                    case "MPL":
-                        module.referenceModule = PRODUITS['MU']['libelleModule']
-                        break;
-                    case "MPE":
-                        module.referenceModule = PRODUITS['PE']['libelleModule']
-                        break;
-                    case "MF1":
-                        module.referenceModule = PRODUITS['F1']['libelleModule']
-                        break;
-                    case "MF2":
-                        module.referenceModule = PRODUITS['F2']['libelleModule']
-                        break;
-                    case "MPF":
-                        module.referenceModule = PRODUITS['PF']['libelleModule']
-                        break;
-                    case "MPG1":
-                        module.referenceModule = PRODUITS['PG1']['libelleModule']
-                        break;
-                    case "MPG2":
-                        module.referenceModule = PRODUITS['PG2']['libelleModule']
-                        break;
-                    case "MPEF":
-                        module.referenceModule = PRODUITS['PE+F1']['libelleModule']
-                        break;
-                    case "MPI":
-                        module.referenceModule = PRODUITS['PO']['libelleModule']
-                        break;
-                }
-                module.quantite = comptageModules[leModule];
+                module.codeModule = key;
+                module.quantite = inventaire[key];
+                module.referenceModule = PRODUITS[correspondance]['libelleModule'];
                 modules.push(module);
+                coutEstime += (module.quantite * PRODUITS[correspondance].cout);
             }
+
             donneesBrutes.modules = modules;
+            donneesBrutes.coutEstime = coutEstime;
             donneesBrutes.screenshot1 = screenshot1;
             donneesBrutes.screenshot2 = screenshot2;
             donneesBrutes.screenshot3 = screenshot3;
@@ -820,8 +801,26 @@ export function displayGui() {
                 travee.children[indiceToit].children[indicePignonGauche].name = travee.name + ">PINT";
                 travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
 
+                // On modifie l'incrustation pour les pignons de toiture.
+                modifierIncrustation(travee.name, 'PG', 'PINT', true);
+                var aSupprimer = scene.getObjectByName(voisine.name + ">PD>Incrustation");
+                var sonGroupe = scene.getObjectByName(voisine.name);
+                if (aSupprimer && sonGroupe) sonGroupe.remove(aSupprimer);
+                hidePignonIncrustations();
+
                 recalculerConstructions();
                 incrusterCotes();
+
+                /*  A SUPPRIMER
+                // MAJ de l'inventaire, en fonction de la position de la travée en cours dans le projet
+                if (tableauTravees[travee.name].rangDansConstruction > 1) {
+                    inventaire["PINT"] += 1;
+                    inventaire["CH2T"] += 1;
+                } else {
+                    inventaire["CH1T"] += 1;
+                    inventaire["PEXT"] += 2;
+                }
+                */
 
                 // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
                 scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
@@ -862,6 +861,22 @@ export function displayGui() {
             var voisine = scene.getObjectByName(PREFIXE_TRAVEE + nbTravees);
             voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = true;
             voisine.children[indiceToit].children[indicePignonDroit].visible = true;
+
+            // On modifie l'incrustation pour les pignons de toiture.
+            modifierIncrustation(voisine.name, 'PD', 'PEXT', true);
+
+            // S'il ne reste qu'une seule travée, il faut re-créer l'incrustation du pignon droit.
+            if (nbTravees == 1) {
+                var positionX, positionY;
+                var incrustation = createText('PEXT', taillePoliceIncrustations);
+                incrustation.rotation.x = -Math.PI / 2;
+                positionX = (LARGEUR_TRAVEE / 2) - 6;
+                positionY = (HAUTEUR_TRAVEE / 2) + 0.1;
+                incrustation.position.set(positionX, positionY, 0);
+                incrustation.name = voisine.name + '>PD>Incrustation';
+                scene.getObjectByName(voisine.name).add(incrustation);
+            }
+            hidePignonIncrustations();
 
             recalculerConstructions();
             incrusterCotes();

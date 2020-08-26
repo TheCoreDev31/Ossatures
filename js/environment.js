@@ -106,7 +106,7 @@ scene.add(leftLight);
 export var rightLight = new THREE.SpotLight(COLOR_ARRAY['blanc'], 0.05);
 rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
 rightLight.castShadow = false;
-rightLight.name = "rightight";
+rightLight.name = "righLight";
 scene.add(rightLight);
 
 

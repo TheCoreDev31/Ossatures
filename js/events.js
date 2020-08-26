@@ -39,8 +39,7 @@ import {
     retirerObjetModifiable,
     faceInterieureOuExterieure,
     modifierIncrustation,
-    showIncrustations,
-    hideIncrustations,
+    hideMainIncrustations,
     animate,
     traduireNomObjet,
     calculerTaillePoliceOptimale,
@@ -154,13 +153,15 @@ $("#popup-plancher").click(function (e) {
 
     if (!$(e.target).parent().hasClass('disabled')) {
 
-        // On supprime l'ancien plancher et on le recrée avec la trappe au bon endroit
         var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
         var nomFace = extraireFace($("#traveeSelectionnee").val());
 
         var plancher = scene.getObjectByName(objetSelectionne);
         if (plancher) {
-            switch ($(e.target).parent().attr('id')) {
+            var ancienMaterial = plancher.material;
+            var typePlancher = $(e.target).parent().attr('id');
+
+            switch (typePlancher) {
                 case "plein":
                     plancher.material = SOLP_Material;
                     break;
@@ -189,6 +190,17 @@ $("#popup-plancher").click(function (e) {
                     plancher.rotation.z = Math.PI;
                     break;
             }
+            if (typePlancher === "plein") {
+                if (ancienMaterial != SOLP_Material) inventaire["SOLP"]++;
+                if (ancienMaterial == SOLT_Material) inventaire["SOLT"]--;
+                if (ancienMaterial == SOLE_1_Material || ancienMaterial == SOLE_2_Material) inventaire["SOLE"]--;
+            } else {
+                if (ancienMaterial == SOLP_Material) inventaire["SOLP"]--;
+                if (plancher.material == SOLT_Material) inventaire["SOLT"]++;
+                if (plancher.material == SOLE_1_Material || plancher.material == SOLE_2_Material) inventaire["SOLE"]++;
+
+            }
+
         }
 
         $(".popup-ouverture").hide();
@@ -262,6 +274,9 @@ $(".popup-ouverture").click(function (e) {
             var porte = creerOuverture(nomTravee, nomFace, 'PE');
             var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
             modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
+            inventaire["MF1"]--;
+            inventaire["MPE"]--;
+            inventaire["MPEF"]++;
 
             var nouveauGroupe = new THREE.Group();
             nouveauGroupe = mergeGroups(porte, fenetre);
@@ -330,7 +345,7 @@ $("#quitter-vue-aerienne").click(function (e) {
     camera.position.set(60, 40, 160);
     cameraOrtho.zoom = 1;
 
-    hideIncrustations();
+    hideMainIncrustations();
 
     // On raffiche toit et plancher
     $("span:contains('afficherToit')").click();

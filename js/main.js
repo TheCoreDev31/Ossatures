@@ -363,7 +363,9 @@ export function incrusterCotes() {
 }
 
 
-export function hideIncrustations() {
+/********************************    Incrustation du nom des modules    ****************************************/
+
+export function hideMainIncrustations() {
     scene.traverse(function (child) {
         if (child.name.includes(">Incrustation")) {
             child.visible = false;
@@ -372,19 +374,156 @@ export function hideIncrustations() {
 }
 
 
-export function showIncrustations() {
+export function showMainIncrustations() {
     scene.traverse(function (child) {
+
         if (child.name.includes(">Incrustation")) {
 
-            // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche l'incrustation
+            // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche cette incrustation.
+            /*
             var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
-            if (moduleLie.visible)
+            if (moduleLie && moduleLie.visible)
                 child.visible = true;
             else
                 child.visible = false;
+                */
+            child.visible = true;
         }
     });
 }
+
+export function hidePignonIncrustations() {
+    scene.traverse(function (child) {
+        if (child.name.includes(">PG>Incrustation") || child.name.includes(">PD>Incrustation"))
+            child.visible = false;
+    });
+}
+
+
+export function showPignonIncrustations() {
+    scene.traverse(function (child) {
+        if (child.name.includes(">PG>Incrustation") || child.name.includes(">PD>Incrustation"))
+            child.visible = true;
+    });
+}
+
+export function modifierIncrustation(travee, face, remplacant = false, visibility = false) {
+
+    var groupe = scene.getObjectByName(travee);
+    var nbEnfants = groupe.children.length;
+
+    for (var i = nbEnfants - 1; i >= 0; i--) {
+        if (groupe.children[i].name.includes(">" + face + ">Incrustation")) {
+
+            var positionX = groupe.children[i].position.x;
+            var positionY = groupe.children[i].position.y;
+            var positionZ = groupe.children[i].position.z;
+
+            if (remplacant) {
+                groupe.remove(groupe.children[i]);
+                var nouvelleIncrustation = createText(remplacant, taillePoliceIncrustations);
+                nouvelleIncrustation.rotation.x = -Math.PI / 2;
+                nouvelleIncrustation.position.set(positionX, positionY, positionZ);
+                nouvelleIncrustation.name = travee + ">" + face + ">Incrustation";
+                nouvelleIncrustation.visible = visibility;
+                groupe.add(nouvelleIncrustation);
+            } else
+                groupe.children[i].visible = false;
+
+            return;
+        }
+    }
+}
+
+
+export function redimensionnerIncrustations() {
+
+    var nouvelleTaille = calculerTaillePoliceOptimale();
+    var posX, posY, posZ;
+    var rotX, rotY, rotZ;
+
+    var aTraiter = new Array();
+    scene.traverse(function (child) {
+        if (child.geometry && child.geometry.type == "TextGeometry")
+            aTraiter.push(child.name);
+    });
+
+    aTraiter.forEach(function (item) {
+        var child = scene.getObjectByName(item);
+        var nomTravee = child.parent.name,
+            travee;
+
+        if (child.visible) {
+            var nouveauTexte = createText(child.geometry.parameters.text, nouvelleTaille);
+            posX = child.position.x;
+            posY = child.position.y;
+            posZ = child.position.z;
+            rotX = child.rotation.x;
+            rotY = child.rotation.y;
+            rotZ = child.rotation.z;
+
+            travee = scene.getObjectByName(nomTravee);
+            travee.remove(child);
+
+
+            nouveauTexte.name = item;
+            nouveauTexte.position.set(posX, posY, posZ);
+            nouveauTexte.rotation.set(rotX, rotY, rotZ);
+            travee.add(nouveauTexte);
+        }
+    });
+}
+
+
+export function calculerTaillePoliceOptimale() {
+    var nouvelleTaille = 2;
+    var zoom = cameraOrtho.zoom.toPrecision(1);
+
+    if (DEBUG) log("Zoom caméra = " + zoom);
+
+    switch (nbTravees) {
+        case 1:
+            nouvelleTaille = 2;
+            break;
+        case 2:
+            nouvelleTaille = 2;
+            break;
+        case 3:
+            nouvelleTaille = 2;
+            break;
+        case 4:
+            nouvelleTaille = 2;
+            break;
+        case 5:
+            nouvelleTaille = 3;
+            break;
+        case 6:
+            nouvelleTaille = 3;
+            break;
+        case 7:
+            nouvelleTaille = 3;
+            break;
+        case 8:
+            nouvelleTaille = 4;
+            break;
+    }
+
+    if (zoom <= 0.6 && zoom > 0.3)
+        nouvelleTaille += 1;
+
+    if (zoom <= 0.3)
+        nouvelleTaille += 2;
+
+    if (zoom <= 0.1)
+        nouvelleTaille += 3;
+
+    return nouvelleTaille;
+}
+
+
+
+/*****************************************************************************************************/
+
 
 export function mergeGroups(porte, fenetre) {
     var newGroup = new THREE.Group();
@@ -426,11 +565,20 @@ export function mergeGroups(porte, fenetre) {
 
 /************************   Initialisation de tableaux utiles   ***********************************************/
 
+function initInventaire() {
+    inventaire["MPL"] = inventaire["MPE"] = inventaire["MPF"] = inventaire["MPEF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPI"] = 0;
+
+    inventaire["CH1T"] = inventaire["CH2T"] = 0;
+
+    inventaire["SOLP"] = inventaire["SOLE"] = inventaire["SOLT"] = 0;
+
+    inventaire["PEXT"] = inventaire["PINT"] = 0;
+}
+
 function initCaracteristiquesOuvertures() {
 
     // Tableau fixe des produits
-    var nbCaract = 9;
-    PRODUITS['MU'] = new Array(nbCaract); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
+    PRODUITS['MU'] = new Array(); // ScoreVT, largeur, hauteur, epaisseur, distance du sol
     PRODUITS['MU']['VT'] = 3;
     PRODUITS['MU']['largeur'] = PRODUITS['MU']['hauteur'] = PRODUITS['MU']['elevation'] = 0;
     PRODUITS['MU']['interieur'] = PRODUITS['MU']['exterieur'] = true;
@@ -438,8 +586,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['MU']['codeModule'] = 'MPL';
     PRODUITS['MU']['categorie'] = 'Mur';
     PRODUITS['MU']['libelleModule'] = 'Mur plein';
+    PRODUITS['MU']['cout'] = 0;
 
-    PRODUITS['PE'] = new Array(nbCaract);
+    PRODUITS['PE'] = new Array();
     PRODUITS['PE']['VT'] = 2;
     PRODUITS['PE']['largeur'] = 9;
     PRODUITS['PE']['hauteur'] = 21.5;
@@ -451,8 +600,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['codeModule'] = 'MPE';
     PRODUITS['PE']['categorie'] = "Porte d'entrée";
     PRODUITS['PE']['libelleModule'] = 'Porte entrée 90x215';
+    PRODUITS['PE']['cout'] = 0;
 
-    PRODUITS['F1'] = new Array(nbCaract);
+    PRODUITS['F1'] = new Array();
     PRODUITS['F1']['VT'] = 2;
     PRODUITS['F1']['largeur'] = 4.5;
     PRODUITS['F1']['hauteur'] = 6.5;
@@ -464,8 +614,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['codeModule'] = 'MF1';
     PRODUITS['F1']['categorie'] = 'Fenêtre';
     PRODUITS['F1']['libelleModule'] = 'Fenêtre 45x65';
+    PRODUITS['F1']['cout'] = 0;
 
-    PRODUITS['F2'] = new Array(nbCaract);
+    PRODUITS['F2'] = new Array();
     PRODUITS['F2']['VT'] = 2;
     PRODUITS['F2']['largeur'] = 10.5;
     PRODUITS['F2']['hauteur'] = 11.5;
@@ -477,8 +628,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['codeModule'] = 'MF2';
     PRODUITS['F2']['categorie'] = 'Fenêtre';
     PRODUITS['F2']['libelleModule'] = 'Fenêtre 105x115';
+    PRODUITS['F2']['cout'] = 0;
 
-    PRODUITS['PF'] = new Array(nbCaract);
+    PRODUITS['PF'] = new Array();
     PRODUITS['PF']['VT'] = 1.4;
     PRODUITS['PF']['largeur'] = 18;
     PRODUITS['PF']['hauteur'] = 21.5;
@@ -490,8 +642,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['codeModule'] = 'MPF';
     PRODUITS['PF']['categorie'] = 'Porte-fenêtre';
     PRODUITS['PF']['libelleModule'] = 'Porte fenêtre 180x215';
+    PRODUITS['PF']['cout'] = 0;
 
-    PRODUITS['PG1'] = new Array(nbCaract);
+    PRODUITS['PG1'] = new Array();
     PRODUITS['PG1']['VT'] = 0;
     PRODUITS['PG1']['largeur'] = 24;
     PRODUITS['PG1']['hauteur'] = 20;
@@ -503,8 +656,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['codeModule'] = 'MPG1';
     PRODUITS['PG1']['categorie'] = 'Porte de garage';
     PRODUITS['PG1']['libelleModule'] = 'Porte de garage 240x200';
+    PRODUITS['PG1']['cout'] = 0;
 
-    PRODUITS['PG2'] = new Array(nbCaract);
+    PRODUITS['PG2'] = new Array();
     PRODUITS['PG2']['VT'] = 3;
     PRODUITS['PG2']['largeur'] = 24;
     PRODUITS['PG2']['hauteur'] = 20;
@@ -516,8 +670,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG2']['codeModule'] = 'MPG2';
     PRODUITS['PG2']['categorie'] = 'Porte de garage';
     PRODUITS['PG2']['libelleModule'] = 'Porte garage renforcée 240x200';
+    PRODUITS['PG2']['cout'] = 0;
 
-    PRODUITS['PE+F1'] = new Array(nbCaract);
+    PRODUITS['PE+F1'] = new Array();
     PRODUITS['PE+F1']['VT'] = 0.5;
     PRODUITS['PE+F1']['largeur'] = 0;
     PRODUITS['PE+F1']['hauteur'] = 0;
@@ -529,8 +684,9 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
     PRODUITS['PE+F1']['categorie'] = 'Porte fenêtre + fenêtre';
     PRODUITS['PE+F1']['libelleModule'] = 'Porte entrée + fenêtre 45x65';
+    PRODUITS['PE+F1']['cout'] = 0;
 
-    PRODUITS['PO'] = new Array(nbCaract);
+    PRODUITS['PO'] = new Array();
     PRODUITS['PO']['VT'] = 0;
     PRODUITS['PO']['largeur'] = 36;
     PRODUITS['PO']['hauteur'] = 25;
@@ -542,6 +698,49 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['codeModule'] = 'MPI';
     PRODUITS['PO']['categorie'] = 'Portique intérieur';
     PRODUITS['PO']['libelleModule'] = 'Portique intérieur';
+    PRODUITS['PO']['cout'] = 0;
+
+    PRODUITS['PEXT'] = new Array();
+    PRODUITS['PEXT']['codeModule'] = 'PEXT';
+    PRODUITS['PEXT']['categorie'] = 'Pignon';
+    PRODUITS['PEXT']['libelleModule'] = 'Pignon extérieur';
+    PRODUITS['PEXT']['cout'] = 0;
+
+    PRODUITS['PINT'] = new Array();
+    PRODUITS['PINT']['codeModule'] = 'PINT';
+    PRODUITS['PINT']['categorie'] = 'Pignon';
+    PRODUITS['PINT']['libelleModule'] = 'Pignon intérieur';
+    PRODUITS['PINT']['cout'] = 0;
+
+    PRODUITS['CH1T'] = new Array();
+    PRODUITS['CH1T']['codeModule'] = 'CH1T';
+    PRODUITS['CH1T']['categorie'] = 'Charpente';
+    PRODUITS['CH1T']['libelleModule'] = 'Charpente principale';
+    PRODUITS['CH1T']['cout'] = 0;
+
+    PRODUITS['CH2T'] = new Array();
+    PRODUITS['CH2T']['codeModule'] = 'CH2T';
+    PRODUITS['CH2T']['categorie'] = 'Charpente';
+    PRODUITS['CH2T']['libelleModule'] = 'Charpente complémentaire';
+    PRODUITS['CH2T']['cout'] = 0;
+
+    PRODUITS['SOLP'] = new Array();
+    PRODUITS['SOLP']['codeModule'] = 'SOLP';
+    PRODUITS['SOLP']['categorie'] = 'Plancher';
+    PRODUITS['SOLP']['libelleModule'] = 'Solivage plein';
+    PRODUITS['SOLP']['cout'] = 0;
+
+    PRODUITS['SOLE'] = new Array();
+    PRODUITS['SOLE']['codeModule'] = 'SOLE';
+    PRODUITS['SOLE']['categorie'] = 'Plancher';
+    PRODUITS['SOLE']['libelleModule'] = 'Solivage escalier';
+    PRODUITS['SOLE']['cout'] = 0;
+
+    PRODUITS['SOLT'] = new Array();
+    PRODUITS['SOLT']['codeModule'] = 'SOLT';
+    PRODUITS['SOLT']['categorie'] = 'Plancher';
+    PRODUITS['SOLT']['libelleModule'] = 'Solivage trappe';
+    PRODUITS['SOLT']['cout'] = 0;
 }
 
 function initMatricesScoreVT() {
@@ -790,117 +989,24 @@ export function extraireFace(objet) {
 }
 
 
-export function modifierIncrustation(travee, face, remplacant = null) {
-
-    var groupe = scene.getObjectByName(travee);
-    var nbEnfants = groupe.children.length;
-
-    for (var i = nbEnfants - 1; i >= 0; i--) {
-        if (groupe.children[i].name.includes(">" + face + ">Incrustation")) {
-            var positionX = groupe.children[i].position.x;
-            var positionY = groupe.children[i].position.y;
-            var positionZ = groupe.children[i].position.z;
-            groupe.remove(groupe.children[i]);
-
-            if (remplacant != null) {
-                var nouvelleIncrustation = createText(remplacant, taillePoliceIncrustations);
-                nouvelleIncrustation.rotation.x = -Math.PI / 2;
-                nouvelleIncrustation.position.set(positionX, positionY, positionZ);
-                nouvelleIncrustation.name = travee + ">" + face + ">Incrustation";
-                nouvelleIncrustation.visible = false;
-                groupe.add(nouvelleIncrustation);
-            }
-            return;
-        }
-    }
-}
-
-
-export function redimensionnerIncrustations() {
-
-    var nouvelleTaille = calculerTaillePoliceOptimale();
-    var posX, posY, posZ;
-    var rotX, rotY, rotZ;
-
-    var aTraiter = new Array();
-    scene.traverse(function (child) {
-        if (child.geometry && child.geometry.type == "TextGeometry")
-            aTraiter.push(child.name);
-    });
-
-    aTraiter.forEach(function (item) {
-        var child = scene.getObjectByName(item);
-        var nomTravee = child.parent.name,
-            travee;
-
-        var nouveauTexte = createText(child.geometry.parameters.text, nouvelleTaille);
-        posX = child.position.x;
-        posY = child.position.y;
-        posZ = child.position.z;
-        rotX = child.rotation.x;
-        rotY = child.rotation.y;
-        rotZ = child.rotation.z;
-
-        travee = scene.getObjectByName(nomTravee);
-        travee.remove(child);
-
-
-        nouveauTexte.name = item;
-        nouveauTexte.position.set(posX, posY, posZ);
-        nouveauTexte.rotation.set(rotX, rotY, rotZ);
-        travee.add(nouveauTexte);
-    });
-}
-
-
-export function calculerTaillePoliceOptimale() {
-    var nouvelleTaille = 2;
-    var zoom = cameraOrtho.zoom.toPrecision(1);
-
-    if (DEBUG) log("Zoom caméra = " + zoom);
-
-    switch (nbTravees) {
-        case 1:
-            nouvelleTaille = 2;
-            break;
-        case 2:
-            nouvelleTaille = 2;
-            break;
-        case 3:
-            nouvelleTaille = 2;
-            break;
-        case 4:
-            nouvelleTaille = 2;
-            break;
-        case 5:
-            nouvelleTaille = 3;
-            break;
-        case 6:
-            nouvelleTaille = 3;
-            break;
-        case 7:
-            nouvelleTaille = 3;
-            break;
-        case 8:
-            nouvelleTaille = 4;
-            break;
-    }
-
-    if (zoom <= 0.6 && zoom > 0.3)
-        nouvelleTaille += 1;
-
-    if (zoom <= 0.3)
-        nouvelleTaille += 2;
-
-    if (zoom <= 0.1)
-        nouvelleTaille += 3;
-
-    return nouvelleTaille;
-}
-
-
-
 /******************   Fonctions métier   *****************/
+
+
+export function verifierControlesMetier() {
+
+    var controlesOK = true;
+
+    // Tout projet doit comporter une et une seule trappe par construction
+    if ((inventaire["SOLE"] + inventaire["SOLT"]) != nbConstructions) {
+        controlesOK = false;
+        alerte('Vous devez positionner une trappe<br/>sur chaque construction de votre projet.')
+    }
+
+
+    return controlesOK;
+}
+
+
 
 export function retirerObjetModifiable(nomObjet) {
     for (var i = 0; i < objetsModifiables.length; i++) {
@@ -1285,10 +1391,12 @@ $(document).ready(function () {
 
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();
+    initInventaire();
 
     var travee1 = creerTravee();
     scene.add(travee1);
-
+    nbConstructions = 1;
+    hidePignonIncrustations();
     incrusterCotes();
 
     init();
