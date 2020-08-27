@@ -454,19 +454,23 @@ export function decalerTravee(nomTravee, direction) {
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    modifierIncrustation(travee.name, "PD", "PEXT");
 
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+                    modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
                 } else {
 
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(travee.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    modifierIncrustation(traveeDroite.name, "PG", "PINT");
 
                 }
             }
@@ -487,17 +491,21 @@ export function decalerTravee(nomTravee, direction) {
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+                    modifierIncrustation(travee.name, "PG", "PEXT");
 
                     traveeGauche.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    modifierIncrustation(traveeGauche.name, "PD", "PEXT");
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    modifierIncrustation(travee.name, "PG", "PINT");
                 }
             }
         }
@@ -531,18 +539,22 @@ export function decalerTravee(nomTravee, direction) {
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    modifierIncrustation(travee.name, "PD", "PEXT");
 
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+                    modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(travee.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    modifierIncrustation(traveeDroite.name, "PG", "PINT");
                 }
             }
         }
@@ -562,18 +574,22 @@ export function decalerTravee(nomTravee, direction) {
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
+                    modifierIncrustation(travee.name, "PG", "PEXT");
 
                     traveeGauche.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
+                    modifierIncrustation(traveeGauche.name, "PD", "PEXT");
 
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    modifierIncrustation(travee.name, "PG", "PINT");
                 }
             }
         }
@@ -750,7 +766,7 @@ export function creerTravee() {
         wallsGrp.add(incrustation);
     }
 
-    // Incrustation pour les pignons de toiture
+    // Incrustation pour les pignons de toiture et le solivage
     var positionX, positionY, positionZ = 0;
     var incrustation = createText('PEXT', taillePoliceIncrustations);
     incrustation.rotation.x = -Math.PI / 2;
@@ -766,6 +782,14 @@ export function creerTravee() {
     incrustation.position.set(positionX, positionY, positionZ);
     incrustation.name = prefixe + '>PD>Incrustation';
     wallsGrp.add(incrustation);
+
+    var incrustation = createText('SOLP', taillePoliceIncrustations);
+    incrustation.rotation.x = -Math.PI / 2;
+    incrustation.position.set(0, positionY, 0);
+    incrustation.name = prefixe + '>plancher>Incrustation';
+    wallsGrp.add(incrustation);
+
+    tableauTravees[prefixe].typeSolivage = "SOLP";
     hidePignonIncrustations();
 
     initialiserScoresVT(PREFIXE_TRAVEE + nbTravees);

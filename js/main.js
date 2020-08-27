@@ -239,15 +239,23 @@ export function incrusterCotes() {
     texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
     cotesGrpX.add(texteCotes);
 
+    var texte2 = createText("Construction 1");
+    texte2.name = "CoteX_1>texte2";
+    texte2.rotation.x = -Math.PI / 2;
+    texte2.position.set(xTexte, hauteurTexte, texteCotes.position.z + 5);
+    cotesGrpX.add(texte2);
+
     // On prend en compte un décalage éventuel de la première construction, et donc de la cote suivant Y.
     switch (tableauTravees['Travee 1'].decalage) {
         case 1:
             line.position.z += LONGUEUR_TRAVEE / 2;
             texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+            texte2.position.z += LONGUEUR_TRAVEE / 2;
             break;
         case -1:
             line.position.z -= LONGUEUR_TRAVEE / 2;
             texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+            texte2.position.z -= LONGUEUR_TRAVEE / 2;
             break;
     }
 
@@ -272,15 +280,23 @@ export function incrusterCotes() {
         texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
         cotesGrpX.add(texteCotes);
 
+        var texte2 = createText("Construction 2");
+        texte2.name = "CoteX_2>texte2";
+        texte2.rotation.x = -Math.PI / 2;
+        texte2.position.set(xTexte, hauteurTexte, texteCotes.position.z + 5);
+        cotesGrpX.add(texte2);
+
         // En fonction du décalage éventuel de la première construction, on peut décaler suivant Y.
         switch (tableauTravees[premiereTraveeConstruction2].decalage) {
             case 1:
                 line.position.z += LONGUEUR_TRAVEE / 2;
                 texteCotes.position.z += LONGUEUR_TRAVEE / 2;
+                texte2.position.z += LONGUEUR_TRAVEE / 2;
                 break;
             case -1:
                 line.position.z -= LONGUEUR_TRAVEE / 2;
                 texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
+                texte2.position.z -= LONGUEUR_TRAVEE / 2;
                 break;
         }
     }
@@ -394,7 +410,9 @@ export function showMainIncrustations() {
 
 export function hidePignonIncrustations() {
     scene.traverse(function (child) {
-        if (child.name.includes(">PG>Incrustation") || child.name.includes(">PD>Incrustation"))
+        if (child.name.includes(">PG>Incrustation") ||
+            child.name.includes(">PD>Incrustation") ||
+            child.name.includes(">plancher>Incrustation"))
             child.visible = false;
     });
 }
@@ -402,7 +420,9 @@ export function hidePignonIncrustations() {
 
 export function showPignonIncrustations() {
     scene.traverse(function (child) {
-        if (child.name.includes(">PG>Incrustation") || child.name.includes(">PD>Incrustation"))
+        if (child.name.includes(">PG>Incrustation") ||
+            child.name.includes(">PD>Incrustation") ||
+            child.name.includes(">plancher>Incrustation"))
             child.visible = true;
     });
 }
@@ -999,9 +1019,27 @@ export function verifierControlesMetier() {
     // Tout projet doit comporter une et une seule trappe par construction
     if ((inventaire["SOLE"] + inventaire["SOLT"]) != nbConstructions) {
         controlesOK = false;
-        alerte('Vous devez positionner une trappe<br/>sur chaque construction de votre projet.')
-    }
+        alerte('Vous devez positionner une seule trappe<br/>pour chaque construction de votre projet.')
+    } else {
+        var trappesConstruction1 = 0,
+            trappesConstruction2 = 0;
 
+        // Il faut vérifier aussi qu'il y a bien une trappe par construction
+        for (var travee in tableauTravees) {
+            if (tableauTravees[travee].numConstruction == 1) {
+                if (tableauTravees[travee].typeSolivage != "SOLP")
+                    trappesConstruction1++;
+            }
+            if (tableauTravees[travee].numConstruction == 2) {
+                if (tableauTravees[travee].typeSolivage != "SOLP")
+                    trappesConstruction2++;
+            }
+        }
+        if (trappesConstruction1 > 1 || trappesConstruction2 > 1) {
+            controlesOK = false;
+            alerte('Plusieurs trappes ont été positionnées sur la même construction.')
+        }
+    }
 
     return controlesOK;
 }

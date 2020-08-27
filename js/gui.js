@@ -259,10 +259,11 @@ export function afficherVueAerienne(modePDF = false) {
 
     initPositionCamera(cameraOrtho);
 
-    // On calcule les limites gauche, droite, haut et bas de la construciton, afin de cadrer au mieux.
+    // On calcule les limites gauche, droite, haut et bas de la construction, afin de cadrer au mieux.
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
     var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
-    var MARGE = 50;
+    var origineZ = 0;
+    var MARGE = 60;
     if (nbTravees == 1) MARGE = 100; // Eventuellement, cas particulier de la construction à 1 travée
 
     cameraOrtho.left = gauche - MARGE;
@@ -804,9 +805,7 @@ export function displayGui() {
 
                 // On modifie l'incrustation pour les pignons de toiture.
                 modifierIncrustation(travee.name, 'PG', 'PINT', true);
-                var aSupprimer = scene.getObjectByName(voisine.name + ">PD>Incrustation");
-                var sonGroupe = scene.getObjectByName(voisine.name);
-                if (aSupprimer && sonGroupe) sonGroupe.remove(aSupprimer);
+                modifierIncrustation(voisine.name, 'PD', 'PINT', true);
                 hidePignonIncrustations();
 
                 recalculerConstructions();
@@ -854,18 +853,6 @@ export function displayGui() {
 
             // On modifie l'incrustation pour les pignons de toiture.
             modifierIncrustation(voisine.name, 'PD', 'PEXT', true);
-
-            // S'il ne reste qu'une seule travée, il faut re-créer l'incrustation du pignon droit.
-            if (nbTravees == 1) {
-                var positionX, positionY;
-                var incrustation = createText('PEXT', taillePoliceIncrustations);
-                incrustation.rotation.x = -Math.PI / 2;
-                positionX = (LARGEUR_TRAVEE / 2) - 6;
-                positionY = (HAUTEUR_TRAVEE / 2) + 0.1;
-                incrustation.position.set(positionX, positionY, 0);
-                incrustation.name = voisine.name + '>PD>Incrustation';
-                scene.getObjectByName(voisine.name).add(incrustation);
-            }
             hidePignonIncrustations();
 
             recalculerConstructions();

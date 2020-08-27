@@ -153,54 +153,70 @@ $("#popup-plancher").click(function (e) {
 
     if (!$(e.target).parent().hasClass('disabled')) {
 
-        var nomTravee = extraireNomTravee($("#traveeSelectionnee").val());
-        var nomFace = extraireFace($("#traveeSelectionnee").val());
+        var nomTravee = extraireNomTravee(objetSelectionne);
+        var nomFace = extraireFace(objetSelectionne);
+        var solivageChoisi = $(e.target).parent().attr('id');
+        var typeSolivage, decalageIncrustation = 0;
 
         var plancher = scene.getObjectByName(objetSelectionne);
         if (plancher) {
             var ancienMaterial = plancher.material;
-            var typePlancher = $(e.target).parent().attr('id');
+            var ancienSolivage;
 
-            switch (typePlancher) {
+            if (ancienMaterial == SOLP_Material) ancienSolivage = "SOLP";
+            if (ancienMaterial == SOLT_Material) ancienSolivage = "SOLT";
+            if ((ancienMaterial == SOLE_1_Material) || (ancienMaterial == SOLE_2_Material)) ancienSolivage = "SOLE";
+
+            switch (solivageChoisi) {
                 case "plein":
+                    typeSolivage = "SOLP";
                     plancher.material = SOLP_Material;
                     break;
                 case "haut-gauche":
+                    typeSolivage = "SOLE";
                     plancher.material = SOLE_1_Material;
                     plancher.rotation.z = 0;
                     break;
                 case "haut-droite":
+                    typeSolivage = "SOLE";
                     plancher.material = SOLE_2_Material;
                     plancher.rotation.z = 0;
                     break;
                 case "bas-droite":
+                    typeSolivage = "SOLE";
                     plancher.material = SOLE_1_Material;
                     plancher.rotation.z = Math.PI;
                     break;
                 case "bas-gauche":
+                    typeSolivage = "SOLE";
                     plancher.material = SOLE_2_Material;
                     plancher.rotation.z = Math.PI;
                     break;
                 case "haut-centre":
+                    typeSolivage = "SOLT";
                     plancher.material = SOLT_Material;
                     plancher.rotation.z = 0;
                     break;
                 case "bas-centre":
+                    typeSolivage = "SOLT";
                     plancher.material = SOLT_Material;
                     plancher.rotation.z = Math.PI;
                     break;
             }
-            if (typePlancher === "plein") {
-                if (ancienMaterial != SOLP_Material) inventaire["SOLP"]++;
-                if (ancienMaterial == SOLT_Material) inventaire["SOLT"]--;
-                if (ancienMaterial == SOLE_1_Material || ancienMaterial == SOLE_2_Material) inventaire["SOLE"]--;
-            } else {
-                if (ancienMaterial == SOLP_Material) inventaire["SOLP"]--;
-                if (plancher.material == SOLT_Material) inventaire["SOLT"]++;
-                if (plancher.material == SOLE_1_Material || plancher.material == SOLE_2_Material) inventaire["SOLE"]++;
+            if (solivageChoisi.indexOf("haut") != -1) decalageIncrustation = -1;
+            if (solivageChoisi.indexOf("bas") != -1) decalageIncrustation = 1;
 
-            }
+            inventaire[ancienSolivage]--;
+            inventaire[typeSolivage]++;
 
+            tableauTravees[nomTravee].typeSolivage = typeSolivage;
+
+            var positionIncrustation = tableauTravees[nomTravee].positionZ;
+            if (decalageIncrustation < 0) positionIncrustation -= ((LONGUEUR_TRAVEE / 2) - 15);
+            if (decalageIncrustation > 0) positionIncrustation += ((LONGUEUR_TRAVEE / 2) - 15);
+
+            modifierIncrustation(nomTravee, "plancher", typeSolivage);
+            scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
         }
 
         $(".popup-ouverture").hide();
