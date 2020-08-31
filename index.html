@@ -72,7 +72,6 @@
             var facesSelectionnees = new Array();
             var objetSelectionne = '';
             var inventaire = new Array();
-
         </script>
 
         <div class="div-aide">
@@ -95,18 +94,9 @@
 
         <div class="logo">
             <img src="icons/logo.png" class="image-logo">
-            <h4>Version : 1.4</h4>
+            <h4>Version : 1.5</h4>
         </div>
 
-        <!--
-        <div id="popup-alert">
-            <span id="titre-popup">Message d'info</span>
-            <div class="boutons-popup">
-                <button type="button" class="btn btn-primary" id="popup-alerte-bouton1">Action 1</button>
-                <button type="button" class="btn btn-danger" id="popup-alerte-annuler">Annuler</button>
-            </div>
-        </div>
--->
 
         <div class="popup-ouverture" id="popup-ouverture-out">
             <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
@@ -209,7 +199,6 @@
         </div>
 
         <div id="overlay"></div>
-        <div id="transparent-overlay"></div>
 
         <div id="changement-vue">
             <div class="bouton-fleche" id="aerien" alt="Vue aérienne"><i class="fa fa-plane" data-toggle="tooltip" data-placement="top" title="Tooltip on top" id="bouton-vue-aerienne"></i></div>
@@ -221,6 +210,7 @@
             <div id="perspective"><img src="icons/maison-3d.png"></div>
         </div>
 
+        <div id="transparent-overlay"></div>
         <div id="vue-aerienne">
             <div id="legende">
                 <span class="titre">Légende des modules</span></br>
@@ -246,17 +236,18 @@
             </div>
         </div>
 
-        <input id="file-input" type="file" name="name" style="display: none;" />
-
         <div id="popup-attente">
-            <div class="spinner-border text-success" role="status">
+            <div class="spinner-border text-success" role="status" id="popup-attente-icon">
                 <span class="sr-only">Spinner</span>
             </div>
             <span class="texte-attente">Veuillez patienter :<br>nous sommes en train de préparer votre devis...</span>
         </div>
 
+        <div id="popup-export">
+            <span class="texte">Votre projet a été enregistré sous la référence ci-dessous.<br>Notez-la bien : elle vous sera demandée pour revenir ultérieurement sur votre projet.<br></span>
+            <button type="button" class="btn btn-success" id="popup-attente-button">OK</button>
+        </div>
+
     </div>
 
-</body>
-
-</html>
+</body></html>

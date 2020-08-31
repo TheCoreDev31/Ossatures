@@ -1423,6 +1423,7 @@ $(document).ready(function () {
     $("#div-menu-contextuel").hide();
     $("#vue-aerienne").hide();
     $("#popup-attente").hide();
+    $("#popup-export").hide();
     $("#overlay").hide();
     $("#transparent-overlay").hide();
     $(".div-aide").addClass("affiche");
@@ -1454,10 +1455,113 @@ $(document).ready(function () {
 /**********************************************************************************************************/
 
 
-export function importScene(inp) {
+// Ca, c'est pour pouvoir télécharger localement des fichiers.
+var link = document.createElement('a');
+link.style.display = 'none';
+document.body.appendChild(link);
+
+
+
+function generate(l = 8) {
+    /* c : chaîne de caractères alphanumérique */
+    var c = 'abcdefghijknopqrstuvwxyzACDEFGHJKLMNPQRSTUVWXYZ12345679',
+        n = c.length,
+        /* p : chaîne de caractères spéciaux */
+        p = '+-_',
+        o = p.length,
+        r = '',
+        n = c.length,
+        /* s : determine la position du caractère spécial dans le mdp */
+        s = Math.floor(Math.random() * (p.length - 1));
+
+    for (var i = 0; i < l; ++i) {
+        if (s == i) {
+            /* on insère à la position donnée un caractère spécial aléatoire */
+            r += p.charAt(Math.floor(Math.random() * o));
+        } else {
+            /* on insère un caractère alphanumérique aléatoire */
+            r += c.charAt(Math.floor(Math.random() * n));
+        }
+    }
+    return r;
+}
+
+
+function uploadBlob(blob, filename) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+        var fd = {};
+        fd["fname"] = filename + "_scene.gltf";
+        fd["data"] = event.target.result;
+        $.ajax({
+            type: 'POST',
+            url: 'http://test.thecoredev.fr',
+            data: fd,
+            dataType: 'text'
+        }).done(function (data) {
+            console.log(data);
+        });
+    };
+    reader.readAsDataURL(blob);
+}
+
+
+function save(blob, filename) {
+    /*
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    */
+    uploadBlob(blob, filename);
+}
+
+function saveString(text, filename) {
+    var reference = filename.substring(0, filename.indexOf('.'));
+
+    save(new Blob([text], {
+        type: 'text/plain'
+    }), reference);
+
+}
+
+
+function saveArrayBuffer(buffer, filename) {
+    save(new Blob([buffer], {
+        type: 'application/octet-stream'
+    }), filename);
+}
+
+export function exportScene() {
+    var reference = generate(10);
+    var exporter = new GLTFExporter();
+    var options = {
+        trs: true,
+        onlyVisible: false,
+        truncateDrawRange: false,
+        embedImages: false
+    };
+
+    // On exporte toute la scène.... on fera le tri à l'import
+    exporter.parse(scene, function (gltf) {
+
+        if (gltf instanceof ArrayBuffer) {
+            saveArrayBuffer(gltf, 'scene.glb');
+        } else {
+            var output = JSON.stringify(gltf, null, 2);
+            saveString(output, reference + '.gltf');
+
+        }
+    }, options);
+
+    return reference;
+}
+
+
+export function importScene(nomFichier) {
     var loader = new GLTFLoader();
+
     loader.load(
-        "./js/import/scene.gltf",
+        "http://test.thecoredev.fr/upload/" + nomFichier + ".gltf", //./js/import/scene.gltf",
         function (gltf) {
 
             gltf.scene.traverse(function (child) {
@@ -1485,28 +1589,4 @@ export function importScene(inp) {
     );
     incrusterCotes();
     console.log(scene);
-}
-
-export function exportScene() {
-    var exporter = new GLTFExporter();
-    var options = {
-        trs: true,
-        onlyVisible: false,
-        truncateDrawRange: false,
-        embedImages: false
-    };
-
-    // On exporte toute la scène.... on fera le tri à l'import
-    exporter.parse(scene, function (gltf) {
-
-        if (gltf instanceof ArrayBuffer) {
-            saveArrayBuffer(gltf, 'scene.glb');
-        } else {
-            var output = JSON.stringify(gltf, null, 2);
-            saveString(output, 'scene.gltf');
-        }
-
-        console.log(scene);
-
-    }, options);
 }

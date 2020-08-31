@@ -23,8 +23,6 @@ import {
     MPG1_Material,
     MPG2_Material,
     PEXT_Material,
-    PINT_Droite_Material,
-    PINT_Gauche_Material,
     CH1T_Material,
     COLOR_ARRAY,
     blankMaterial,
@@ -496,28 +494,36 @@ export function displayGui() {
         this.afficherCotes = true;
         this.ossatureBois = false;
 
+
         this.exporter = function () {
-            /*
             scene.updateMatrixWorld();
-            exportScene();
-            */
+            var reference = exportScene();
+            var texteFinal = $("#popup-attente span.texte").html;
+
+            alert(texteFinal);
+
+            $("#popup-export span.texte").html(texteFinal);
+            $("#popup-export").css({
+                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
+                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
+            });
+            $("#popup-export").show();
         };
 
-        this.importer = function () {
-            /*
-            // Pour demander à l'utilisateur de choisir son fichier local
-            $('#file-input').trigger('click');
-            alert($('#file-input'));
 
+        this.importer = function () {
+            // Pour demander à l'utilisateur de saisir la référence du devis
+            var refDevis = prompt("Veuillez saisir la référence de votre projet :", "scene");
+            if (refDevis === null) return;
 
             for (var i = 0; i < nbTravees; i++) {
                 scene.remove(scene.getObjectByName(PREFIXE_TRAVEE + parseInt(i + 1)));
             }
 
-            importScene('./js/import/scene.json');
+            importScene(refDevis);
             scene.updateMatrixWorld();
-            */
         };
+
 
         this.genererDevis = function () {
 
@@ -1028,8 +1034,8 @@ export function displayGui() {
 
     var guiMisc = myGui.addFolder("Divers");
 
-    //    guiMisc.add(controller, 'exporter');
-    //    guiMisc.add(controller, 'importer');
+    guiMisc.add(controller, 'exporter');
+    guiMisc.add(controller, 'importer');
     guiMisc.add(controller, 'genererDevis');
     guiMisc.open();
 

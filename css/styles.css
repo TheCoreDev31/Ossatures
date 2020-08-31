@@ -322,15 +322,13 @@ body {
 /********************    Popup d'attente pour les traitements longs (génération du devis)  ************************/
 
 #popup-attente {
-    display: flex;
+    display: inline-flex;
     position: fixed;
     width: 500px;
-    z-index: 300;
-    justify-content: center;
-    align-items: center;
-
     height: auto;
     padding: 20px;
+    z-index: 300;
+    align-items: left;
 
     background-color: white;
     border: 1px solid black;
@@ -344,6 +342,26 @@ body {
     font-family: "Avenir next", "Avenir", sans-serif;
     font-size: 18px;
     text-align: justify-all;
+}
+
+#popup-export {
+    display: grid;
+    position: fixed;
+    width: auto;
+    height: auto;
+    padding: 20px;
+    z-index: 300;
+    align-items: center;
+
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all .5s ease-in;
+    box-shadow: 0 0 12px black;
+}
+
+#popup-export button {
+    margin: 20px 150px 0 150px;
 }
 
 
