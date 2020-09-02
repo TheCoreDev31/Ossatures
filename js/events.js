@@ -404,8 +404,11 @@ $("#boutons > #legende").click(function (e) {
 });
 
 
-$("#popup-attente-button").click(function (e) {
-    $("#popup-attente").hide();
+
+/**********************************   Popup d'export de la scene   *************************************************/
+$("#popup-export-button").click(function (e) {
+    $("#popup-export").hide();
+    $("#overlay").hide();
 });
 
 

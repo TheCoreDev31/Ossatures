@@ -1467,7 +1467,7 @@ function generate(l = 8) {
     var c = 'abcdefghijknopqrstuvwxyzACDEFGHJKLMNPQRSTUVWXYZ12345679',
         n = c.length,
         /* p : chaîne de caractères spéciaux */
-        p = '+-_',
+        p = '+_',
         o = p.length,
         r = '',
         n = c.length,
@@ -1491,7 +1491,7 @@ function uploadBlob(blob, filename) {
     var reader = new FileReader();
     reader.onload = function (event) {
         var fd = {};
-        fd["fname"] = filename + "_scene.gltf";
+        fd["fname"] = filename;
         fd["data"] = event.target.result;
         $.ajax({
             type: 'POST',
@@ -1505,34 +1505,32 @@ function uploadBlob(blob, filename) {
     reader.readAsDataURL(blob);
 }
 
+function save(blob, filename, copieLocale = false) {
 
-function save(blob, filename) {
-    /*
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    */
+    if (copieLocale) {
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    }
     uploadBlob(blob, filename);
 }
 
-function saveString(text, filename) {
-    var reference = filename.substring(0, filename.indexOf('.'));
-
+function saveString(text, filename, copieLocale = false) {
     save(new Blob([text], {
         type: 'text/plain'
-    }), reference);
-
+    }), filename, copieLocale);
 }
 
-
+/*
 function saveArrayBuffer(buffer, filename) {
     save(new Blob([buffer], {
         type: 'application/octet-stream'
     }), filename);
 }
+*/
 
 export function exportScene() {
-    var reference = generate(10);
+    var reference = generate(12);
     var exporter = new GLTFExporter();
     var options = {
         trs: true,
@@ -1540,6 +1538,7 @@ export function exportScene() {
         truncateDrawRange: false,
         embedImages: false
     };
+    var copieLocale = false;
 
     // On exporte toute la scène.... on fera le tri à l'import
     exporter.parse(scene, function (gltf) {
@@ -1548,7 +1547,7 @@ export function exportScene() {
             saveArrayBuffer(gltf, 'scene.glb');
         } else {
             var output = JSON.stringify(gltf, null, 2);
-            saveString(output, reference + '.gltf');
+            saveString(output, reference + '_scene.gltf', copieLocale);
 
         }
     }, options);
@@ -1561,7 +1560,7 @@ export function importScene(nomFichier) {
     var loader = new GLTFLoader();
 
     loader.load(
-        "http://test.thecoredev.fr/upload/" + nomFichier + ".gltf", //./js/import/scene.gltf",
+        "http://test.thecoredev.fr/upload/" + nomFichier + "_scene.gltf", //./js/import/scene.gltf",
         function (gltf) {
 
             gltf.scene.traverse(function (child) {
@@ -1580,11 +1579,11 @@ export function importScene(nomFichier) {
         },
         function (xhr) {
             // called while loading is progressing
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            console.log((xhr.loaded / xhr.total * 100) + '% chargés');
         },
         function (error) {
             // called when loading has errors
-            console.log('An error happened');
+            console.log('Une erreur est survenue : ' + error.stack);
         }
     );
     incrusterCotes();

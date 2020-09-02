@@ -498,9 +498,7 @@ export function displayGui() {
         this.exporter = function () {
             scene.updateMatrixWorld();
             var reference = exportScene();
-            var texteFinal = $("#popup-attente span.texte").html;
-
-            alert(texteFinal);
+            var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
 
             $("#popup-export span.texte").html(texteFinal);
             $("#popup-export").css({
@@ -508,6 +506,7 @@ export function displayGui() {
                 top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
             });
             $("#popup-export").show();
+            $("#overlay").show();
         };
 
 
