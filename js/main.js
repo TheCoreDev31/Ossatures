@@ -27,7 +27,9 @@ import {
 import {
     creerOuverture,
     creerToit,
-    creerTravee
+    creerTravee,
+    traitementCreationTravee,
+    traitementCreationOuverture
 } from "./objects.js"
 
 import {
@@ -394,15 +396,6 @@ export function showMainIncrustations() {
     scene.traverse(function (child) {
 
         if (child.name.includes(">Incrustation")) {
-
-            // Ssi le module auquel est rattachée l'incrustation est visible, alors on affiche cette incrustation.
-            /*
-            var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
-            if (moduleLie && moduleLie.visible)
-                child.visible = true;
-            else
-                child.visible = false;
-                */
             child.visible = true;
         }
     });
@@ -1045,6 +1038,24 @@ export function verifierControlesMetier() {
 }
 
 
+export function restaurerPrefsUtilisateur(numTravee, travee) {
+
+    // A la création d'une travée, on reprend les préférences utilisateur (affichage toit, etc.)
+
+    if (!$("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked')) {
+        var leToit = scene.getObjectByName(PREFIXE_TRAVEE + numTravee + '>Toit');
+        for (var i = 0; i < leToit.children.length; i++) {
+            if (leToit.children[i].name.includes('toit')) {
+                leToit.children[i].visible = false;
+            }
+        }
+    }
+    if (!$("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+        travee.children[indiceRoof].visible = false;
+
+}
+
+
 
 export function retirerObjetModifiable(nomObjet) {
     for (var i = 0; i < objetsModifiables.length; i++) {
@@ -1428,26 +1439,34 @@ $(document).ready(function () {
     $("#transparent-overlay").hide();
     $(".div-aide").addClass("affiche");
 
+    // ATTENTION : bien respecter l'ordre d'appel des méthodes suivantes !!
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();
     initInventaire();
 
-    var travee1 = creerTravee();
-    scene.add(travee1);
-    nbConstructions = 1;
-    hidePignonIncrustations();
-    incrusterCotes();
-
     init();
     displayGui();
-    animate();
-
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('dblclick', onMouseDoubleClick);
     document.addEventListener('click', onMouseClick);
     //    document.addEventListener('mousemove', onMouseMove, false);
 
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+    nbConstructions = nbTravees = 1;
 
+    var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PE");
+    traitementCreationOuverture("Travee 1", nouvelleOuverture);
+
+
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+
+    var nouvelleOuverture = creerOuverture("Travee 2", "AV", "PE+F1");
+    traitementCreationOuverture("Travee 2", nouvelleOuverture);
+
+
+    animate();
 });
 
 
@@ -1455,7 +1474,7 @@ $(document).ready(function () {
 /**********************************************************************************************************/
 
 
-// Ca, c'est pour pouvoir télécharger localement des fichiers.
+// Ca, c'est utilisé pour pouvoir télécharger localement des fichiers.
 var link = document.createElement('a');
 link.style.display = 'none';
 document.body.appendChild(link);
@@ -1467,7 +1486,7 @@ function generate(l = 8) {
     var c = 'abcdefghijknopqrstuvwxyzACDEFGHJKLMNPQRSTUVWXYZ12345679',
         n = c.length,
         /* p : chaîne de caractères spéciaux */
-        p = '+_',
+        p = '_+_',
         o = p.length,
         r = '',
         n = c.length,
@@ -1487,7 +1506,12 @@ function generate(l = 8) {
 }
 
 
+
 function uploadBlob(blob, filename) {
+
+    var myUrl = "http://test.thecoredev.fr";
+    //    var myUrl = "https://devis.thecoredev.fr";
+
     var reader = new FileReader();
     reader.onload = function (event) {
         var fd = {};
@@ -1495,7 +1519,7 @@ function uploadBlob(blob, filename) {
         fd["data"] = event.target.result;
         $.ajax({
             type: 'POST',
-            url: 'http://test.thecoredev.fr',
+            url: myUrl,
             data: fd,
             dataType: 'text'
         }).done(function (data) {
@@ -1533,15 +1557,24 @@ export function exportScene() {
     var reference = generate(12);
     var exporter = new GLTFExporter();
     var options = {
-        trs: true,
+        //        trs: true,
         onlyVisible: false,
         truncateDrawRange: false,
-        embedImages: false
+        embedImages: false // Pour ne pas inclure les textures
     };
     var copieLocale = false;
 
-    // On exporte toute la scène.... on fera le tri à l'import
-    exporter.parse(scene, function (gltf) {
+    var traveesAExporter = new Array();
+    for (var i = 1; i <= nbTravees; i++) {
+        traveesAExporter.push(scene.getObjectByName("Travee " + i));
+
+        if (DEBUG) {
+            log("Export de Travee " + i);
+            log(scene.getObjectByName("Travee " + i));
+        }
+    }
+    // On exporte toutes les travées : inutile de surcharger le fichier
+    exporter.parse(traveesAExporter, function (gltf) {
 
         if (gltf instanceof ArrayBuffer) {
             saveArrayBuffer(gltf, 'scene.glb');
@@ -1550,32 +1583,65 @@ export function exportScene() {
             saveString(output, reference + '_scene.gltf', copieLocale);
 
         }
+
     }, options);
 
     return reference;
 }
 
 
-export function importScene(nomFichier) {
-    var loader = new GLTFLoader();
+function ajouterEnfantsDansGroupe(objetOrigine, groupeParent, appelant) {
 
+    objetOrigine.children.forEach((child) => {
+
+        if (child.type == "Object3D" && (child.name.indexOf('>') != -1) && child.name !== appelant) {
+            var groupeFils = new THREE.Group();
+            var newName = child.name.replace("Travee_", "Travee ");
+            groupeFils.name = newName;
+            ajouterEnfantsDansGroupe(child, groupeFils, child.name);
+            groupeParent.add(groupeFils);
+
+        } else {
+            //            if (child.isMesh) {
+            //                child.castShadow = true;
+            //                child.receiveShadow = true;
+            //            }
+            if (child.isMesh || child.isGroup) {
+                groupeParent.add(child);
+
+                log(child.name + " rajouté dans " + groupeParent.name);
+            }
+        }
+    });
+}
+
+
+export function importScene(nomFichier) {
+
+    //    var myUrl = "https://devis.thecoredev.fr";
+    var myUrl = "http://test.thecoredev.fr";
+
+    var loader = new GLTFLoader();
+    loader.crossOrigin = true;
     loader.load(
-        "http://test.thecoredev.fr/upload/" + nomFichier + "_scene.gltf", //./js/import/scene.gltf",
+        myUrl + "/devis_clients/" + nomFichier + "_scene.gltf",
         function (gltf) {
 
+            // On va d'abord re-créer des groupes pour chaque travée, puis on parcourra ces travées...
+            // Le pb du "traverse" est qu'il parcourt aussi l'objet parent, donc risque de boucle infinie.
+
             gltf.scene.traverse(function (child) {
-                if (child.name.includes('Travee')) {
+
+                if (child.name.includes("Travee_") && child.name.indexOf('>') == -1) {
                     var newName = child.name.replace("Travee_", "Travee ");
-                    child.name = newName;
+                    var groupeTravee = new THREE.Group();
+                    groupeTravee.name = newName;
 
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-
-                    scene.add(child);
+                    ajouterEnfantsDansGroupe(child, groupeTravee, child.name);
+                    scene.add(groupeTravee);
                 }
             });
+
         },
         function (xhr) {
             // called while loading is progressing
@@ -1587,5 +1653,4 @@ export function importScene(nomFichier) {
         }
     );
     incrusterCotes();
-    console.log(scene);
 }

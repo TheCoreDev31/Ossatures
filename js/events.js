@@ -59,7 +59,8 @@ import {
 import {
     supprimerOuverture,
     decalerTravee,
-    creerOuverture
+    creerOuverture,
+    traitementCreationOuverture
 } from "./objects.js"
 
 
@@ -208,6 +209,7 @@ $("#popup-plancher").click(function (e) {
 
             inventaire[ancienSolivage]--;
             inventaire[typeSolivage]++;
+            nbOuvertures++;
 
             tableauTravees[nomTravee].typeSolivage = typeSolivage;
 
@@ -245,7 +247,11 @@ $(".popup-ouverture").click(function (e) {
 
         if ($(e.target).parent().attr('id') != 'PE+F1') {
             nouvelleOuverture = creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id'));
-            scene.add(nouvelleOuverture);
+            traitementCreationOuverture(nomTravee, nouvelleOuverture);
+
+            /*
+            A SUPPRIMER
+            scene.getObjectByName(nomTravee).add(nouvelleOuverture);
 
             // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
             // que l'on vient de créer et afficher l'équivalent en ossature bois.
@@ -283,10 +289,17 @@ $(".popup-ouverture").click(function (e) {
                     scene.getObjectByName(mur).material = material;
                 }
             }
+            */
+
         } else {
 
             // Cas particulier du combo PE + F1 :
             // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
+
+            var ouvertures = creerComboOuvertures(nomTravee, nomFace);
+            traitementCreationOuverture(nomTravee, "PE+F1", ouvertures);
+
+            /*
             var porte = creerOuverture(nomTravee, nomFace, 'PE');
             var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
             modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
@@ -302,10 +315,12 @@ $(".popup-ouverture").click(function (e) {
             tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
             nbOuvertures--;
 
-            scene.add(nouveauGroupe);
-            scene.remove(porte);
+            var laTravee = scene.getObjectByName(nomTravee);
+            laTravee.add(nouveauGroupe);
+            laTravee.remove(porte);
             retirerObjetModifiable(porte.name);
-            scene.remove(fenetre);
+
+            laTravee.remove(fenetre);
             retirerObjetModifiable(fenetre.name);
 
             if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
@@ -315,7 +330,7 @@ $(".popup-ouverture").click(function (e) {
                 var material = MPEF_Material;
                 scene.getObjectByName(mur).material = material;
             }
-
+            */
         }
 
         $(".popup-ouverture").hide();

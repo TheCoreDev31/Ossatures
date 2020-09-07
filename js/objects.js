@@ -13,6 +13,13 @@ import {
     SOLE_2_Material,
     SOLT_Material,
     MPL_Material,
+    MPI_Material,
+    MPE_Material,
+    MF1_Material,
+    MF2_Material,
+    MPF_Material,
+    MPG1_Material,
+    MPG2_Material,
     PEXT_Material,
     PINT_Droite_Material,
     PINT_Gauche_Material,
@@ -22,6 +29,7 @@ import {
 import {
     log,
     alerte,
+    mergeGroups,
     extraireNomTravee,
     extraireFace,
     retirerObjetModifiable,
@@ -30,7 +38,8 @@ import {
     simulerCalculConstructions,
     modifierIncrustation,
     hidePignonIncrustations,
-    incrusterCotes
+    incrusterCotes,
+    restaurerPrefsUtilisateur
 } from "./main.js"
 
 import {
@@ -60,8 +69,20 @@ export function supprimerToutesOuvertures() {
     }
 
     inventaire["MPE"] = inventaire["MPFE"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPF"] = inventaire["MPI"] = 0;
-
     inventaire["MPL"] = nbTravees * 6;
+
+
+    // On supprime également tous les solivages
+    inventaire["SOLP"] = nbTravees;
+    inventaire["SOLE"] = inventaire["SOLT"] = 0;
+    for (var i = 1; i <= nbTravees; i++) {
+        var nomTravee = PREFIXE_TRAVEE + i;
+        tableauTravees[nomTravee].typeSolivage = "SOLP";
+        scene.getObjectByName(nomTravee + ">plancher").material = SOLP_Material;
+        modifierIncrustation(nomTravee, "plancher", "SOLP");
+    }
+
+    nbOuvertures = 0;
 }
 
 export function supprimerOuverture(nomObjet) {
@@ -78,7 +99,9 @@ export function supprimerOuverture(nomObjet) {
     }
 
     // Il faut supprimer l'objet à l'IHM, ainsi que sa référence dans l'incrustation ...
-    scene.remove(objet);
+    scene.getObjectByName(travee).remove(objet);
+    // A SUPPRIMER
+    //    scene.remove(objet);
     modifierIncrustation(travee, face, PRODUITS['MU']['codeModule']);
     nbOuvertures--;
 
@@ -110,6 +133,7 @@ export function supprimerOuverture(nomObjet) {
         log(tableauTravees);
     }
 }
+
 
 export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustation = false) {
 
@@ -249,11 +273,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
             positionZ = -(LONGUEUR_TRAVEE / 4) + decalageX;
             break;
     }
-
-    positionX += tableauTravees[nomTravee]['positionX'];
-    positionZ += tableauTravees[nomTravee]['positionZ'];
     windowGrp.position.set(positionX, positionY, positionZ);
-
 
     // Ne pas oublier de mettre à jour les scores VT de la travée !!!!!
     switch (face) {
@@ -333,21 +353,127 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 }
 
 
+export function creerComboOuvertures(nomTravee, nomFace, forcerIncrustation = false) {
+
+    var ouvertures = new Array();
+
+    var porte = creerOuverture(nomTravee, nomFace, 'PE', forcerIncrustation);
+    var fenetre = creerOuverture(nomTravee, nomFace, 'F1', forcerIncrustation);
+    ouvertures.push(porte);
+    ouvertures.push(fenetres);
+
+    return ouvertures;
+}
+
+
+export function traitementCreationOuverture(nomTravee, nouvelleOuverture, lesOuvertures) {
+
+    var nomOuverture;
+    if (typeof nouvelleOuverture == "string")
+        nomOuverture = nouvelleOuverture;
+    else
+        nomOuverture = nouvelleOuverture.name;
+
+    if (nomOuverture != "PE+F1") {
+
+        // Ouverture hors combo "PE + F1"
+        scene.getObjectByName(nomTravee).add(nouvelleOuverture);
+
+    } else {
+
+        var nomFace = nouvelleOuverture.name.substring(nouvelleOuverture.name.indexOf('>') + 1, nouvelleOuverture.name.lastIndexOf('>'));
+        /*
+                var porte = creerOuverture(nomTravee, nomFace, 'PE');
+                var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
+        */
+        modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
+        inventaire["MF1"]--;
+        inventaire["MPE"]--;
+        inventaire["MPEF"]++;
+
+        var nouveauGroupe = new THREE.Group();
+        nouveauGroupe = mergeGroups(porte, fenetre);
+        nouveauGroupe.name = nomTravee + '>' + nomFace + '>Ouverture ' + 'PE+F1';
+        objetsModifiables.push(nouveauGroupe);
+        tableauTravees[nomTravee]['nb_ouvertures_' + nomFace]--;
+        tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
+        nbOuvertures--;
+
+        var laTravee = scene.getObjectByName(nomTravee);
+        laTravee.add(nouveauGroupe);
+        laTravee.remove(porte);
+        retirerObjetModifiable(porte.name);
+
+        laTravee.remove(fenetre);
+        retirerObjetModifiable(fenetre.name);
+    }
+
+
+    // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
+    // que l'on vient de créer et afficher l'équivalent en ossature bois.
+    if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
+
+        if (nouvelleOuverture.name.indexOf('PE+F1') == -1) {
+
+            var module = nouvelleOuverture.name.substr(nouvelleOuverture.name.lastIndexOf(' ') + 1, nouvelleOuverture.name.length);
+            var mur = nouvelleOuverture.name.substring(0, nouvelleOuverture.name.lastIndexOf('>'));
+            var material;
+
+            if (module == 'PO') {
+                scene.getObjectByName(mur).material = MPI_Material;
+            } else {
+                scene.getObjectByName(nouvelleOuverture.name).visible = false;
+
+                switch (module) {
+                    case "PE":
+                        material = MPE_Material;
+                        break;
+                    case "F1":
+                        material = MF1_Material;
+                        break;
+                    case "F2":
+                        material = MF2_Material;
+                        break;
+                    case "PF":
+                        material = MPF_Material;
+                        break;
+                    case "PG1":
+                        material = MPG1_Material;
+                        break;
+                    case "PG2":
+                        material = MPG2_Material;
+                        break;
+                }
+                scene.getObjectByName(mur).material = material;
+            }
+        } else {
+
+            // Combo PE + F1
+            scene.getObjectByName(nouveauGroupe.name).visible = false;
+
+            var mur = nouveauGroupe.name.substring(0, nouveauGroupe.name.lastIndexOf('>'));
+            var material = MPEF_Material;
+            scene.getObjectByName(mur).material = material;
+        }
+    }
+}
+
+
 export function creerToit(nomTravee) {
-    var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
+    var prefixe = PREFIXE_TRAVEE + nbTravees;
     var roofGrp = new THREE.Group();
     var frontPan = new THREE.Mesh(new THREE.BoxBufferGeometry(LARGEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) * 1.305, 0.2), roofMaterial);
     frontPan.position.set(0, HAUTEUR_TRAVEE, (LONGUEUR_TRAVEE / 2) - 17.5);
     frontPan.rotateX(-degrees_to_radians(55));
     frontPan.castShadow = true;
-    frontPan.name = prefixe + '>toit_excluded';
+    frontPan.name = prefixe + '>toit_front_excluded';
     roofGrp.add(frontPan);
 
     var rearPan = frontPan.clone();
     rearPan.rotateX(2 * degrees_to_radians(55));
     rearPan.position.set(0, HAUTEUR_TRAVEE, -(LONGUEUR_TRAVEE / 2) + 17.5);
     rearPan.castShadow = true;
-    rearPan.name = prefixe + '>toit_excluded';
+    rearPan.name = prefixe + '>toit_back_excluded';
     roofGrp.add(rearPan);
 
     var pignonGeometry = new THREE.Shape();
@@ -382,23 +508,66 @@ export function creerToit(nomTravee) {
 }
 
 
-export function decalerTravee(nomTravee, direction) {
+export function gererDecalageTravee(laNouvelleTravee) {
+
+    if (nbTravees > 1) {
+
+        // Rajout d'une travée -> on décale tout le monde vers la droite (suivant X).
+        laNouvelleTravee.translateX(LARGEUR_TRAVEE / 2 * (nbTravees - 1));
+        tableauTravees[laNouvelleTravee.name]['positionX'] += (LARGEUR_TRAVEE / 2 * (nbTravees - 1));
+        for (var i = nbTravees - 1; i > 0; i--) {
+            var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
+            traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
+            tableauTravees[traveePrecedente.name]['positionX'] -= LARGEUR_TRAVEE / 2;
+        }
+
+        // La travée doit-elle être décalée suivant Z, car une nouvelle travée aura toujours le même décalage que sa voisine de gauche.
+        var decalageVoisineGauche = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
+        if (decalageVoisineGauche != 0) {
+            switch (decalageVoisineGauche) {
+                case 1:
+                    decalerTravee(laNouvelleTravee.name, 'front');
+                    break;
+                default:
+                    decalerTravee(laNouvelleTravee.name, 'back');
+                    break;
+            }
+        }
+
+        // On masque les cloisons de la travée de gauche, ainsi que son pignon droit.
+        var voisineGauche = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
+        voisineGauche.children[indicePDAV].visible = voisineGauche.children[indicePDAR].visible = false;
+        voisineGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+
+        // Le pignon séparant les 2 travées devient un pignon intérieur, donc sélectionnable.
+        laNouvelleTravee.children[indiceToit].children[indicePignonGauche].name = laNouvelleTravee.name + ">PINT";
+        laNouvelleTravee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+    }
+}
+
+
+
+export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
     if (nbTravees <= 1) {
-        alerte("Vous devez avoir plus d'une travée dans votre projet.");
+        if (modeVerbose) {
+            alerte("Vous devez avoir plus d'une travée dans votre projet.");
+        }
         return;
     }
 
-    if (DEBUG) log('Direction demandée = ' + direction + ' - Décalage actuel = ' + tableauTravees[nomTravee]['decalage']);
-
     if ((direction == 'front' && tableauTravees[nomTravee]['decalage'] == 1) ||
         (direction == 'back' && tableauTravees[nomTravee]['decalage'] == -1)) {
-        alerte("Travée déjà décalée dans cette direction.");
+        if (modeVerbose) {
+            alerte("Travée déjà décalée dans cette direction.");
+        }
         return;
     }
 
     if (nbOuvertures > 0) {
-        if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+        if (modeVerbose) {
+            if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+        }
 
         unSelect();
         supprimerToutesOuvertures();
@@ -431,18 +600,24 @@ export function decalerTravee(nomTravee, direction) {
         var nbConstructionSimule = resultatsSimulation[0];
         var nbMaxtravees = resultatsSimulation[1];
         if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
-            alerte("Décalage refusé : nombre maximum de constructions atteint (" + NB_CONSTRUCTIONS_MAXI + ").");
+            if (modeVerbose) {
+                alerte("Décalage refusé : nombre maximum de constructions atteint (" + NB_CONSTRUCTIONS_MAXI + ").");
+            }
             return;
         }
         if (nbMaxtravees > NB_TRAVEES_MAXI) {
-            alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
+            if (modeVerbose) {
+                alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
+            }
             return;
         }
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
             if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
+                if (modeVerbose) {
+                    alerte("Impossible de réaliser un tel décalage.");
+                }
                 return;
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
@@ -479,7 +654,9 @@ export function decalerTravee(nomTravee, direction) {
         if (traveeGauche) {
             var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
             if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] + 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
+                if (modeVerbose) {
+                    alerte("Impossible de réaliser un tel décalage.");
+                }
                 return;
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
@@ -519,7 +696,9 @@ export function decalerTravee(nomTravee, direction) {
         tableauDecalages[numTravee - 1] -= 1;
         var nbConstructionSimule = recalculerConstructions(tableauDecalages);
         if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
-            alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+            if (modeVerbose) {
+                alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+            }
             return;
         }
 
@@ -527,7 +706,9 @@ export function decalerTravee(nomTravee, direction) {
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
             if (Math.abs(decalageTraveeDroite - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
+                if (modeVerbose) {
+                    alerte("Impossible de réaliser un tel décalage.");
+                }
                 return;
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
@@ -562,7 +743,9 @@ export function decalerTravee(nomTravee, direction) {
         if (traveeGauche) {
             var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
             if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
-                alerte("Impossible de réaliser un tel décalage.");
+                if (modeVerbose) {
+                    alerte("Impossible de réaliser un tel décalage.");
+                }
                 return;
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
@@ -606,7 +789,7 @@ export function decalerTravee(nomTravee, direction) {
 }
 
 
-export function creerTravee() {
+export function creerTravee(modeVerbose = true) {
 
     var prefixe = PREFIXE_TRAVEE + (nbTravees + 1);
     tableauTravees[prefixe] = new Array();
@@ -615,8 +798,10 @@ export function creerTravee() {
     recalculerConstructions();
 
     if (nbTravees == (NB_TRAVEES_MAXI * NB_CONSTRUCTIONS_MAXI)) {
-        var message = "Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + " travées pour " + NB_CONSTRUCTIONS_MAXI + " constructions).";
-        alerte(message);
+        if (modeVerbose) {
+            var message = "Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + " travées pour " + NB_CONSTRUCTIONS_MAXI + " constructions).";
+            alerte(message);
+        }
         return;
     }
     nbTravees++;
@@ -800,4 +985,27 @@ export function creerTravee() {
         log(tableauTravees);
     }
     return wallsGrp;
+}
+
+
+export function traitementCreationTravee(travee) {
+
+    scene.add(travee);
+    gererDecalageTravee(travee);
+
+    // On modifie l'incrustation pour les pignons de toiture.
+    if (nbTravees > 1) {
+        modifierIncrustation(travee.name, 'PG', 'PINT', true);
+        var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
+        modifierIncrustation(voisine.name, 'PD', 'PINT', true);
+    }
+    hidePignonIncrustations();
+
+    recalculerConstructions();
+    incrusterCotes();
+
+    // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
+    scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
+
+    restaurerPrefsUtilisateur(nbTravees, travee);
 }

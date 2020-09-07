@@ -1,8 +1,8 @@
 import {
     creerTravee,
     creerOuverture,
-    decalerTravee,
-    supprimerToutesOuvertures
+    supprimerToutesOuvertures,
+    traitementCreationTravee
 } from "./objects.js"
 
 import {
@@ -51,7 +51,8 @@ import {
     redimensionnerIncrustations,
     changerCouleurTextes,
     verifierControlesMetier,
-    modifierIncrustation
+    modifierIncrustation,
+    restaurerPrefsUtilisateur
 } from "./main.js"
 
 import {
@@ -507,10 +508,17 @@ export function displayGui() {
             });
             $("#popup-export").show();
             $("#overlay").show();
+
+            log('Contenu de l\'export');
+            log(scene);
+            log("tableauTravees");
+            log(tableauTravees);
+
         };
 
 
         this.importer = function () {
+
             // Pour demander à l'utilisateur de saisir la référence du devis
             var refDevis = prompt("Veuillez saisir la référence de votre projet :", "scene");
             if (refDevis === null) return;
@@ -520,7 +528,12 @@ export function displayGui() {
             }
 
             importScene(refDevis);
+            incrusterCotes();
             scene.updateMatrixWorld();
+
+            log('scene APRES import');
+            log(scene);
+
         };
 
 
@@ -644,7 +657,7 @@ export function displayGui() {
 
 
             // Génération du rapport PDF
-            jsreport.serverUrl = 'https://boutique-fanny.com:5488';
+            jsreport.serverUrl = 'https://jsreport.thecoredev.fr:5489';
 
             var donneesBrutes = {},
                 modules = new Array(),
@@ -755,61 +768,21 @@ export function displayGui() {
                 }
             }
 
-            // On repasse volontairement en texture classique.
+            // On repasse volontairement en mode avec textures.
             if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('ossatureBois')").click();
 
             var travee = creerTravee();
             if (travee) {
+                traitementCreationTravee(travee);
 
-                // Rajout d'une travée -> on décale suivant X tout le monde vers la gauche.
-                travee.translateX(LARGEUR_TRAVEE / 2 * (nbTravees - 1));
-                tableauTravees[travee.name]['positionX'] += (LARGEUR_TRAVEE / 2 * (nbTravees - 1));
-                for (var i = nbTravees - 1; i > 0; i--) {
-                    var traveePrecedente = scene.getObjectByName(PREFIXE_TRAVEE + i);
-                    traveePrecedente.translateX(-LARGEUR_TRAVEE / 2);
-                    tableauTravees[traveePrecedente.name]['positionX'] -= LARGEUR_TRAVEE / 2;
-                }
+                /*
                 scene.add(travee);
-
-                // A la création d'une travée, on reprend les préférences utilisateur (affichage toit, etc.)
-                if (!$("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked')) {
-                    var leToit = scene.getObjectByName(PREFIXE_TRAVEE + nbTravees + '>Toit');
-                    for (var i = 0; i < leToit.children.length; i++) {
-                        if (leToit.children[i].name.includes('toit')) {
-                            leToit.children[i].visible = false;
-                        }
-                    }
-                }
-                if (!$("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked')) {
-                    travee.children[indiceRoof].visible = false;
-                }
-
-
-                // La travée doit-elle être décalée suivant Z, car une nouvelle travée aura toujours le même décalage que sa voisine de gauche.
-                var decalageVoisine = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
-                if (decalageVoisine != 0) {
-                    switch (decalageVoisine) {
-                        case 1:
-                            decalerTravee(travee.name, 'front');
-                            break;
-                        default:
-                            decalerTravee(travee.name, 'back');
-                            break;
-                    }
-                }
-
-                // On masque les cloisons de la travée de gauche, ainsi que son pignon droit.
-                var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
-                voisine.children[indicePDAV].visible = voisine.children[indicePDAR].visible = false;
-                voisine.children[indiceToit].children[indicePignonDroit].visible = false;
-
-                // Le pignon séparant les 2 travées devient un pignon intérieur, donc sélectionnable.
-                travee.children[indiceToit].children[indicePignonGauche].name = travee.name + ">PINT";
-                travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                gererDecalageTravee(travee);
 
                 // On modifie l'incrustation pour les pignons de toiture.
                 modifierIncrustation(travee.name, 'PG', 'PINT', true);
+                var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
                 modifierIncrustation(voisine.name, 'PD', 'PINT', true);
                 hidePignonIncrustations();
 
@@ -818,6 +791,9 @@ export function displayGui() {
 
                 // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
                 scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
+
+                restaurerPrefsUtilisateur(nbTravees, travee);
+                */
             }
         },
 
