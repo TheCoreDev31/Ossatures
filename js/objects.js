@@ -56,6 +56,7 @@ function degrees_to_radians(degrees) {
 
 export function supprimerToutesOuvertures() {
 
+    // Supprime toutes les ouvertures du projet (fenêtres, solivages, ...), par exemple lors de l'ajout d'une travée ou son décalage.
     var nbObjets = objetsModifiables.length;
 
     var aSupprimer = new Array();
@@ -87,6 +88,7 @@ export function supprimerToutesOuvertures() {
 
 export function supprimerOuverture(nomObjet) {
 
+    // Supprimer une ouverture (hors solivage) bien spécifique, lorsque demandé depuis l'IHM
     var travee = extraireNomTravee(nomObjet);
     var face = extraireFace(nomObjet);
     var objet = scene.getObjectByName(nomObjet);
@@ -360,32 +362,28 @@ export function creerComboOuvertures(nomTravee, nomFace, forcerIncrustation = fa
     var porte = creerOuverture(nomTravee, nomFace, 'PE', forcerIncrustation);
     var fenetre = creerOuverture(nomTravee, nomFace, 'F1', forcerIncrustation);
     ouvertures.push(porte);
-    ouvertures.push(fenetres);
+    ouvertures.push(fenetre);
 
     return ouvertures;
 }
 
 
-export function traitementCreationOuverture(nomTravee, nouvelleOuverture, lesOuvertures) {
+export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
 
     var nomOuverture;
-    if (typeof nouvelleOuverture == "string")
-        nomOuverture = nouvelleOuverture;
-    else
-        nomOuverture = nouvelleOuverture.name;
 
-    if (nomOuverture != "PE+F1") {
+    if (Array.isArray(ouvertures)) nomOuverture = "PE+F1";
+    else nomOuverture = ouvertures.name;
 
-        // Ouverture hors combo "PE + F1"
-        scene.getObjectByName(nomTravee).add(nouvelleOuverture);
+    if (nomOuverture != "PE+F1") { // Ouverture classique, hors combo "PE + F1"
+
+        scene.getObjectByName(nomTravee).add(ouvertures);
 
     } else {
 
-        var nomFace = nouvelleOuverture.name.substring(nouvelleOuverture.name.indexOf('>') + 1, nouvelleOuverture.name.lastIndexOf('>'));
-        /*
-                var porte = creerOuverture(nomTravee, nomFace, 'PE');
-                var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
-        */
+        var porte = ouvertures[0];
+        var fenetre = ouvertures[1];
+
         modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
         inventaire["MF1"]--;
         inventaire["MPE"]--;
@@ -408,12 +406,11 @@ export function traitementCreationOuverture(nomTravee, nouvelleOuverture, lesOuv
         retirerObjetModifiable(fenetre.name);
     }
 
-
     // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
     // que l'on vient de créer et afficher l'équivalent en ossature bois.
     if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
 
-        if (nouvelleOuverture.name.indexOf('PE+F1') == -1) {
+        if (nomOuverture != "PE+F1") {
 
             var module = nouvelleOuverture.name.substr(nouvelleOuverture.name.lastIndexOf(' ') + 1, nouvelleOuverture.name.length);
             var mur = nouvelleOuverture.name.substring(0, nouvelleOuverture.name.lastIndexOf('>'));
@@ -508,6 +505,71 @@ export function creerToit(nomTravee) {
 }
 
 
+export function selectionnerSolivage(nomTravee, solivageChoisi) {
+
+    var plancher = scene.getObjectByName(nomTravee + ">plancher");
+    var ancienMaterial = plancher.material;
+    var ancienSolivage, typeSolivage, decalageIncrustation = 0;
+
+    if (ancienMaterial == SOLP_Material) ancienSolivage = "SOLP";
+    if (ancienMaterial == SOLT_Material) ancienSolivage = "SOLT";
+    if ((ancienMaterial == SOLE_1_Material) || (ancienMaterial == SOLE_2_Material)) ancienSolivage = "SOLE";
+
+    switch (solivageChoisi) {
+        case "plein":
+            typeSolivage = "SOLP";
+            plancher.material = SOLP_Material;
+            break;
+        case "haut-gauche":
+            typeSolivage = "SOLE";
+            plancher.material = SOLE_1_Material;
+            plancher.rotation.z = 0;
+            break;
+        case "haut-droite":
+            typeSolivage = "SOLE";
+            plancher.material = SOLE_2_Material;
+            plancher.rotation.z = 0;
+            break;
+        case "bas-droite":
+            typeSolivage = "SOLE";
+            plancher.material = SOLE_1_Material;
+            plancher.rotation.z = Math.PI;
+            break;
+        case "bas-gauche":
+            typeSolivage = "SOLE";
+            plancher.material = SOLE_2_Material;
+            plancher.rotation.z = Math.PI;
+            break;
+        case "haut-centre":
+            typeSolivage = "SOLT";
+            plancher.material = SOLT_Material;
+            plancher.rotation.z = 0;
+            break;
+        case "bas-centre":
+            typeSolivage = "SOLT";
+            plancher.material = SOLT_Material;
+            plancher.rotation.z = Math.PI;
+            break;
+    }
+    if (solivageChoisi.indexOf("haut") != -1) decalageIncrustation = -1;
+    if (solivageChoisi.indexOf("bas") != -1) decalageIncrustation = 1;
+
+    inventaire[ancienSolivage]--;
+    inventaire[typeSolivage]++;
+    nbOuvertures++;
+
+    tableauTravees[nomTravee].typeSolivage = typeSolivage;
+
+    var positionIncrustation = tableauTravees[nomTravee].positionZ;
+    if (decalageIncrustation < 0) positionIncrustation -= ((LONGUEUR_TRAVEE / 2) - 15);
+    if (decalageIncrustation > 0) positionIncrustation += ((LONGUEUR_TRAVEE / 2) - 15);
+
+    modifierIncrustation(nomTravee, "plancher", typeSolivage);
+    scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
+}
+
+
+
 export function gererDecalageTravee(laNouvelleTravee) {
 
     if (nbTravees > 1) {
@@ -524,14 +586,20 @@ export function gererDecalageTravee(laNouvelleTravee) {
         // La travée doit-elle être décalée suivant Z, car une nouvelle travée aura toujours le même décalage que sa voisine de gauche.
         var decalageVoisineGauche = tableauTravees[PREFIXE_TRAVEE + (nbTravees - 1)]['decalage'];
         if (decalageVoisineGauche != 0) {
+
             switch (decalageVoisineGauche) {
                 case 1:
-                    decalerTravee(laNouvelleTravee.name, 'front');
+                    if (verifierPossibiliteDecalage(laNouvelleTravee.name, 'front')) {
+                        decalerTravee(laNouvelleTravee.name, 'front');
+                    }
                     break;
                 default:
-                    decalerTravee(laNouvelleTravee.name, 'back');
+                    if (verifierPossibiliteDecalage(laNouvelleTravee.name, 'back')) {
+                        decalerTravee(laNouvelleTravee.name, 'back');
+                    }
                     break;
             }
+
         }
 
         // On masque les cloisons de la travée de gauche, ainsi que son pignon droit.
@@ -546,14 +614,14 @@ export function gererDecalageTravee(laNouvelleTravee) {
 }
 
 
+export function verifierPossibiliteDecalage(nomTravee, direction, modeVerbose = true) {
 
-export function decalerTravee(nomTravee, direction, modeVerbose = true) {
-
+    // Avant de décaler une travée, on vérifier les conditions sont remplies.
     if (nbTravees <= 1) {
         if (modeVerbose) {
             alerte("Vous devez avoir plus d'une travée dans votre projet.");
         }
-        return;
+        return false;
     }
 
     if ((direction == 'front' && tableauTravees[nomTravee]['decalage'] == 1) ||
@@ -561,18 +629,26 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
         if (modeVerbose) {
             alerte("Travée déjà décalée dans cette direction.");
         }
-        return;
+        return false;
     }
 
-    if (nbOuvertures > 0) {
-        if (modeVerbose) {
-            if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
-        }
+    return true;
+}
 
-        unSelect();
-        supprimerToutesOuvertures();
-        if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
-            $("span:contains('ossatureBois')").click();
+
+export function decalerTravee(nomTravee, direction, modeVerbose = true) {
+
+    if (modeVerbose) {
+        if (nbOuvertures > 0) {
+            if (modeVerbose) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+            }
+
+            unSelect();
+            supprimerToutesOuvertures();
+            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                $("span:contains('ossatureBois')").click();
+        }
     }
 
     var travee = scene.getObjectByName(nomTravee);

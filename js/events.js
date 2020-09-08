@@ -60,7 +60,10 @@ import {
     supprimerOuverture,
     decalerTravee,
     creerOuverture,
-    traitementCreationOuverture
+    creerComboOuvertures,
+    traitementCreationOuverture,
+    selectionnerSolivage,
+    verifierPossibiliteDecalage
 } from "./objects.js"
 
 
@@ -89,10 +92,16 @@ $(".liste-deroulante").click(function (e) {
             displayOpenings(objetSelectionne, faceInterieureOuExterieure(objetSelectionne));
             break;
         case 'moveFrontTravee':
-            decalerTravee(extraireNomTravee(objetSelectionne), 'front');
+            var nomTravee = extraireNomTravee(objetSelectionne);
+            if (verifierPossibiliteDecalage(nomTravee, 'front')) {
+                decalerTravee(nomTravee, 'front');
+            }
             break;
         case 'moveBackTravee':
-            decalerTravee(extraireNomTravee(objetSelectionne), 'back');
+            var nomTravee = extraireNomTravee(objetSelectionne);
+            if (verifierPossibiliteDecalage(nomTravee, 'back')) {
+                decalerTravee(nomTravee, 'back');
+            }
             break;
         case 'chooseFloorHole':
             chooseFloorHole(extraireNomTravee(objetSelectionne));
@@ -159,6 +168,9 @@ $("#popup-plancher").click(function (e) {
         var solivageChoisi = $(e.target).parent().attr('id');
         var typeSolivage, decalageIncrustation = 0;
 
+        selectionnerSolivage(nomTravee, solivageChoisi);
+
+        /*
         var plancher = scene.getObjectByName(objetSelectionne);
         if (plancher) {
             var ancienMaterial = plancher.material;
@@ -219,7 +231,8 @@ $("#popup-plancher").click(function (e) {
 
             modifierIncrustation(nomTravee, "plancher", typeSolivage);
             scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
-        }
+    }
+    */
 
         $(".popup-ouverture").hide();
         $("#overlay").hide();
@@ -247,7 +260,7 @@ $(".popup-ouverture").click(function (e) {
 
         if ($(e.target).parent().attr('id') != 'PE+F1') {
             nouvelleOuverture = creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id'));
-            traitementCreationOuverture(nomTravee, nouvelleOuverture);
+            traitementCreationOuverture(nomTravee, nomFace, nouvelleOuverture);
 
             /*
             A SUPPRIMER
@@ -297,7 +310,7 @@ $(".popup-ouverture").click(function (e) {
             // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
 
             var ouvertures = creerComboOuvertures(nomTravee, nomFace);
-            traitementCreationOuverture(nomTravee, "PE+F1", ouvertures);
+            traitementCreationOuverture(nomTravee, nomFace, ouvertures);
 
             /*
             var porte = creerOuverture(nomTravee, nomFace, 'PE');

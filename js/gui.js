@@ -52,7 +52,8 @@ import {
     changerCouleurTextes,
     verifierControlesMetier,
     modifierIncrustation,
-    restaurerPrefsUtilisateur
+    restaurerPrefsUtilisateur,
+    importProjet
 } from "./main.js"
 
 import {
@@ -516,6 +517,22 @@ export function displayGui() {
 
         };
 
+
+        this.importerV2 = function () {
+            // Pour demander à l'utilisateur de saisir la référence du devis
+            var refDevis = prompt("Veuillez saisir la référence de votre projet :", "test");
+            if (refDevis === null) return;
+
+            for (var i = 0; i < nbTravees; i++) {
+                scene.remove(scene.getObjectByName(PREFIXE_TRAVEE + parseInt(i + 1)));
+            }
+            nbConstructions = nbTravees = nbOuvertures = 0;
+
+            importProjet("test");
+
+            //            incrusterCotes();
+            scene.updateMatrixWorld();
+        };
 
         this.importer = function () {
 
@@ -1012,6 +1029,7 @@ export function displayGui() {
     guiMisc.add(controller, 'exporter');
     guiMisc.add(controller, 'importer');
     guiMisc.add(controller, 'genererDevis');
+    guiMisc.add(controller, 'importerV2');
     guiMisc.open();
 
 }

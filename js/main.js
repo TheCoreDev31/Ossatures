@@ -26,10 +26,13 @@ import {
 
 import {
     creerOuverture,
+    creerComboOuvertures,
     creerToit,
     creerTravee,
+    decalerTravee,
     traitementCreationTravee,
-    traitementCreationOuverture
+    traitementCreationOuverture,
+    selectionnerSolivage
 } from "./objects.js"
 
 import {
@@ -1428,52 +1431,6 @@ export function recalculerConstructions(tableauDecalages = null) {
 
 /*********************************************************************************************************************************/
 
-$(document).ready(function () {
-
-    $(".popup-ouverture").hide();
-    $("#div-menu-contextuel").hide();
-    $("#vue-aerienne").hide();
-    $("#popup-attente").hide();
-    $("#popup-export").hide();
-    $("#overlay").hide();
-    $("#transparent-overlay").hide();
-    $(".div-aide").addClass("affiche");
-
-    // ATTENTION : bien respecter l'ordre d'appel des méthodes suivantes !!
-    initCaracteristiquesOuvertures();
-    initMatricesScoreVT();
-    initInventaire();
-
-    init();
-    displayGui();
-    window.addEventListener('resize', onWindowResize, false);
-    document.addEventListener('dblclick', onMouseDoubleClick);
-    document.addEventListener('click', onMouseClick);
-    //    document.addEventListener('mousemove', onMouseMove, false);
-
-    var travee = creerTravee();
-    if (travee) traitementCreationTravee(travee);
-    nbConstructions = nbTravees = 1;
-
-    var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PE");
-    traitementCreationOuverture("Travee 1", nouvelleOuverture);
-
-
-    var travee = creerTravee();
-    if (travee) traitementCreationTravee(travee);
-
-    var nouvelleOuverture = creerOuverture("Travee 2", "AV", "PE+F1");
-    traitementCreationOuverture("Travee 2", nouvelleOuverture);
-
-
-    animate();
-});
-
-
-
-/**********************************************************************************************************/
-
-
 // Ca, c'est utilisé pour pouvoir télécharger localement des fichiers.
 var link = document.createElement('a');
 link.style.display = 'none';
@@ -1562,7 +1519,7 @@ export function exportScene() {
         truncateDrawRange: false,
         embedImages: false // Pour ne pas inclure les textures
     };
-    var copieLocale = false;
+    var copieLocale = true;
 
     var traveesAExporter = new Array();
     for (var i = 1; i <= nbTravees; i++) {
@@ -1654,3 +1611,99 @@ export function importScene(nomFichier) {
     );
     incrusterCotes();
 }
+
+
+
+
+
+export function exportProjet() {
+
+}
+
+
+function importer() {
+
+}
+
+export function importProjet(nomFichier) {
+
+    //    var myUrl = "https://devis.thecoredev.fr/devis_clients/";
+    var myUrl = "http://test.thecoredev.fr/devis_clients/";
+    var listeModules = ["AV", "AR", "PGAV", "PGAR", "PDAV", "PDAR"];
+
+    $.getJSON(myUrl + nomFichier + ".json", function (data) {
+
+        // Travée par travée, on regarde s'il faut rajouter des ouvertures, des solivages, ou décaler la travée.
+        for (var i = 0; i < data.projet.length; i++) {
+            var nomTravee = data.projet[i].nom;
+
+            var travee = creerTravee();
+            if (travee) traitementCreationTravee(travee);
+            if (i == 0) nbConstructions = nbTravees = 1;
+
+            if (data.projet[i].decalageZ < 0) decalerTravee(nomTravee, 'back', false);
+            if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
+
+            // Gestion des ouvertures
+            data.projet[i].modules.forEach(function (module) {
+
+                if (module.module == "PE+F1") {
+                    var combo = creerComboOuvertures(nomTravee, module.face);
+                    traitementCreationOuverture(nomTravee, module, combo);
+                } else {
+                    var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
+                    traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
+                }
+
+            });
+        }
+
+    });
+}
+
+
+/**********************************************************************************************************/
+
+
+$(document).ready(function () {
+
+    $(".popup-ouverture").hide();
+    $("#div-menu-contextuel").hide();
+    $("#vue-aerienne").hide();
+    $("#popup-attente").hide();
+    $("#popup-export").hide();
+    $("#overlay").hide();
+    $("#transparent-overlay").hide();
+    $(".div-aide").addClass("affiche");
+
+    // ATTENTION : bien respecter l'ordre d'appel des méthodes suivantes !!
+    initCaracteristiquesOuvertures();
+    initMatricesScoreVT();
+    initInventaire();
+
+    init();
+    displayGui();
+    window.addEventListener('resize', onWindowResize, false);
+    document.addEventListener('dblclick', onMouseDoubleClick);
+    document.addEventListener('click', onMouseClick);
+    //    document.addEventListener('mousemove', onMouseMove, false);
+
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+    nbConstructions = nbTravees = 1;
+
+
+    var nouvelleOuverture = creerOuverture("Travee 1", "PDAV", "PE");
+    traitementCreationOuverture("Travee 1", "PGAV", nouvelleOuverture);
+
+    /*
+    var combo = creerComboOuvertures("Travee 2", "AV");
+    traitementCreationOuverture("Travee 2", "AV", combo);
+
+    var nouvelleOuverture = creerOuverture("Travee 2", "PGAV", "PO");
+    traitementCreationOuverture("Travee 2", "PGAV", nouvelleOuverture);
+*/
+    selectionnerSolivage("Travee 1", "bas-centre");
+
+    animate();
+});
