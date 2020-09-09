@@ -267,12 +267,12 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
         case 'PDAV':
             windowGrp.rotation.y = Math.PI / 2;
             positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = (LONGUEUR_TRAVEE / 4) + decalageX;
+            positionZ = (LONGUEUR_TRAVEE / 4) - decalageX;
             break;
         case 'PDAR':
             windowGrp.rotation.y = Math.PI / 2;
             positionX = (LARGEUR_TRAVEE / 2) - (epaisseur / 2) + 0.5;
-            positionZ = -(LONGUEUR_TRAVEE / 4) + decalageX;
+            positionZ = -(LONGUEUR_TRAVEE / 4) - decalageX;
             break;
     }
     windowGrp.position.set(positionX, positionY, positionZ);

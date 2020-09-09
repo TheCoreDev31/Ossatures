@@ -626,7 +626,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['elevation'] = 14.8;
     PRODUITS['F1']['interieur'] = false;
     PRODUITS['F1']['exterieur'] = true;
-    PRODUITS['F1']['decalageX'] = -8.8;
+    PRODUITS['F1']['decalageX'] = 8.8;
     PRODUITS['F1']['codeModule'] = 'MF1';
     PRODUITS['F1']['categorie'] = 'Fenêtre';
     PRODUITS['F1']['libelleModule'] = 'Fenêtre 45x65';
@@ -1510,6 +1510,7 @@ function saveArrayBuffer(buffer, filename) {
 }
 */
 
+/*
 export function exportScene() {
     var reference = generate(12);
     var exporter = new GLTFExporter();
@@ -1572,7 +1573,6 @@ function ajouterEnfantsDansGroupe(objetOrigine, groupeParent, appelant) {
     });
 }
 
-
 export function importScene(nomFichier) {
 
     //    var myUrl = "https://devis.thecoredev.fr";
@@ -1611,29 +1611,109 @@ export function importScene(nomFichier) {
     );
     incrusterCotes();
 }
-
-
-
+*/
 
 
 export function exportProjet() {
 
+    /*
+    
+    {
+    "projet": [
+        {
+            "nom": "Travee 1",
+            "solivage": "bas-centre",
+            "decalageZ": 0,
+            "modules": [
+                {
+                    "face": "AV",
+                    "module": "PE"
+        },
+                {
+                    "face": "PGAR",
+                    "module": "F1"
+        }
+      ]
+    },
+        {
+            "nom": "Travee 2",
+            "solivage": "haut-gauche",
+            "decalageZ": -1,
+            "modules": [
+                {
+                    "face": "PDAV",
+                    "module": "F2"
+        }
+      ]
+    }
+      ,
+        {
+            "nom": "Travee 3",
+            "solivage": "plein",
+            "decalageZ": -1,
+            "modules": [
+                {
+                    "face": "AV",
+                    "module": "PF"
+        }
+      ]
+    }
+  ]
 }
 
+    
+    */
+    var copieLocale = true;
+    var reference = generate(12);
 
-function importer() {
+    var exportJson = '{ "projet" : [';
 
+    for (var travee in tableauTravees) {
+        var traveeEnCours = '';
+        traveeEnCours += '{ "nom": "' + tableauTravees[travee].nom + '",';
+        traveeEnCours += '  "solivage": "' + tableauTravees[travee].typeSolivage + '",';
+        traveeEnCours += '  "decalageZ": ' + tableauTravees[travee].decalage + ',';
+        traveeEnCours += '  "modules": [';
+
+        var laTravee = scene.getObjectByName(tableauTravees[travee].nom);
+
+        laTravee.children.forEach(function (child) {
+            if (child.name.includes(">Ouverture")) {
+                if (child.name.lastIndexOf('>') < child.name.indexOf("Ouverture")) {
+                    var leModule = child.name.substr(child.name.indexOf("Ouverture ") + "Ouverture ".length);
+                    var laFace = child.name.substring(child.name.indexOf(">") + 1, child.name.lastIndexOf(">"));
+                    traveeEnCours += '{ "face": "' + laFace + '",';
+                    traveeEnCours += '"module": "' + leModule + '" }';
+                    traveeEnCours += ', ';
+                }
+            }
+        });
+        // Il faut virer la dernière virgule
+        traveeEnCours = traveeEnCours.slice(0, traveeEnCours.length - 1);
+        traveeEnCours += '] },';
+
+        exportJson += traveeEnCours;
+    };
+    exportJson = exportJson.slice(0, exportJson.length - 1);
+    exportJson += ']}';
+
+    log(exportJson);
+
+    //    saveString(output, reference + '.json', copieLocale);
+
+    return reference;
 }
+
 
 export function importProjet(nomFichier) {
 
     //    var myUrl = "https://devis.thecoredev.fr/devis_clients/";
     var myUrl = "http://test.thecoredev.fr/devis_clients/";
-    var listeModules = ["AV", "AR", "PGAV", "PGAR", "PDAV", "PDAR"];
 
     $.getJSON(myUrl + nomFichier + ".json", function (data) {
 
-        // Travée par travée, on regarde s'il faut rajouter des ouvertures, des solivages, ou décaler la travée.
+        // Première passe pour créer (et décaler éventuellement) les travées...
+        var decalagePrecedent = 0;
         for (var i = 0; i < data.projet.length; i++) {
             var nomTravee = data.projet[i].nom;
 
@@ -1641,23 +1721,30 @@ export function importProjet(nomFichier) {
             if (travee) traitementCreationTravee(travee);
             if (i == 0) nbConstructions = nbTravees = 1;
 
-            if (data.projet[i].decalageZ < 0) decalerTravee(nomTravee, 'back', false);
-            if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
+            if (data.projet[i].decalageZ != decalagePrecedent) {
+                if (data.projet[i].decalageZ < 0) decalerTravee(nomTravee, 'back', false);
+                if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
+                decalagePrecedent = data.projet[i].decalageZ;
+            }
+        }
 
-            // Gestion des ouvertures
+        // ...puis on rajoute les ouvertures et les solivages.
+        for (var i = 0; i < data.projet.length; i++) {
+
             data.projet[i].modules.forEach(function (module) {
 
-                if (module.module == "PE+F1") {
+                var nomTravee = data.projet[i].nom;
+
+                if (module.module === "PE+F1") {
                     var combo = creerComboOuvertures(nomTravee, module.face);
                     traitementCreationOuverture(nomTravee, module, combo);
                 } else {
                     var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
                     traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
                 }
-
+                selectionnerSolivage(nomTravee, data.projet[i].solivage);
             });
         }
-
     });
 }
 

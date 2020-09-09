@@ -38,8 +38,6 @@ import {
     extraireFace,
     extraireNomTravee,
     verifierContraintes,
-    importScene,
-    exportScene,
     showMainIncrustations,
     hideMainIncrustations,
     showPignonIncrustations,
@@ -53,7 +51,8 @@ import {
     verifierControlesMetier,
     modifierIncrustation,
     restaurerPrefsUtilisateur,
-    importProjet
+    importProjet,
+    exportProjet
 } from "./main.js"
 
 import {
@@ -499,7 +498,7 @@ export function displayGui() {
 
         this.exporter = function () {
             scene.updateMatrixWorld();
-            var reference = exportScene();
+            //            var reference = exportScene();
             var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
 
             $("#popup-export span.texte").html(texteFinal);
@@ -518,7 +517,23 @@ export function displayGui() {
         };
 
 
-        this.importerV2 = function () {
+        this.exporterCeProjet = function () {
+            scene.updateMatrixWorld();
+
+            var reference = exportProjet();
+
+            var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
+            $("#popup-export span.texte").html(texteFinal);
+            $("#popup-export").css({
+                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
+                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
+            });
+            $("#popup-export").show();
+            $("#overlay").show();
+        };
+
+
+        this.importerUnProjet = function () {
             // Pour demander à l'utilisateur de saisir la référence du devis
             var refDevis = prompt("Veuillez saisir la référence de votre projet :", "test");
             if (refDevis === null) return;
@@ -528,11 +543,15 @@ export function displayGui() {
             }
             nbConstructions = nbTravees = nbOuvertures = 0;
 
-            importProjet("test");
-
-            //            incrusterCotes();
+            importProjet(refDevis);
+            incrusterCotes();
             scene.updateMatrixWorld();
+
+            log('scene APRES import');
+            log(scene);
+
         };
+
 
         this.importer = function () {
 
@@ -544,7 +563,7 @@ export function displayGui() {
                 scene.remove(scene.getObjectByName(PREFIXE_TRAVEE + parseInt(i + 1)));
             }
 
-            importScene(refDevis);
+            //            importScene(refDevis);
             incrusterCotes();
             scene.updateMatrixWorld();
 
@@ -1029,7 +1048,8 @@ export function displayGui() {
     guiMisc.add(controller, 'exporter');
     guiMisc.add(controller, 'importer');
     guiMisc.add(controller, 'genererDevis');
-    guiMisc.add(controller, 'importerV2');
+    guiMisc.add(controller, 'importerUnProjet');
+    guiMisc.add(controller, 'exporterCeProjet');
     guiMisc.open();
 
 }
