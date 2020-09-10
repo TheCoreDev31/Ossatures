@@ -41,6 +41,14 @@ import {
     createText,
 } from "./materials.js"
 
+
+
+// Quelques variables globales
+var URL_DEVIS = "http://test.thecoredev.fr";
+//var URL_DEVIS = "https://devis.thecoredev.fr";
+
+
+
 // Fonctions communes
 function render() {
 
@@ -437,7 +445,10 @@ export function modifierIncrustation(travee, face, remplacant = false, visibilit
 
             if (remplacant) {
                 groupe.remove(groupe.children[i]);
+
+                if (remplacant.indexOf('_') != -1) remplacant = remplacant.slice(0, remplacant.indexOf('_'));
                 var nouvelleIncrustation = createText(remplacant, taillePoliceIncrustations);
+
                 nouvelleIncrustation.rotation.x = -Math.PI / 2;
                 nouvelleIncrustation.position.set(positionX, positionY, positionZ);
                 nouvelleIncrustation.name = travee + ">" + face + ">Incrustation";
@@ -480,7 +491,6 @@ export function redimensionnerIncrustations() {
 
             travee = scene.getObjectByName(nomTravee);
             travee.remove(child);
-
 
             nouveauTexte.name = item;
             nouveauTexte.position.set(posX, posY, posZ);
@@ -584,7 +594,7 @@ export function mergeGroups(porte, fenetre) {
 function initInventaire() {
     inventaire["MPL"] = inventaire["MPE"] = inventaire["MPF"] = inventaire["MPEF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPI"] = 0;
 
-    inventaire["CH1T"] = inventaire["CH2T"] = 0;
+    inventaire["CH1T"] = inventaire["CHTS"] = 0;
 
     inventaire["SOLP"] = inventaire["SOLE"] = inventaire["SOLT"] = 0;
 
@@ -734,11 +744,11 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['CH1T']['libelleModule'] = 'Charpente principale';
     PRODUITS['CH1T']['cout'] = 0;
 
-    PRODUITS['CH2T'] = new Array();
-    PRODUITS['CH2T']['codeModule'] = 'CH2T';
-    PRODUITS['CH2T']['categorie'] = 'Charpente';
-    PRODUITS['CH2T']['libelleModule'] = 'Charpente complémentaire';
-    PRODUITS['CH2T']['cout'] = 0;
+    PRODUITS['CHTS'] = new Array();
+    PRODUITS['CHTS']['codeModule'] = 'CHTS';
+    PRODUITS['CHTS']['categorie'] = 'Charpente';
+    PRODUITS['CHTS']['libelleModule'] = 'Charpente complémentaire';
+    PRODUITS['CHTS']['cout'] = 0;
 
     PRODUITS['SOLP'] = new Array();
     PRODUITS['SOLP']['codeModule'] = 'SOLP';
@@ -1011,6 +1021,8 @@ export function extraireFace(objet) {
 export function verifierControlesMetier() {
 
     var controlesOK = true;
+
+    log(inventaire);
 
     // Tout projet doit comporter une et une seule trappe par construction
     if ((inventaire["SOLE"] + inventaire["SOLT"]) != nbConstructions) {
@@ -1466,9 +1478,6 @@ function generate(l = 8) {
 
 function uploadBlob(blob, filename) {
 
-    var myUrl = "http://test.thecoredev.fr";
-    //    var myUrl = "https://devis.thecoredev.fr";
-
     var reader = new FileReader();
     reader.onload = function (event) {
         var fd = {};
@@ -1476,7 +1485,7 @@ function uploadBlob(blob, filename) {
         fd["data"] = event.target.result;
         $.ajax({
             type: 'POST',
-            url: myUrl,
+            url: URL_DEVIS,
             data: fd,
             dataType: 'text'
         }).done(function (data) {
@@ -1510,162 +1519,11 @@ function saveArrayBuffer(buffer, filename) {
 }
 */
 
-/*
-export function exportScene() {
-    var reference = generate(12);
-    var exporter = new GLTFExporter();
-    var options = {
-        //        trs: true,
-        onlyVisible: false,
-        truncateDrawRange: false,
-        embedImages: false // Pour ne pas inclure les textures
-    };
-    var copieLocale = true;
-
-    var traveesAExporter = new Array();
-    for (var i = 1; i <= nbTravees; i++) {
-        traveesAExporter.push(scene.getObjectByName("Travee " + i));
-
-        if (DEBUG) {
-            log("Export de Travee " + i);
-            log(scene.getObjectByName("Travee " + i));
-        }
-    }
-    // On exporte toutes les travées : inutile de surcharger le fichier
-    exporter.parse(traveesAExporter, function (gltf) {
-
-        if (gltf instanceof ArrayBuffer) {
-            saveArrayBuffer(gltf, 'scene.glb');
-        } else {
-            var output = JSON.stringify(gltf, null, 2);
-            saveString(output, reference + '_scene.gltf', copieLocale);
-
-        }
-
-    }, options);
-
-    return reference;
-}
-
-
-function ajouterEnfantsDansGroupe(objetOrigine, groupeParent, appelant) {
-
-    objetOrigine.children.forEach((child) => {
-
-        if (child.type == "Object3D" && (child.name.indexOf('>') != -1) && child.name !== appelant) {
-            var groupeFils = new THREE.Group();
-            var newName = child.name.replace("Travee_", "Travee ");
-            groupeFils.name = newName;
-            ajouterEnfantsDansGroupe(child, groupeFils, child.name);
-            groupeParent.add(groupeFils);
-
-        } else {
-            //            if (child.isMesh) {
-            //                child.castShadow = true;
-            //                child.receiveShadow = true;
-            //            }
-            if (child.isMesh || child.isGroup) {
-                groupeParent.add(child);
-
-                log(child.name + " rajouté dans " + groupeParent.name);
-            }
-        }
-    });
-}
-
-export function importScene(nomFichier) {
-
-    //    var myUrl = "https://devis.thecoredev.fr";
-    var myUrl = "http://test.thecoredev.fr";
-
-    var loader = new GLTFLoader();
-    loader.crossOrigin = true;
-    loader.load(
-        myUrl + "/devis_clients/" + nomFichier + "_scene.gltf",
-        function (gltf) {
-
-            // On va d'abord re-créer des groupes pour chaque travée, puis on parcourra ces travées...
-            // Le pb du "traverse" est qu'il parcourt aussi l'objet parent, donc risque de boucle infinie.
-
-            gltf.scene.traverse(function (child) {
-
-                if (child.name.includes("Travee_") && child.name.indexOf('>') == -1) {
-                    var newName = child.name.replace("Travee_", "Travee ");
-                    var groupeTravee = new THREE.Group();
-                    groupeTravee.name = newName;
-
-                    ajouterEnfantsDansGroupe(child, groupeTravee, child.name);
-                    scene.add(groupeTravee);
-                }
-            });
-
-        },
-        function (xhr) {
-            // called while loading is progressing
-            console.log((xhr.loaded / xhr.total * 100) + '% chargés');
-        },
-        function (error) {
-            // called when loading has errors
-            console.log('Une erreur est survenue : ' + error.stack);
-        }
-    );
-    incrusterCotes();
-}
-*/
-
 
 export function exportProjet() {
 
-    /*
-    
-    {
-    "projet": [
-        {
-            "nom": "Travee 1",
-            "solivage": "bas-centre",
-            "decalageZ": 0,
-            "modules": [
-                {
-                    "face": "AV",
-                    "module": "PE"
-        },
-                {
-                    "face": "PGAR",
-                    "module": "F1"
-        }
-      ]
-    },
-        {
-            "nom": "Travee 2",
-            "solivage": "haut-gauche",
-            "decalageZ": -1,
-            "modules": [
-                {
-                    "face": "PDAV",
-                    "module": "F2"
-        }
-      ]
-    }
-      ,
-        {
-            "nom": "Travee 3",
-            "solivage": "plein",
-            "decalageZ": -1,
-            "modules": [
-                {
-                    "face": "AV",
-                    "module": "PF"
-        }
-      ]
-    }
-  ]
-}
-
-    
-    */
-    var copieLocale = true;
+    var copieLocale = false;
     var reference = generate(12);
-
     var exportJson = '{ "projet" : [';
 
     for (var travee in tableauTravees) {
@@ -1684,7 +1542,7 @@ export function exportProjet() {
                     var laFace = child.name.substring(child.name.indexOf(">") + 1, child.name.lastIndexOf(">"));
                     traveeEnCours += '{ "face": "' + laFace + '",';
                     traveeEnCours += '"module": "' + leModule + '" }';
-                    traveeEnCours += ', ';
+                    traveeEnCours += ',';
                 }
             }
         });
@@ -1697,9 +1555,10 @@ export function exportProjet() {
     exportJson = exportJson.slice(0, exportJson.length - 1);
     exportJson += ']}';
 
+
     log(exportJson);
 
-    //    saveString(output, reference + '.json', copieLocale);
+    saveString(exportJson, reference + '.json', copieLocale);
 
     return reference;
 }
@@ -1707,10 +1566,7 @@ export function exportProjet() {
 
 export function importProjet(nomFichier) {
 
-    //    var myUrl = "https://devis.thecoredev.fr/devis_clients/";
-    var myUrl = "http://test.thecoredev.fr/devis_clients/";
-
-    $.getJSON(myUrl + nomFichier + ".json", function (data) {
+    $.getJSON(URL_DEVIS + "/devis_clients/" + nomFichier + ".json", function (data) {
 
         // Première passe pour créer (et décaler éventuellement) les travées...
         var decalagePrecedent = 0;
@@ -1775,21 +1631,15 @@ $(document).ready(function () {
     document.addEventListener('click', onMouseClick);
     //    document.addEventListener('mousemove', onMouseMove, false);
 
+
+    // Création d'un projet de base
     var travee = creerTravee();
     if (travee) traitementCreationTravee(travee);
     nbConstructions = nbTravees = 1;
 
+    var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
+    traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
 
-    var nouvelleOuverture = creerOuverture("Travee 1", "PDAV", "PE");
-    traitementCreationOuverture("Travee 1", "PGAV", nouvelleOuverture);
-
-    /*
-    var combo = creerComboOuvertures("Travee 2", "AV");
-    traitementCreationOuverture("Travee 2", "AV", combo);
-
-    var nouvelleOuverture = creerOuverture("Travee 2", "PGAV", "PO");
-    traitementCreationOuverture("Travee 2", "PGAV", nouvelleOuverture);
-*/
     selectionnerSolivage("Travee 1", "bas-centre");
 
     animate();

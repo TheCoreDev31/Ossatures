@@ -170,70 +170,6 @@ $("#popup-plancher").click(function (e) {
 
         selectionnerSolivage(nomTravee, solivageChoisi);
 
-        /*
-        var plancher = scene.getObjectByName(objetSelectionne);
-        if (plancher) {
-            var ancienMaterial = plancher.material;
-            var ancienSolivage;
-
-            if (ancienMaterial == SOLP_Material) ancienSolivage = "SOLP";
-            if (ancienMaterial == SOLT_Material) ancienSolivage = "SOLT";
-            if ((ancienMaterial == SOLE_1_Material) || (ancienMaterial == SOLE_2_Material)) ancienSolivage = "SOLE";
-
-            switch (solivageChoisi) {
-                case "plein":
-                    typeSolivage = "SOLP";
-                    plancher.material = SOLP_Material;
-                    break;
-                case "haut-gauche":
-                    typeSolivage = "SOLE";
-                    plancher.material = SOLE_1_Material;
-                    plancher.rotation.z = 0;
-                    break;
-                case "haut-droite":
-                    typeSolivage = "SOLE";
-                    plancher.material = SOLE_2_Material;
-                    plancher.rotation.z = 0;
-                    break;
-                case "bas-droite":
-                    typeSolivage = "SOLE";
-                    plancher.material = SOLE_1_Material;
-                    plancher.rotation.z = Math.PI;
-                    break;
-                case "bas-gauche":
-                    typeSolivage = "SOLE";
-                    plancher.material = SOLE_2_Material;
-                    plancher.rotation.z = Math.PI;
-                    break;
-                case "haut-centre":
-                    typeSolivage = "SOLT";
-                    plancher.material = SOLT_Material;
-                    plancher.rotation.z = 0;
-                    break;
-                case "bas-centre":
-                    typeSolivage = "SOLT";
-                    plancher.material = SOLT_Material;
-                    plancher.rotation.z = Math.PI;
-                    break;
-            }
-            if (solivageChoisi.indexOf("haut") != -1) decalageIncrustation = -1;
-            if (solivageChoisi.indexOf("bas") != -1) decalageIncrustation = 1;
-
-            inventaire[ancienSolivage]--;
-            inventaire[typeSolivage]++;
-            nbOuvertures++;
-
-            tableauTravees[nomTravee].typeSolivage = typeSolivage;
-
-            var positionIncrustation = tableauTravees[nomTravee].positionZ;
-            if (decalageIncrustation < 0) positionIncrustation -= ((LONGUEUR_TRAVEE / 2) - 15);
-            if (decalageIncrustation > 0) positionIncrustation += ((LONGUEUR_TRAVEE / 2) - 15);
-
-            modifierIncrustation(nomTravee, "plancher", typeSolivage);
-            scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
-    }
-    */
-
         $(".popup-ouverture").hide();
         $("#overlay").hide();
         unSelect();
@@ -262,88 +198,12 @@ $(".popup-ouverture").click(function (e) {
             nouvelleOuverture = creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id'));
             traitementCreationOuverture(nomTravee, nomFace, nouvelleOuverture);
 
-            /*
-            A SUPPRIMER
-            scene.getObjectByName(nomTravee).add(nouvelleOuverture);
-
-            // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
-            // que l'on vient de créer et afficher l'équivalent en ossature bois.
-            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
-
-                var module = nouvelleOuverture.name.substr(nouvelleOuverture.name.lastIndexOf(' ') + 1, nouvelleOuverture.name.length);
-                var mur = nouvelleOuverture.name.substring(0, nouvelleOuverture.name.lastIndexOf('>'));
-                var material;
-
-                if (module == 'PO') {
-                    scene.getObjectByName(mur).material = MPI_Material;
-                } else {
-                    scene.getObjectByName(nouvelleOuverture.name).visible = false;
-
-                    switch (module) {
-                        case "PE":
-                            material = MPE_Material;
-                            break;
-                        case "F1":
-                            material = MF1_Material;
-                            break;
-                        case "F2":
-                            material = MF2_Material;
-                            break;
-                        case "PF":
-                            material = MPF_Material;
-                            break;
-                        case "PG1":
-                            material = MPG1_Material;
-                            break;
-                        case "PG2":
-                            material = MPG2_Material;
-                            break;
-                    }
-                    scene.getObjectByName(mur).material = material;
-                }
-            }
-            */
-
         } else {
 
             // Cas particulier du combo PE + F1 :
             // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
-
             var ouvertures = creerComboOuvertures(nomTravee, nomFace);
             traitementCreationOuverture(nomTravee, nomFace, ouvertures);
-
-            /*
-            var porte = creerOuverture(nomTravee, nomFace, 'PE');
-            var fenetre = creerOuverture(nomTravee, nomFace, 'F1');
-            modifierIncrustation(nomTravee, nomFace, PRODUITS['PE+F1']['codeModule'])
-            inventaire["MF1"]--;
-            inventaire["MPE"]--;
-            inventaire["MPEF"]++;
-
-            var nouveauGroupe = new THREE.Group();
-            nouveauGroupe = mergeGroups(porte, fenetre);
-            nouveauGroupe.name = nomTravee + '>' + nomFace + '>Ouverture ' + 'PE+F1';
-            objetsModifiables.push(nouveauGroupe);
-            tableauTravees[nomTravee]['nb_ouvertures_' + nomFace]--;
-            tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
-            nbOuvertures--;
-
-            var laTravee = scene.getObjectByName(nomTravee);
-            laTravee.add(nouveauGroupe);
-            laTravee.remove(porte);
-            retirerObjetModifiable(porte.name);
-
-            laTravee.remove(fenetre);
-            retirerObjetModifiable(fenetre.name);
-
-            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
-                scene.getObjectByName(nouveauGroupe.name).visible = false;
-
-                var mur = nouveauGroupe.name.substring(0, nouveauGroupe.name.lastIndexOf('>'));
-                var material = MPEF_Material;
-                scene.getObjectByName(mur).material = material;
-            }
-            */
         }
 
         $(".popup-ouverture").hide();
@@ -439,6 +299,19 @@ $("#popup-export-button").click(function (e) {
     $("#overlay").hide();
 });
 
+
+
+
+/*    Petit easter-egg : le double-clic sur le logo Maninghem affiche des logs complètes dans la console  */
+$(".image-logo").dblclick(function (e) {
+    e.stopImmediatePropagation();
+    log("tableauTravees[] = ");
+    log(tableauTravees);
+    log("inventaire[] = ");
+    log(inventaire);
+    log("objetsModifiables[] = ");
+    log(objetsModifiables);
+});
 
 
 /****************************************************************************************************************/

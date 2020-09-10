@@ -495,31 +495,9 @@ export function displayGui() {
         this.afficherCotes = true;
         this.ossatureBois = false;
 
-
-        this.exporter = function () {
-            scene.updateMatrixWorld();
-            //            var reference = exportScene();
-            var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
-
-            $("#popup-export span.texte").html(texteFinal);
-            $("#popup-export").css({
-                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
-                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
-            });
-            $("#popup-export").show();
-            $("#overlay").show();
-
-            log('Contenu de l\'export');
-            log(scene);
-            log("tableauTravees");
-            log(tableauTravees);
-
-        };
-
-
         this.exporterCeProjet = function () {
-            scene.updateMatrixWorld();
 
+            scene.updateMatrixWorld();
             var reference = exportProjet();
 
             var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
@@ -543,33 +521,13 @@ export function displayGui() {
             }
             nbConstructions = nbTravees = nbOuvertures = 0;
 
+            // Il faut aussi vider les tableaux utilisés par le système
+            objetsModifiables = new Array;
+            inventaire = new Array();
+
             importProjet(refDevis);
             incrusterCotes();
             scene.updateMatrixWorld();
-
-            log('scene APRES import');
-            log(scene);
-
-        };
-
-
-        this.importer = function () {
-
-            // Pour demander à l'utilisateur de saisir la référence du devis
-            var refDevis = prompt("Veuillez saisir la référence de votre projet :", "scene");
-            if (refDevis === null) return;
-
-            for (var i = 0; i < nbTravees; i++) {
-                scene.remove(scene.getObjectByName(PREFIXE_TRAVEE + parseInt(i + 1)));
-            }
-
-            //            importScene(refDevis);
-            incrusterCotes();
-            scene.updateMatrixWorld();
-
-            log('scene APRES import');
-            log(scene);
-
         };
 
 
@@ -706,7 +664,7 @@ export function displayGui() {
 
 
             // C'est ici qu'on calcule le nombre de charpentes et de pignons : c'est plus simple.
-            inventaire["CH1T"] = inventaire["CH2T"] = inventaire["PEXT"] = inventaire["PINT"] = 0;
+            inventaire["CH1T"] = inventaire["CHTS"] = inventaire["PEXT"] = inventaire["PINT"] = 0;
             for (var travee in tableauTravees) {
                 var numTraveeSuivante = parseInt(travee.substr(travee.indexOf(" ") + 1)) + 1;
                 var traveeSuivante = tableauTravees["Travee " + numTraveeSuivante];
@@ -723,7 +681,7 @@ export function displayGui() {
                     } else {
                         // Il existe une autre travée dans la même construction
                         inventaire["PINT"]++;
-                        inventaire["CH2T"]++;
+                        inventaire["CHTS"]++;
                     }
                 } else {
                     inventaire["PEXT"]++;
@@ -887,7 +845,7 @@ export function displayGui() {
     guitravees.open();
 
 
-    var guiEnv = myGui.addFolder("Réglages d'affichage");
+    var guiEnv = myGui.addFolder("Préférences d'affichage");
 
     guiEnv.add(controller, 'afficherToit').onChange(function (actif) {
 
@@ -1043,13 +1001,10 @@ export function displayGui() {
     guiEnv.open();
 
 
-    var guiMisc = myGui.addFolder("Divers");
-
-    guiMisc.add(controller, 'exporter');
-    guiMisc.add(controller, 'importer');
+    var guiMisc = myGui.addFolder("Diverses actions");
     guiMisc.add(controller, 'genererDevis');
-    guiMisc.add(controller, 'importerUnProjet');
     guiMisc.add(controller, 'exporterCeProjet');
+    guiMisc.add(controller, 'importerUnProjet');
     guiMisc.open();
 
 }

@@ -69,7 +69,7 @@ export function supprimerToutesOuvertures() {
         supprimerOuverture(aSupprimer[i]);
     }
 
-    inventaire["MPE"] = inventaire["MPFE"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPF"] = inventaire["MPI"] = 0;
+    inventaire["MPE"] = inventaire["MPF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPEF"] = inventaire["MPI"] = 0;
     inventaire["MPL"] = nbTravees * 6;
 
 
@@ -102,8 +102,6 @@ export function supprimerOuverture(nomObjet) {
 
     // Il faut supprimer l'objet à l'IHM, ainsi que sa référence dans l'incrustation ...
     scene.getObjectByName(travee).remove(objet);
-    // A SUPPRIMER
-    //    scene.remove(objet);
     modifierIncrustation(travee, face, PRODUITS['MU']['codeModule']);
     nbOuvertures--;
 
@@ -509,44 +507,44 @@ export function selectionnerSolivage(nomTravee, solivageChoisi) {
 
     var plancher = scene.getObjectByName(nomTravee + ">plancher");
     var ancienMaterial = plancher.material;
-    var ancienSolivage, typeSolivage, decalageIncrustation = 0;
+    var ancienSolivage, familleSolivage, decalageIncrustation = 0;
 
     if (ancienMaterial == SOLP_Material) ancienSolivage = "SOLP";
     if (ancienMaterial == SOLT_Material) ancienSolivage = "SOLT";
     if ((ancienMaterial == SOLE_1_Material) || (ancienMaterial == SOLE_2_Material)) ancienSolivage = "SOLE";
 
     switch (solivageChoisi) {
-        case "plein":
-            typeSolivage = "SOLP";
+        case "SOLP":
+            familleSolivage = "SOLP";
             plancher.material = SOLP_Material;
             break;
-        case "haut-gauche":
-            typeSolivage = "SOLE";
+        case "SOLE_hg":
+            familleSolivage = "SOLE";
             plancher.material = SOLE_1_Material;
             plancher.rotation.z = 0;
             break;
-        case "haut-droite":
-            typeSolivage = "SOLE";
+        case "SOLE_hd":
+            familleSolivage = "SOLE";
             plancher.material = SOLE_2_Material;
             plancher.rotation.z = 0;
             break;
-        case "bas-droite":
-            typeSolivage = "SOLE";
+        case "SOLE_bd":
+            familleSolivage = "SOLE";
             plancher.material = SOLE_1_Material;
             plancher.rotation.z = Math.PI;
             break;
-        case "bas-gauche":
-            typeSolivage = "SOLE";
+        case "SOLE_gg":
+            familleSolivage = "SOLE";
             plancher.material = SOLE_2_Material;
             plancher.rotation.z = Math.PI;
             break;
-        case "haut-centre":
-            typeSolivage = "SOLT";
+        case "SOLT_hc":
+            familleSolivage = "SOLT";
             plancher.material = SOLT_Material;
             plancher.rotation.z = 0;
             break;
-        case "bas-centre":
-            typeSolivage = "SOLT";
+        case "SOLT_bc":
+            familleSolivage = "SOLT";
             plancher.material = SOLT_Material;
             plancher.rotation.z = Math.PI;
             break;
@@ -555,16 +553,16 @@ export function selectionnerSolivage(nomTravee, solivageChoisi) {
     if (solivageChoisi.indexOf("bas") != -1) decalageIncrustation = 1;
 
     inventaire[ancienSolivage]--;
-    inventaire[typeSolivage]++;
+    inventaire[familleSolivage]++;
     nbOuvertures++;
 
-    tableauTravees[nomTravee].typeSolivage = typeSolivage;
+    tableauTravees[nomTravee].typeSolivage = solivageChoisi;
 
     var positionIncrustation = tableauTravees[nomTravee].positionZ;
     if (decalageIncrustation < 0) positionIncrustation -= ((LONGUEUR_TRAVEE / 2) - 15);
     if (decalageIncrustation > 0) positionIncrustation += ((LONGUEUR_TRAVEE / 2) - 15);
 
-    modifierIncrustation(nomTravee, "plancher", typeSolivage);
+    modifierIncrustation(nomTravee, "plancher", solivageChoisi);
     scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
 }
 
