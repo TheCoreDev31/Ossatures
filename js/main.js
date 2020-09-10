@@ -591,6 +591,14 @@ export function mergeGroups(porte, fenetre) {
 
 /************************   Initialisation de tableaux utiles   ***********************************************/
 
+export function initObjetsSysteme() {
+    tableauTravees = new Array();
+    objetsModifiables = new Array;
+    inventaire = new Array();
+    facesSelectionnees = new Array();
+    objetSelectionne = '';
+}
+
 function initInventaire() {
     inventaire["MPL"] = inventaire["MPE"] = inventaire["MPF"] = inventaire["MPEF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPI"] = 0;
 
@@ -1566,42 +1574,65 @@ export function exportProjet() {
 
 export function importProjet(nomFichier) {
 
-    $.getJSON(URL_DEVIS + "/devis_clients/" + nomFichier + ".json", function (data) {
-
-        // Première passe pour créer (et décaler éventuellement) les travées...
-        var decalagePrecedent = 0;
-        for (var i = 0; i < data.projet.length; i++) {
-            var nomTravee = data.projet[i].nom;
-
-            var travee = creerTravee();
-            if (travee) traitementCreationTravee(travee);
-            if (i == 0) nbConstructions = nbTravees = 1;
-
-            if (data.projet[i].decalageZ != decalagePrecedent) {
-                if (data.projet[i].decalageZ < 0) decalerTravee(nomTravee, 'back', false);
-                if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
-                decalagePrecedent = data.projet[i].decalageZ;
-            }
-        }
-
-        // ...puis on rajoute les ouvertures et les solivages.
-        for (var i = 0; i < data.projet.length; i++) {
-
-            data.projet[i].modules.forEach(function (module) {
-
+    $.ajax({
+        url: URL_DEVIS + "/devis_clients/" + nomFichier + ".json",
+        async: false,
+        type: 'GET',
+        dataType: 'json',
+        cache: false,
+        success: function (data) {
+            // Première passe pour créer (et décaler éventuellement) les travées...
+            var decalagePrecedent = 0;
+            for (var i = 0; i < data.projet.length; i++) {
                 var nomTravee = data.projet[i].nom;
 
-                if (module.module === "PE+F1") {
-                    var combo = creerComboOuvertures(nomTravee, module.face);
-                    traitementCreationOuverture(nomTravee, module, combo);
-                } else {
-                    var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
-                    traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
+                var travee = creerTravee();
+                if (travee) traitementCreationTravee(travee);
+                if (i == 0) nbConstructions = nbTravees = 1;
+
+                if (data.projet[i].decalageZ != decalagePrecedent) {
+                    if (data.projet[i].decalageZ < 0) decalerTravee(nomTravee, 'back', false);
+                    if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
+                    decalagePrecedent = data.projet[i].decalageZ;
                 }
-                selectionnerSolivage(nomTravee, data.projet[i].solivage);
-            });
+            }
+
+            // ...puis on rajoute les ouvertures et les solivages.
+            for (var i = 0; i < data.projet.length; i++) {
+
+                data.projet[i].modules.forEach(function (module) {
+
+                    var nomTravee = data.projet[i].nom;
+
+                    if (module.module === "PE+F1") {
+                        var combo = creerComboOuvertures(nomTravee, module.face);
+                        traitementCreationOuverture(nomTravee, module, combo);
+                    } else {
+                        var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
+                        traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
+                    }
+                    selectionnerSolivage(nomTravee, data.projet[i].solivage);
+                });
+            }
+            return true;
+        },
+        error: function (e) {
+            alert("La référence de projet que vous avez saisie n'existe pas. Veuillez saisir une référence valide.");
+
+            nbConstructions = nbTravees = nbOuvertures = 0;
+            initObjetsSysteme();
+            // Création d'un projet de base
+            var travee = creerTravee();
+            if (travee) traitementCreationTravee(travee);
+            nbConstructions = nbTravees = 1;
+
+            var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
+            traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
+
+            selectionnerSolivage("Travee 1", "bas-centre");
         }
     });
+
 }
 
 
@@ -1622,6 +1653,7 @@ $(document).ready(function () {
     // ATTENTION : bien respecter l'ordre d'appel des méthodes suivantes !!
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();
+    initObjetsSysteme();
     initInventaire();
 
     init();

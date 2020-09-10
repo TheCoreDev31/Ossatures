@@ -2,7 +2,9 @@ import {
     creerTravee,
     creerOuverture,
     supprimerToutesOuvertures,
-    traitementCreationTravee
+    traitementCreationTravee,
+    traitementCreationOuverture,
+    selectionnerSolivage
 } from "./objects.js"
 
 import {
@@ -52,7 +54,8 @@ import {
     modifierIncrustation,
     restaurerPrefsUtilisateur,
     importProjet,
-    exportProjet
+    exportProjet,
+    initObjetsSysteme
 } from "./main.js"
 
 import {
@@ -495,6 +498,7 @@ export function displayGui() {
         this.afficherCotes = true;
         this.ossatureBois = false;
 
+
         this.exporterCeProjet = function () {
 
             scene.updateMatrixWorld();
@@ -512,7 +516,7 @@ export function displayGui() {
 
 
         this.importerUnProjet = function () {
-            // Pour demander à l'utilisateur de saisir la référence du devis
+
             var refDevis = prompt("Veuillez saisir la référence de votre projet :", "test");
             if (refDevis === null) return;
 
@@ -521,9 +525,8 @@ export function displayGui() {
             }
             nbConstructions = nbTravees = nbOuvertures = 0;
 
-            // Il faut aussi vider les tableaux utilisés par le système
-            objetsModifiables = new Array;
-            inventaire = new Array();
+            // Il faut vider les tableaux utilisés par le système.
+            initObjetsSysteme();
 
             importProjet(refDevis);
             incrusterCotes();
