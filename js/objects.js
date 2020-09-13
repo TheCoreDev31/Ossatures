@@ -340,6 +340,43 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
     incrustation.name = nomTravee + '>' + face + '>Incrustation';
     modifierIncrustation(nomTravee, face, PRODUITS[typeOuverture]['codeModule']);
 
+    /* Cas des modules en jonction, càd un module positionné sur un pignon commun à 2 travées décalées
+       --> dans ce cas, on double le module (MPI ou MPF ou MPE)
+       
+       Tout d'abord, il faut détecter s'il y a décalage entre les travées, et si l'on se trouve sur un pignon commun.
+    */
+    if (face.includes("PG")) {
+        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
+        var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
+        if (tableauTravees[nomTraveeGauche] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeGauche].decalage)) {
+            if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
+                var faceGauche = "PDAV";
+
+            if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
+                var faceGauche = "PDAR";
+
+            modifierIncrustation(nomTraveeGauche, faceGauche, PRODUITS[typeOuverture]['codeModule']);
+            inventaire[PRODUITS[typeOuverture]['codeModule']]++;
+            inventaire["MPL"]--;
+        }
+    }
+
+    if (face.includes("PD")) {
+        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
+        var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
+        if (tableauTravees[nomTraveeDroite] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeDroite].decalage)) {
+            if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
+                var faceGauche = "PGAV";
+
+            if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
+                var faceGauche = "PGAR";
+
+            modifierIncrustation(nomTraveeDroite, faceDroite, PRODUITS[typeOuverture]['codeModule']);
+            inventaire[PRODUITS[typeOuverture]['codeModule']]++;
+            inventaire["MPL"]--;
+        }
+    }
+
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');
         log(tableauTravees);

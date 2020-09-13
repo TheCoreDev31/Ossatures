@@ -536,6 +536,8 @@ export function displayGui() {
 
         this.genererDevis = function () {
 
+            log(inventaire);
+
             if (!verifierControlesMetier()) return;
 
             var modePDF = true;

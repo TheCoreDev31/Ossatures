@@ -139,13 +139,16 @@ $("#popup-pignon").click(function (e) {
         return;
     }
 
+    var laTravee = extraireNomTravee(objetSelectionne);
     var pignonSelectionne = scene.getObjectByName(objetSelectionne);
     switch ($(e.target).parent().attr('id')) {
         case "gauche":
             pignonSelectionne.material = PINT_Gauche_Material;
+            tableauTravees[laTravee].typePINT = "gauche";
             break;
         case "droite":
             pignonSelectionne.material = PINT_Droite_Material;
+            tableauTravees[laTravee].typePINT = "droite";
             break;
     }
     $(".popup-ouverture").hide();

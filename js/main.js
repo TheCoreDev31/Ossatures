@@ -31,6 +31,8 @@ import {
 import {
     wallMaterial,
     textMaterial,
+    PINT_Gauche_Material,
+    PINT_Droite_Material,
     createText,
 } from "./materials.js"
 
@@ -400,7 +402,16 @@ export function showMainIncrustations() {
     scene.traverse(function (child) {
 
         if (child.name.includes(">Incrustation")) {
-            child.visible = true;
+
+
+            var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
+            if (moduleLie && moduleLie.visible)
+                child.visible = true;
+            else
+                child.visible = false;
+
+
+            //child.visible = true;
         }
     });
 }
@@ -1531,6 +1542,9 @@ export function exportProjet() {
         var traveeEnCours = '';
         traveeEnCours += '{ "nom": "' + tableauTravees[travee].nom + '",';
         traveeEnCours += '  "solivage": "' + tableauTravees[travee].typeSolivage + '",';
+        if (tableauTravees[travee].typePINT) {
+            traveeEnCours += '  "pint": "' + tableauTravees[travee].typePINT + '",';
+        }
         traveeEnCours += '  "decalageZ": ' + tableauTravees[travee].decalage + ',';
         traveeEnCours += '  "modules": [';
 
@@ -1589,6 +1603,22 @@ export function importProjet(nomFichier) {
                 }
 
                 selectionnerSolivage(nomTravee, data.projet[i].solivage);
+
+                if (data.projet[i].pint) {
+                    var pignon = scene.getObjectByName(nomTravee + ">PINT");
+                    if (pignon) {
+                        switch (data.projet[i].pint) {
+                            case "gauche":
+                                pignon.material = PINT_Gauche_Material;
+                                tableauTravees[nomTravee].typePINT = "gauche";
+                                break;
+                            case "droite":
+                                pignon.material = PINT_Droite_Material;
+                                tableauTravees[nomTravee].typePINT = "droite";
+                                break;
+                        }
+                    }
+                }
             }
 
             // ...puis on rajoute les ouvertures.
