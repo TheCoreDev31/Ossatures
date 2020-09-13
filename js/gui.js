@@ -770,28 +770,7 @@ export function displayGui() {
                 $("span:contains('ossatureBois')").click();
 
             var travee = creerTravee();
-            if (travee) {
-                traitementCreationTravee(travee);
-
-                /*
-                scene.add(travee);
-                gererDecalageTravee(travee);
-
-                // On modifie l'incrustation pour les pignons de toiture.
-                modifierIncrustation(travee.name, 'PG', 'PINT', true);
-                var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
-                modifierIncrustation(voisine.name, 'PD', 'PINT', true);
-                hidePignonIncrustations();
-
-                recalculerConstructions();
-                incrusterCotes();
-
-                // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
-                scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
-
-                restaurerPrefsUtilisateur(nbTravees, travee);
-                */
-            }
+            if (travee) traitementCreationTravee(travee);
         },
 
         Supprimer: function () {

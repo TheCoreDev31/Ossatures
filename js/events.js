@@ -24,6 +24,9 @@ import {
     MPI_Material,
     MPG1_Material,
     MPG2_Material,
+    PINT_Gauche_Material,
+    PINT_Droite_Material,
+    PEXT_Material,
     createText
 }
 from "./materials.js"

@@ -533,7 +533,7 @@ export function selectionnerSolivage(nomTravee, solivageChoisi) {
             plancher.material = SOLE_1_Material;
             plancher.rotation.z = Math.PI;
             break;
-        case "SOLE_gg":
+        case "SOLE_bg":
             familleSolivage = "SOLE";
             plancher.material = SOLE_2_Material;
             plancher.rotation.z = Math.PI;

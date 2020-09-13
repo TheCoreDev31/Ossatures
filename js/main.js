@@ -1,11 +1,4 @@
 import {
-    GLTFLoader
-} from './export/GLTFLoader.js';
-import {
-    GLTFExporter
-} from './export/GLTFExporter.js';
-
-import {
     renderer,
     camera,
     cameraOrtho
@@ -1463,7 +1456,7 @@ function generate(l = 8) {
     var c = 'abcdefghijknopqrstuvwxyzACDEFGHJKLMNPQRSTUVWXYZ12345679',
         n = c.length,
         /* p : chaîne de caractères spéciaux */
-        p = '_+_',
+        p = '___',
         o = p.length,
         r = '',
         n = c.length,
@@ -1555,7 +1548,7 @@ export function exportProjet() {
             }
         });
         // Il faut virer la dernière virgule
-        traveeEnCours = traveeEnCours.slice(0, traveeEnCours.length - 1);
+        if (traveeEnCours.charAt(traveeEnCours.length - 1) == ',') traveeEnCours = traveeEnCours.slice(0, traveeEnCours.length - 1);
         traveeEnCours += '] },';
 
         exportJson += traveeEnCours;
@@ -1579,7 +1572,6 @@ export function importProjet(nomFichier) {
         async: false,
         type: 'GET',
         dataType: 'json',
-        cache: false,
         success: function (data) {
             // Première passe pour créer (et décaler éventuellement) les travées...
             var decalagePrecedent = 0;
@@ -1595,9 +1587,11 @@ export function importProjet(nomFichier) {
                     if (data.projet[i].decalageZ > 0) decalerTravee(nomTravee, 'front', false);
                     decalagePrecedent = data.projet[i].decalageZ;
                 }
+
+                selectionnerSolivage(nomTravee, data.projet[i].solivage);
             }
 
-            // ...puis on rajoute les ouvertures et les solivages.
+            // ...puis on rajoute les ouvertures.
             for (var i = 0; i < data.projet.length; i++) {
 
                 data.projet[i].modules.forEach(function (module) {
@@ -1611,9 +1605,10 @@ export function importProjet(nomFichier) {
                         var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
                         traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
                     }
-                    selectionnerSolivage(nomTravee, data.projet[i].solivage);
+
                 });
             }
+
             return true;
         },
         error: function (e) {
