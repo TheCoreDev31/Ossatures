@@ -480,6 +480,10 @@ div#droite i {
     width: 300px;
 }
 
+div#legende-modules {
+    margin-bottom: 200px;
+}
+
 #vue-aerienne #legende {
     position: relative;
     margin-bottom: 40px;

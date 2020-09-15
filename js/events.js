@@ -290,10 +290,10 @@ $("#boutons > #legende").click(function (e) {
 
     if (!$("#legende").is(":visible")) {
         $("#legende").show();
-        $("#overlay").show();
+        //        $("#overlay").show();
     } else {
         $("#legende").hide();
-        $("#overlay").hide();
+        //        $("#overlay").hide();
     }
 });
 

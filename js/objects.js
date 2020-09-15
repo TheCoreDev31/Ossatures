@@ -746,6 +746,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                     modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
+                    inventaire["MPL"] += 2;
+
                 } else {
 
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
@@ -758,6 +760,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(traveeDroite.name, "PG", "PINT");
 
+                    inventaire["MPL"] -= 2;
                 }
             }
         }
@@ -784,6 +787,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeGauche.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
                     modifierIncrustation(traveeGauche.name, "PD", "PEXT");
+
+                    inventaire["MPL"] += 2;
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
@@ -794,6 +799,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");
+
+                    inventaire["MPL"] -= 2;
                 }
             }
         }
@@ -837,6 +844,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                     modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
+                    inventaire["MPL"] += 2;
+
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
@@ -847,6 +856,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(traveeDroite.name, "PG", "PINT");
+
+                    inventaire["MPL"] -= 2;
                 }
             }
         }
@@ -874,6 +885,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     traveeGauche.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
                     modifierIncrustation(traveeGauche.name, "PD", "PEXT");
 
+                    inventaire["MPL"] += 2;
+
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
@@ -884,6 +897,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");
+
+                    inventaire["MPL"] -= 2;
                 }
             }
         }
