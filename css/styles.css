@@ -110,8 +110,9 @@ body {
 }
 
 .texte-aide > li:before {
-    font-family: "FontAwesome";
+    font-family: "Font Awesome 5 Free";
     content: "\f105";
+    font-weight: 900;
     margin-right: 8px;
 }
 
@@ -136,7 +137,7 @@ body {
 
 #fermer-popup-aide > span::after {
     margin-left: 20px;
-    font-family: "FontAwesome";
+    font-family: "Font Awesome 5 Free";
     font-size: 30px;
     content: "\f0a9";
 }
@@ -537,8 +538,9 @@ th {
 }
 
 #boutons > #legende:before {
-    font-family: "FontAwesome";
+    font-family: "Font Awesome 5 Free";
     content: "\f0ca";
+    font-weight: 900;
     margin-right: 20px;
 }
 

@@ -1,4 +1,4 @@
-$font-family-icones: 'FontAwesome';
+$font-family-icones: 'Font Awesome 5 Free';
 $font-family-texte: 'Avenir Next',
 'Avenir',
 sans-serif;
@@ -42,6 +42,7 @@ ul.liste-deroulante {
     &:before {
         padding-right: 8px;
         font-family: $font-family-icones;
+        font-weight: 900;
     }
 }
 

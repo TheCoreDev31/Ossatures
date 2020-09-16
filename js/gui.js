@@ -67,6 +67,11 @@ import {
     initPositionCamera
 } from "./environment.js"
 
+
+// Quelques constantes utiles
+var URL_JSREPORT = "https://jsreport.thecoredev.fr:5489";
+
+
 export function unSelect() {
 
     /* On masque le menu déroulant...
@@ -656,7 +661,7 @@ export function displayGui() {
 
 
             // Génération du rapport PDF
-            jsreport.serverUrl = 'https://jsreport.thecoredev.fr:5489';
+            jsreport.serverUrl = URL_JSREPORT;
 
             var donneesBrutes = {},
                 modules = new Array(),
@@ -669,32 +674,41 @@ export function displayGui() {
 
 
             // C'est ici qu'on calcule le nombre de charpentes et de pignons : c'est plus simple.
+            // On rajoute également dans l'inventaire les kits accessoires, correspondants à chaque construction.
             inventaire["CH1T"] = inventaire["CHTS"] = inventaire["PEXT"] = inventaire["PINT"] = 0;
+            inventaire["ACC1"] = inventaire["ACC2"] = inventaire["ACC3"] = inventaire["ACC4"] = 0;
             for (var travee in tableauTravees) {
+                var nbTraveesActuelles = 0;
                 var numTraveeSuivante = parseInt(travee.substr(travee.indexOf(" ") + 1)) + 1;
                 var traveeSuivante = tableauTravees["Travee " + numTraveeSuivante];
 
                 if (tableauTravees[travee].rangDansConstruction === 1) {
                     inventaire["CH1T"]++;
                     inventaire["PEXT"]++;
+                    nbTraveesActuelles = 1;
                 }
 
                 if (traveeSuivante) {
                     if (traveeSuivante.numConstruction != tableauTravees[travee].numConstruction) {
                         // On se trouve sur la dernière travée de cette construction.
                         inventaire["PEXT"]++;
+                        inventaire["ACC" + nbTraveesActuelles]++;
                     } else {
                         // Il existe une autre travée dans la même construction
                         inventaire["PINT"]++;
                         inventaire["CHTS"]++;
+                        nbTraveesActuelles++;
                     }
                 } else {
                     inventaire["PEXT"]++;
+                    inventaire["ACC" + nbTraveesActuelles]++;
                 }
             }
 
+
             // On récupère la liste des modules présents sur le projet et on estime le coût global.
-            var coutEstime = 0;
+            var coutEstimeBas = 0,
+                coutEstimeHaut = 0;
             var keys = Object.keys(inventaire).sort();
             for (var i = 0, key = keys[0]; i < keys.length; key = keys[++i]) {
                 var correspondance = key;
@@ -709,11 +723,13 @@ export function displayGui() {
                 module.quantite = inventaire[key];
                 module.referenceModule = PRODUITS[correspondance]['libelleModule'];
                 modules.push(module);
-                coutEstime += (module.quantite * PRODUITS[correspondance].cout);
+                coutEstimeBas += (module.quantite * PRODUITS[correspondance].coutFourchetteBasse);
+                coutEstimeHaut += (module.quantite * PRODUITS[correspondance].coutFourchetteHaute);
             }
 
             donneesBrutes.modules = modules;
-            donneesBrutes.coutEstime = coutEstime;
+            donneesBrutes.coutEstimeBas = coutEstimeBas;
+            donneesBrutes.coutEstimeHaut = coutEstimeHaut;
             donneesBrutes.screenshot1 = screenshot1;
             donneesBrutes.screenshot2 = screenshot2;
             donneesBrutes.screenshot3 = screenshot3;

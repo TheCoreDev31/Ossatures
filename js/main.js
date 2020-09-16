@@ -624,7 +624,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['MU']['codeModule'] = 'MPL';
     PRODUITS['MU']['categorie'] = 'Mur';
     PRODUITS['MU']['libelleModule'] = 'Mur plein';
-    PRODUITS['MU']['cout'] = 0;
+    PRODUITS['MU']['coutFourchetteBasse'] = 0;
+    PRODUITS['MU']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PE'] = new Array();
     PRODUITS['PE']['VT'] = 2;
@@ -638,7 +639,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['codeModule'] = 'MPE';
     PRODUITS['PE']['categorie'] = "Porte d'entrée";
     PRODUITS['PE']['libelleModule'] = 'Porte entrée 90x215';
-    PRODUITS['PE']['cout'] = 0;
+    PRODUITS['PE']['coutFourchetteBasse'] = 0;
+    PRODUITS['PE']['coutFourchetteHaute'] = 0;
 
     PRODUITS['F1'] = new Array();
     PRODUITS['F1']['VT'] = 2;
@@ -652,7 +654,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1']['codeModule'] = 'MF1';
     PRODUITS['F1']['categorie'] = 'Fenêtre';
     PRODUITS['F1']['libelleModule'] = 'Fenêtre 45x65';
-    PRODUITS['F1']['cout'] = 0;
+    PRODUITS['F1']['coutFourchetteBasse'] = 0;
+    PRODUITS['F1']['coutFourchetteHaute'] = 0;
 
     PRODUITS['F2'] = new Array();
     PRODUITS['F2']['VT'] = 2;
@@ -666,7 +669,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['codeModule'] = 'MF2';
     PRODUITS['F2']['categorie'] = 'Fenêtre';
     PRODUITS['F2']['libelleModule'] = 'Fenêtre 105x115';
-    PRODUITS['F2']['cout'] = 0;
+    PRODUITS['F2']['coutFourchetteBasse'] = 0;
+    PRODUITS['F2']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PF'] = new Array();
     PRODUITS['PF']['VT'] = 1.4;
@@ -680,7 +684,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PF']['codeModule'] = 'MPF';
     PRODUITS['PF']['categorie'] = 'Porte-fenêtre';
     PRODUITS['PF']['libelleModule'] = 'Porte fenêtre 180x215';
-    PRODUITS['PF']['cout'] = 0;
+    PRODUITS['PF']['coutFourchetteBasse'] = 0;
+    PRODUITS['PF']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PG1'] = new Array();
     PRODUITS['PG1']['VT'] = 0;
@@ -694,7 +699,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG1']['codeModule'] = 'MPG1';
     PRODUITS['PG1']['categorie'] = 'Porte de garage';
     PRODUITS['PG1']['libelleModule'] = 'Porte de garage 240x200';
-    PRODUITS['PG1']['cout'] = 0;
+    PRODUITS['PG1']['coutFourchetteBasse'] = 0;
+    PRODUITS['PG1']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PG2'] = new Array();
     PRODUITS['PG2']['VT'] = 3;
@@ -708,7 +714,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PG2']['codeModule'] = 'MPG2';
     PRODUITS['PG2']['categorie'] = 'Porte de garage';
     PRODUITS['PG2']['libelleModule'] = 'Porte garage renforcée 240x200';
-    PRODUITS['PG2']['cout'] = 0;
+    PRODUITS['PG2']['coutFourchetteBasse'] = 0;
+    PRODUITS['PG2']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PE+F1'] = new Array();
     PRODUITS['PE+F1']['VT'] = 0.5;
@@ -722,7 +729,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE+F1']['codeModule'] = 'MPEF';
     PRODUITS['PE+F1']['categorie'] = 'Porte fenêtre + fenêtre';
     PRODUITS['PE+F1']['libelleModule'] = 'Porte entrée + fenêtre 45x65';
-    PRODUITS['PE+F1']['cout'] = 0;
+    PRODUITS['PE+F1']['coutFourchetteBasse'] = 0;
+    PRODUITS['PE+F1']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PO'] = new Array();
     PRODUITS['PO']['VT'] = 0;
@@ -736,49 +744,85 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PO']['codeModule'] = 'MPI';
     PRODUITS['PO']['categorie'] = 'Portique intérieur';
     PRODUITS['PO']['libelleModule'] = 'Portique intérieur';
-    PRODUITS['PO']['cout'] = 0;
+    PRODUITS['PO']['coutFourchetteBasse'] = 0;
+    PRODUITS['PO']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PEXT'] = new Array();
     PRODUITS['PEXT']['codeModule'] = 'PEXT';
     PRODUITS['PEXT']['categorie'] = 'Pignon';
     PRODUITS['PEXT']['libelleModule'] = 'Pignon extérieur';
-    PRODUITS['PEXT']['cout'] = 0;
+    PRODUITS['PEXT']['coutFourchetteBasse'] = 0;
+    PRODUITS['PEXT']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PINT'] = new Array();
     PRODUITS['PINT']['codeModule'] = 'PINT';
     PRODUITS['PINT']['categorie'] = 'Pignon';
     PRODUITS['PINT']['libelleModule'] = 'Pignon intérieur';
-    PRODUITS['PINT']['cout'] = 0;
+    PRODUITS['PINT']['coutFourchetteBasse'] = 0;
+    PRODUITS['PINT']['coutFourchetteHaute'] = 0;
 
     PRODUITS['CH1T'] = new Array();
     PRODUITS['CH1T']['codeModule'] = 'CH1T';
     PRODUITS['CH1T']['categorie'] = 'Charpente';
     PRODUITS['CH1T']['libelleModule'] = 'Charpente principale';
-    PRODUITS['CH1T']['cout'] = 0;
+    PRODUITS['CH1T']['coutFourchetteBasse'] = 0;
+    PRODUITS['CH1T']['coutFourchetteHaute'] = 0;
 
     PRODUITS['CHTS'] = new Array();
     PRODUITS['CHTS']['codeModule'] = 'CHTS';
     PRODUITS['CHTS']['categorie'] = 'Charpente';
     PRODUITS['CHTS']['libelleModule'] = 'Charpente complémentaire';
-    PRODUITS['CHTS']['cout'] = 0;
+    PRODUITS['CHTS']['coutFourchetteBasse'] = 0;
+    PRODUITS['CHTS']['coutFourchetteHaute'] = 0;
 
     PRODUITS['SOLP'] = new Array();
     PRODUITS['SOLP']['codeModule'] = 'SOLP';
     PRODUITS['SOLP']['categorie'] = 'Plancher';
     PRODUITS['SOLP']['libelleModule'] = 'Solivage plein';
-    PRODUITS['SOLP']['cout'] = 0;
+    PRODUITS['SOLP']['coutFourchetteBasse'] = 0;
+    PRODUITS['SOLP']['coutFourchetteHaute'] = 0;
 
     PRODUITS['SOLE'] = new Array();
     PRODUITS['SOLE']['codeModule'] = 'SOLE';
     PRODUITS['SOLE']['categorie'] = 'Plancher';
     PRODUITS['SOLE']['libelleModule'] = 'Solivage escalier';
-    PRODUITS['SOLE']['cout'] = 0;
+    PRODUITS['SOLE']['coutFourchetteBasse'] = 0;
+    PRODUITS['SOLE']['coutFourchetteHaute'] = 0;
 
     PRODUITS['SOLT'] = new Array();
     PRODUITS['SOLT']['codeModule'] = 'SOLT';
     PRODUITS['SOLT']['categorie'] = 'Plancher';
     PRODUITS['SOLT']['libelleModule'] = 'Solivage trappe';
-    PRODUITS['SOLT']['cout'] = 0;
+    PRODUITS['SOLT']['coutFourchetteBasse'] = 0;
+    PRODUITS['SOLT']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['ACC1'] = new Array();
+    PRODUITS['ACC1']['codeModule'] = 'ACC1';
+    PRODUITS['ACC1']['categorie'] = 'Accessoires';
+    PRODUITS['ACC1']['libelleModule'] = 'Accessoires 1 travée';
+    PRODUITS['ACC1']['coutFourchetteBasse'] = 0;
+    PRODUITS['ACC1']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['ACC2'] = new Array();
+    PRODUITS['ACC2']['codeModule'] = 'ACC2';
+    PRODUITS['ACC2']['categorie'] = 'Accessoires';
+    PRODUITS['ACC2']['libelleModule'] = 'Accessoires 2 travées';
+    PRODUITS['ACC2']['coutFourchetteBasse'] = 0;
+    PRODUITS['ACC2']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['ACC3'] = new Array();
+    PRODUITS['ACC3']['codeModule'] = 'ACC3';
+    PRODUITS['ACC3']['categorie'] = 'Accessoires';
+    PRODUITS['ACC3']['libelleModule'] = 'Accessoires 3 travées';
+    PRODUITS['ACC3']['coutFourchetteBasse'] = 0;
+    PRODUITS['ACC3']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['ACC4'] = new Array();
+    PRODUITS['ACC4']['codeModule'] = 'ACC4';
+    PRODUITS['ACC4']['categorie'] = 'Accessoires';
+    PRODUITS['ACC4']['libelleModule'] = 'Accessoires 4 travées';
+    PRODUITS['ACC4']['coutFourchetteBasse'] = 0;
+    PRODUITS['ACC4']['coutFourchetteHaute'] = 0;
 }
 
 function initMatricesScoreVT() {
@@ -1646,15 +1690,8 @@ export function importProjet(nomFichier) {
 
             nbConstructions = nbTravees = nbOuvertures = 0;
             initObjetsSysteme();
-            // Création d'un projet de base
-            var travee = creerTravee();
-            if (travee) traitementCreationTravee(travee);
-            nbConstructions = nbTravees = 1;
 
-            var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
-            traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
-
-            selectionnerSolivage("Travee 1", "bas-centre");
+            creerProjetBasique();
         }
     });
 
@@ -1662,6 +1699,19 @@ export function importProjet(nomFichier) {
 
 
 /**********************************************************************************************************/
+
+function creerProjetBasique() {
+    // Création d'un projet de base
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+    nbConstructions = nbTravees = 1;
+
+    var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
+    traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
+    selectionnerSolivage("Travee 1", "SOLT_bc");
+}
+
+
 
 
 $(document).ready(function () {
@@ -1688,16 +1738,7 @@ $(document).ready(function () {
     document.addEventListener('click', onMouseClick);
     //    document.addEventListener('mousemove', onMouseMove, false);
 
-
-    // Création d'un projet de base
-    var travee = creerTravee();
-    if (travee) traitementCreationTravee(travee);
-    nbConstructions = nbTravees = 1;
-
-    var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
-    traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
-
-    selectionnerSolivage("Travee 1", "bas-centre");
+    creerProjetBasique();
 
     animate();
 });
