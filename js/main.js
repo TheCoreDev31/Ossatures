@@ -1080,10 +1080,10 @@ export function verifierControlesMetier() {
 
     log(inventaire);
 
-    // Tout projet doit comporter une et une seule trappe par construction
-    if ((inventaire["SOLE"] + inventaire["SOLT"]) != nbConstructions) {
+    // Tout projet doit comporter au moins une ouverture par construction
+    if ((inventaire["SOLE"] + inventaire["SOLT"]) < nbConstructions) {
         controlesOK = false;
-        alerte('Vous devez positionner une seule trappe<br/>pour chaque construction de votre projet.')
+        alerte('Il faut au moins une ouverture dans chacune de vos constructions.')
     } else {
         var trappesConstruction1 = 0,
             trappesConstruction2 = 0;
@@ -1411,7 +1411,7 @@ export function verifierContraintes(objet) {
         }
 
         if (aSupprimer)
-            typesOuverturesAutorisees.splice(5, 1);
+            typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('PG2'), 1);
     }
 
     if (DEBUG) {

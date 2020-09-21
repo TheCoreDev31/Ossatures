@@ -41,8 +41,9 @@ ground.matrixAutoUpdate = false;
 ground.updateMatrix();
 ground.name = 'ground';
 scene.add(ground);
-
 scene.background = COLOR_ARRAY['bleu_ciel'];
+
+scene.fog = new THREE.Fog(COLOR_ARRAY['blanc'], 300, 2000);
 
 /*********************    SkyBox    ******************/
 var path = "/img/skybox/";
