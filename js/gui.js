@@ -270,10 +270,10 @@ export function afficherVueAerienne(modePDF = false) {
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
     var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
     var origineZ = 0;
-    var MARGE = 60;
+    var MARGE = 40;
     if (nbTravees == 1) MARGE = 100; // Eventuellement, cas particulier de la construction à 1 travée
 
-    cameraOrtho.left = gauche - MARGE;
+    cameraOrtho.left = gauche - (MARGE / 2);
     cameraOrtho.right = droite + MARGE;
     cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
@@ -282,12 +282,12 @@ export function afficherVueAerienne(modePDF = false) {
     var decalage = tableauTravees['Travee 1'].decalage - tableauTravees['Travee ' + nbTravees].decalage;
     if (DEBUG) log("decalage=" + decalage);
     if (decalage < 0) {
-        cameraOrtho.top -= (LONGUEUR_TRAVEE / 4);
-        cameraOrtho.bottom -= (LONGUEUR_TRAVEE / 4);
+        cameraOrtho.top -= (LONGUEUR_TRAVEE / 8);
+        cameraOrtho.bottom -= (LONGUEUR_TRAVEE / 8);
     }
     if (decalage > 0) {
-        cameraOrtho.top += (LONGUEUR_TRAVEE / 4);
-        cameraOrtho.bottom += (LONGUEUR_TRAVEE / 4);
+        cameraOrtho.top += (LONGUEUR_TRAVEE / 8);
+        cameraOrtho.bottom += (LONGUEUR_TRAVEE / 8);
     }
 
     activeCamera = cameraOrtho;
@@ -541,8 +541,6 @@ export function displayGui() {
 
         this.genererDevis = function () {
 
-            log(inventaire);
-
             if (!verifierControlesMetier()) return;
 
             var modePDF = true;
@@ -677,8 +675,8 @@ export function displayGui() {
             // On rajoute également dans l'inventaire les kits accessoires, correspondants à chaque construction.
             inventaire["CH1T"] = inventaire["CHTS"] = inventaire["PEXT"] = inventaire["PINT"] = 0;
             inventaire["ACC1"] = inventaire["ACC2"] = inventaire["ACC3"] = inventaire["ACC4"] = 0;
+            var nbTraveesActuelles = 0;
             for (var travee in tableauTravees) {
-                var nbTraveesActuelles = 0;
                 var numTraveeSuivante = parseInt(travee.substr(travee.indexOf(" ") + 1)) + 1;
                 var traveeSuivante = tableauTravees["Travee " + numTraveeSuivante];
 
@@ -692,7 +690,7 @@ export function displayGui() {
                     if (traveeSuivante.numConstruction != tableauTravees[travee].numConstruction) {
                         // On se trouve sur la dernière travée de cette construction.
                         inventaire["PEXT"]++;
-                        inventaire["ACC" + nbTraveesActuelles]++;
+                        if (nbTraveesActuelles > 0) inventaire["ACC" + nbTraveesActuelles]++;
                     } else {
                         // Il existe une autre travée dans la même construction
                         inventaire["PINT"]++;
@@ -701,7 +699,7 @@ export function displayGui() {
                     }
                 } else {
                     inventaire["PEXT"]++;
-                    inventaire["ACC" + nbTraveesActuelles]++;
+                    if (nbTraveesActuelles > 0) inventaire["ACC" + nbTraveesActuelles]++;
                 }
             }
 
@@ -725,6 +723,9 @@ export function displayGui() {
                 modules.push(module);
                 coutEstimeBas += (module.quantite * PRODUITS[correspondance].coutFourchetteBasse);
                 coutEstimeHaut += (module.quantite * PRODUITS[correspondance].coutFourchetteHaute);
+
+                log(coutEstimeBas);
+                log(coutEstimeHaut);
             }
 
             donneesBrutes.modules = modules;
@@ -749,8 +750,8 @@ export function displayGui() {
                     phantom: {
                         "format": "A4",
                         "orientation": "landscape",
-                        "headerHeight": "1cm",
-                        "footer": "<div style='text-align:center;font-size:12px'>Page {#pageNum}/{#numPages}</div>",
+                        "headerHeight": "0cm",
+                        "footer": "<div style='text-align:center;font-size:12px'>Dossier {{nomClient }} - page {#pageNum}/{#numPages}</div>",
                         "footerHeight": "0.5cm"
                     }
                 },

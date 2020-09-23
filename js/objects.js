@@ -349,15 +349,19 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
         var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
         var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
         if (tableauTravees[nomTraveeGauche] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeGauche].decalage)) {
+            var faceGauche = "";
+
             if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
-                var faceGauche = "PDAV";
+                faceGauche = "PDAV";
 
             if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
-                var faceGauche = "PDAR";
+                faceGauche = "PDAR";
 
-            modifierIncrustation(nomTraveeGauche, faceGauche, PRODUITS[typeOuverture]['codeModule']);
-            inventaire[PRODUITS[typeOuverture]['codeModule']]++;
-            inventaire["MPL"]--;
+            if (faceGauche != "") {
+                modifierIncrustation(nomTraveeGauche, faceGauche, PRODUITS[typeOuverture]['codeModule']);
+                inventaire[PRODUITS[typeOuverture]['codeModule']]++;
+                inventaire["MPL"]--;
+            }
         }
     }
 
@@ -365,15 +369,18 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
         var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
         var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
         if (tableauTravees[nomTraveeDroite] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeDroite].decalage)) {
+            var faceGauche = "";
             if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
-                var faceGauche = "PGAV";
+                faceGauche = "PGAV";
 
             if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
-                var faceGauche = "PGAR";
+                faceGauche = "PGAR";
 
-            modifierIncrustation(nomTraveeDroite, faceDroite, PRODUITS[typeOuverture]['codeModule']);
-            inventaire[PRODUITS[typeOuverture]['codeModule']]++;
-            inventaire["MPL"]--;
+            if (faceGauche != "") {
+                modifierIncrustation(nomTraveeDroite, faceDroite, PRODUITS[typeOuverture]['codeModule']);
+                inventaire[PRODUITS[typeOuverture]['codeModule']]++;
+                inventaire["MPL"]--;
+            }
         }
     }
 
@@ -426,7 +433,7 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
 
         var nouveauGroupe = new THREE.Group();
         nouveauGroupe = mergeGroups(porte, fenetre);
-        nouveauGroupe.name = nomTravee + '>' + nomFace + '>Ouverture ' + 'PE+F1';
+        nouveauGroupe.name = nomTravee + '>' + nomFace.face + '>Ouverture ' + 'PE+F1';
         objetsModifiables.push(nouveauGroupe);
         tableauTravees[nomTravee]['nb_ouvertures_' + nomFace]--;
         tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
@@ -747,6 +754,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
                     inventaire["MPL"] += 2;
+                    modifierIncrustation(travee.name, "PDAR", "MPL");
 
                 } else {
 
@@ -789,6 +797,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeGauche.name, "PD", "PEXT");
 
                     inventaire["MPL"] += 2;
+                    modifierIncrustation(traveeGauche.name, "PDAR", "MPL");
+
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
@@ -845,6 +855,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
                     inventaire["MPL"] += 2;
+                    modifierIncrustation(travee.name, "PDAV", "MPL");
 
                 } else {
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
@@ -886,6 +897,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeGauche.name, "PD", "PEXT");
 
                     inventaire["MPL"] += 2;
+                    modifierIncrustation(traveeGauche.name, "PDAR", "MPL");
 
                 } else {
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
@@ -912,6 +924,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
     recalculerConstructions();
     incrusterCotes();
     unSelect();
+
+    log(inventaire);
 }
 
 
@@ -1124,6 +1138,7 @@ export function traitementCreationTravee(travee) {
         modifierIncrustation(travee.name, 'PG', 'PINT', true);
         var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
         modifierIncrustation(voisine.name, 'PD', 'PINT', true);
+        inventaire["MPL"] -= 2;
     }
     hidePignonIncrustations();
 

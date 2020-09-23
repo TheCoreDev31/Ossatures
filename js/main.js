@@ -91,7 +91,7 @@ export function alerte(message) {
     setTimeout(function () {
         $("#message-info").prop("class", "normal");
         $("#message-info").html("");
-    }, 4000);
+    }, 5000);
     unSelect();
 }
 
@@ -106,7 +106,7 @@ export function info(param) {
         $("#message-info").html(param);
         setTimeout(function () {
             $("#message-info").html("");
-        }, 2000);
+        }, 3000);
     } else {
         var newMessage = "Sélection : " + param.name;
         $("#message-info").prop("class", "normal");
@@ -232,79 +232,62 @@ export function incrusterCotes() {
     var points = [];
     decalage = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
     points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, ((LONGUEUR_TRAVEE / 2)) + 1));
-    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
     decalage = tableauTravees[derniereTraveeConstruction1].positionX + (LARGEUR_TRAVEE / 2);
-    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
     points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrpX.add(line);
 
-    texte = nbTraveesConstruction1 * (LARGEUR_TRAVEE * 100) + ' mm';
+    texte = "Construction 1 : " + nbTraveesConstruction1 * (LARGEUR_TRAVEE * 100) + ' mm';
     texteCotes = createText(texte);
     texteCotes.name = "CoteX_1>texte";
     texteCotes.rotation.x = -Math.PI / 2;
     xTexte = (tableauTravees['Travee 1'].positionX + tableauTravees[derniereTraveeConstruction1].positionX) / 2;
-    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
+    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 12);
     cotesGrpX.add(texteCotes);
 
-    var texte2 = createText("Construction 1");
-    texte2.name = "CoteX_1>texte2";
-    texte2.rotation.x = -Math.PI / 2;
-    texte2.position.set(xTexte, hauteurTexte, texteCotes.position.z + 5);
-    cotesGrpX.add(texte2);
-
-    // On prend en compte un décalage éventuel de la première construction, et donc de la cote suivant Y.
+    // On prend en compte le décalage éventuel de la première construction par rapport à la seconde.
     switch (tableauTravees['Travee 1'].decalage) {
         case 1:
             line.position.z += LONGUEUR_TRAVEE / 2;
             texteCotes.position.z += LONGUEUR_TRAVEE / 2;
-            texte2.position.z += LONGUEUR_TRAVEE / 2;
             break;
         case -1:
             line.position.z -= LONGUEUR_TRAVEE / 2;
             texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
-            texte2.position.z -= LONGUEUR_TRAVEE / 2;
             break;
     }
-
 
     // En fonction du nombre de décalages, on a une ou plusieurs cotes X.
     if (nbDecalages > 0) {
         var points = [];
         decalage = tableauTravees[premiereTraveeConstruction2].positionX - (LARGEUR_TRAVEE / 2);
         points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
-        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
         decalage = tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
-        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 10));
+        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
         points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrpX.add(line);
 
-        texte = nbTraveesConstruction2 * (LARGEUR_TRAVEE * 100) + ' mm';
+        texte = "Construction 2 : " + nbTraveesConstruction2 * (LARGEUR_TRAVEE * 100) + ' mm';
         texteCotes = createText(texte);
         texteCotes.name = "CoteX_2>texte";
         texteCotes.rotation.x = -Math.PI / 2;
         xTexte = (tableauTravees[premiereTraveeConstruction2].positionX + tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX) / 2;
-        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 13);
+        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 12);
         cotesGrpX.add(texteCotes);
-
-        var texte2 = createText("Construction 2");
-        texte2.name = "CoteX_2>texte2";
-        texte2.rotation.x = -Math.PI / 2;
-        texte2.position.set(xTexte, hauteurTexte, texteCotes.position.z + 5);
-        cotesGrpX.add(texte2);
 
         // En fonction du décalage éventuel de la première construction, on peut décaler suivant Y.
         switch (tableauTravees[premiereTraveeConstruction2].decalage) {
             case 1:
                 line.position.z += LONGUEUR_TRAVEE / 2;
                 texteCotes.position.z += LONGUEUR_TRAVEE / 2;
-                texte2.position.z += LONGUEUR_TRAVEE / 2;
                 break;
             case -1:
                 line.position.z -= LONGUEUR_TRAVEE / 2;
                 texteCotes.position.z -= LONGUEUR_TRAVEE / 2;
-                texte2.position.z -= LONGUEUR_TRAVEE / 2;
                 break;
         }
     }
@@ -322,14 +305,14 @@ export function incrusterCotes() {
     texteCotes.rotation.x = Math.PI / 2;
     texteCotes.rotation.y = Math.PI;
     texteCotes.rotation.z = -Math.PI / 2;
-    texteCotes.position.set(decalage - 13, hauteurTexte, 0);
+    texteCotes.position.set(decalage - 10, hauteurTexte, 0);
     texteCotes.name = "CoteY_1>texte";
     cotesGrpY.add(texteCotes);
 
     var points = [];
     points.push(new THREE.Vector3(decalage - 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-    points.push(new THREE.Vector3(decalage - 10, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-    points.push(new THREE.Vector3(decalage - 10, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+    points.push(new THREE.Vector3(decalage - 8, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+    points.push(new THREE.Vector3(decalage - 8, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
     points.push(new THREE.Vector3(decalage - 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrpY.add(line);
@@ -355,14 +338,14 @@ export function incrusterCotes() {
         texteCotes.rotation.z = -Math.PI / 2;
         texteCotes.rotation.x = Math.PI / 2;
         texteCotes.rotation.y = Math.PI;
-        texteCotes.position.set(decalage + 13, hauteurTexte, 0);
+        texteCotes.position.set(decalage + 10, hauteurTexte, 0);
         texteCotes.name = "CoteY_2>texte";
         cotesGrpY.add(texteCotes);
 
         var points = [];
         points.push(new THREE.Vector3(decalage + 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-        points.push(new THREE.Vector3(decalage + 10, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-        points.push(new THREE.Vector3(decalage + 10, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+        points.push(new THREE.Vector3(decalage + 8, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+        points.push(new THREE.Vector3(decalage + 8, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
         points.push(new THREE.Vector3(decalage + 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrpY.add(line);
@@ -402,16 +385,14 @@ export function showMainIncrustations() {
     scene.traverse(function (child) {
 
         if (child.name.includes(">Incrustation")) {
-
-
             var moduleLie = scene.getObjectByName(child.name.substr(0, child.name.lastIndexOf('>')));
             if (moduleLie && moduleLie.visible)
                 child.visible = true;
-            else
+            else {
+
+                // Attention au cas particulier des modules en jonction
                 child.visible = false;
-
-
-            //child.visible = true;
+            }
         }
     });
 }
@@ -599,6 +580,7 @@ export function initObjetsSysteme() {
     tableauTravees = new Array();
     objetsModifiables = new Array;
     inventaire = new Array();
+    initInventaire();
     facesSelectionnees = new Array();
     objetSelectionne = '';
 }
@@ -624,8 +606,8 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['MU']['codeModule'] = 'MPL';
     PRODUITS['MU']['categorie'] = 'Mur';
     PRODUITS['MU']['libelleModule'] = 'Mur plein';
-    PRODUITS['MU']['coutFourchetteBasse'] = 0;
-    PRODUITS['MU']['coutFourchetteHaute'] = 0;
+    PRODUITS['MU']['coutFourchetteBasse'] = 50;
+    PRODUITS['MU']['coutFourchetteHaute'] = 100;
 
     PRODUITS['PE'] = new Array();
     PRODUITS['PE']['VT'] = 2;
@@ -1078,12 +1060,10 @@ export function verifierControlesMetier() {
 
     var controlesOK = true;
 
-    log(inventaire);
-
     // Tout projet doit comporter au moins une ouverture par construction
     if ((inventaire["SOLE"] + inventaire["SOLT"]) < nbConstructions) {
         controlesOK = false;
-        alerte('Il faut au moins une ouverture dans chacune de vos constructions.')
+        alerte('Il faut au moins une ouverture pour <u>chacune</u> de vos constructions.')
     } else {
         var trappesConstruction1 = 0,
             trappesConstruction2 = 0;
@@ -1300,6 +1280,17 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
     // 5 - On renvoie le delta entre score actuel et minimum (donc le score VT que l'ouverture doit dépasser).
     //    return Math.abs(minimumRetenu - scoreActuel);
     return (minimumRetenu - scoreActuel);
+}
+
+
+export function rechercherFaceOpposee(face)) {
+
+
+
+
+
+
+
 }
 
 
@@ -1578,7 +1569,7 @@ function saveArrayBuffer(buffer, filename) {
 
 export function exportProjet() {
 
-    var copieLocale = false;
+    var copieLocale = true;
     var reference = generate(12);
     var exportJson = '{ "projet" : [';
 
@@ -1613,9 +1604,6 @@ export function exportProjet() {
     };
     exportJson = exportJson.slice(0, exportJson.length - 1);
     exportJson += ']}';
-
-
-    log(exportJson);
 
     saveString(exportJson, reference + '.json', copieLocale);
 
