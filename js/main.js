@@ -1283,14 +1283,27 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
 }
 
 
-export function rechercherFaceOpposee(face)) {
+export function rechercherFaceOpposee(nomTravee, face)) {
+
+    // Le but est de rechercher le module qui est éventuellement en jonction (alias le module qui fait face, sur la travée mitoyenne)
+    // --> utile pour le doublonnage des modules.
+    var traveeEnCours = scene.getObjectByName(nomTravee);
+
+    if (face.includes("PG")) {
+        var numTraveeGauche = parseInt(nomTravee.substr(nomTravee.indexOf(" ") + 1) - 1);
+        var traveeVoisine = scene.getObjectByName(PREFIXE_TRAVEE + numTraveeGauche);
+        if (!traveeVoisine || (traveeVoisine.decalage === traveeEnCours.decalage)) return null;
+
+        if ()
+    }
+
+    if (face.includes("PD")) {
+        var numTraveeDroite = parseInt(nomTravee.substr(nomTravee.indexOf(" ") + 1) + 1);
+        var traveeVoisine = scene.getObjectByName(PREFIXE_TRAVEE + numTraveeDroite);
+        if (!traveeVoisine || (traveeVoisine.decalage === traveeEnCours.decalage)) return null;
 
 
-
-
-
-
-
+    }
 }
 
 
