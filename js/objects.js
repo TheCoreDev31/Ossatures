@@ -17,6 +17,7 @@ import {
     MPE_Material,
     MF1_Material,
     MF2_Material,
+    MPEF_Material,
     MPF_Material,
     MPG1_Material,
     MPG2_Material,
@@ -39,7 +40,8 @@ import {
     modifierIncrustation,
     hidePignonIncrustations,
     incrusterCotes,
-    restaurerPrefsUtilisateur
+    restaurerPrefsUtilisateur,
+    rechercherFaceOpposee
 } from "./main.js"
 
 import {
@@ -70,8 +72,6 @@ export function supprimerToutesOuvertures() {
     }
 
     inventaire["MPE"] = inventaire["MPF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPEF"] = inventaire["MPI"] = 0;
-    inventaire["MPL"] = nbTravees * 6;
-
 
     // On supprime également tous les solivages
     inventaire["SOLP"] = nbTravees;
@@ -162,6 +162,9 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
         facade.visible = false;
         var portionMur = new THREE.Mesh(new THREE.BoxGeometry((LONGUEUR_TRAVEE / 2), 4, EPAISSEUR_MUR), wallMaterial);
         portionMur.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Portique';
+        scene.getObjectByName(nomTravee + ">" + face + ">Incrustation").userData = {
+            customVisibility: true
+        };
         windowGrp.add(portionMur);
 
     } else { // Ouvertures "classiques"
@@ -340,50 +343,6 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
     incrustation.name = nomTravee + '>' + face + '>Incrustation';
     modifierIncrustation(nomTravee, face, PRODUITS[typeOuverture]['codeModule']);
 
-    /* Cas des modules en jonction, càd un module positionné sur un pignon commun à 2 travées décalées
-       --> dans ce cas, on double le module (MPI ou MPF ou MPE)
-       
-       Tout d'abord, il faut détecter s'il y a décalage entre les travées, et si l'on se trouve sur un pignon commun.
-    */
-    if (face.includes("PG")) {
-        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
-        var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
-        if (tableauTravees[nomTraveeGauche] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeGauche].decalage)) {
-            var faceGauche = "";
-
-            if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
-                faceGauche = "PDAV";
-
-            if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
-                faceGauche = "PDAR";
-
-            if (faceGauche != "") {
-                modifierIncrustation(nomTraveeGauche, faceGauche, PRODUITS[typeOuverture]['codeModule']);
-                inventaire[PRODUITS[typeOuverture]['codeModule']]++;
-                inventaire["MPL"]--;
-            }
-        }
-    }
-
-    if (face.includes("PD")) {
-        var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
-        var nomTraveeDroite = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee + 1);
-        if (tableauTravees[nomTraveeDroite] && (tableauTravees[nomTravee].decalage != tableauTravees[nomTraveeDroite].decalage)) {
-            var faceGauche = "";
-            if (face.includes("AR") && tableauTravees[nomTraveeGauche].decalage < tableauTravees[nomTravee].decalage)
-                faceGauche = "PGAV";
-
-            if (face.includes("AV") && tableauTravees[nomTraveeGauche].decalage > tableauTravees[nomTravee].decalage)
-                faceGauche = "PGAR";
-
-            if (faceGauche != "") {
-                modifierIncrustation(nomTraveeDroite, faceDroite, PRODUITS[typeOuverture]['codeModule']);
-                inventaire[PRODUITS[typeOuverture]['codeModule']]++;
-                inventaire["MPL"]--;
-            }
-        }
-    }
-
     if (DEBUG) {
         log('tableauTravee APRES creerOuverture :');
         log(tableauTravees);
@@ -417,6 +376,7 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
     if (Array.isArray(ouvertures)) nomOuverture = "PE+F1";
     else nomOuverture = ouvertures.name;
 
+    // A la création d'uneouverture, on rajoute TOUJOURS dans la scene la texture "classique" d'abord...
     if (nomOuverture != "PE+F1") { // Ouverture classique, hors combo "PE + F1"
 
         scene.getObjectByName(nomTravee).add(ouvertures);
@@ -430,10 +390,11 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
         inventaire["MF1"]--;
         inventaire["MPE"]--;
         inventaire["MPEF"]++;
+        inventaire["MPL"]++;
 
         var nouveauGroupe = new THREE.Group();
         nouveauGroupe = mergeGroups(porte, fenetre);
-        nouveauGroupe.name = nomTravee + '>' + nomFace.face + '>Ouverture ' + 'PE+F1';
+        nouveauGroupe.name = nomTravee + '>' + nomFace + '>Ouverture ' + 'PE+F1';
         objetsModifiables.push(nouveauGroupe);
         tableauTravees[nomTravee]['nb_ouvertures_' + nomFace]--;
         tableauTravees[nomTravee]['vt_' + nomFace] = PRODUITS['PE+F1']['VT'];
@@ -448,20 +409,20 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
         retirerObjetModifiable(fenetre.name);
     }
 
-    // Traitement si l'on se trouve en mode "ossature bois" : il faut masquer l'ouverture
-    // que l'on vient de créer et afficher l'équivalent en ossature bois.
+    // .. et éventuellement, si l'on se trouve en mode "ossature bois", on masque l'ouverture avec sa
+    // texture "classique" et on affiche l'équivalent en ossature bois.
     if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked')) {
 
         if (nomOuverture != "PE+F1") {
 
-            var module = nouvelleOuverture.name.substr(nouvelleOuverture.name.lastIndexOf(' ') + 1, nouvelleOuverture.name.length);
-            var mur = nouvelleOuverture.name.substring(0, nouvelleOuverture.name.lastIndexOf('>'));
+            var module = nomOuverture.substr(nomOuverture.lastIndexOf(' ') + 1, nomOuverture.length);
+            var mur = nomOuverture.substring(0, nomOuverture.lastIndexOf('>'));
             var material;
 
             if (module == 'PO') {
                 scene.getObjectByName(mur).material = MPI_Material;
             } else {
-                scene.getObjectByName(nouvelleOuverture.name).visible = false;
+                scene.getObjectByName(nomOuverture).visible = false;
 
                 switch (module) {
                     case "PE":
@@ -651,7 +612,10 @@ export function gererDecalageTravee(laNouvelleTravee) {
 
         // Le pignon séparant les 2 travées devient un pignon intérieur, donc sélectionnable.
         laNouvelleTravee.children[indiceToit].children[indicePignonGauche].name = laNouvelleTravee.name + ">PINT";
-        laNouvelleTravee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+        laNouvelleTravee.children[indiceToit].children[indicePignonGauche].material = PINT_Droite_Material;
+
+        // Enfin, on re-crée une ouverture dans la travée la plus à gauche.
+        selectionnerSolivage('Travee 1', "SOLT_bc");
     }
 }
 
@@ -740,8 +704,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
-                    traveeDroite.children[indicePGAV].visible = travee.children[indicePGAR].visible = travee.children[indicePDAV].visible = true;
-                    travee.children[indicePDAR].visible = false;
+
+                    // Cas A            
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
+                    travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = true;
                     travee.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
@@ -758,6 +724,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
                 } else {
 
+                    // Cas B
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
@@ -783,8 +750,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAR].visible = true;
-                    traveeGauche.children[indicePDAV].visible = false;
+
+                    // Cas C
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAR].visible = traveeGauche.children[indicePDAV].visible = true;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
@@ -800,6 +769,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeGauche.name, "PDAR", "MPL");
 
                 } else {
+
+                    // Cas D
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
@@ -841,8 +812,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
-                    travee.children[indicePDAR].visible = traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
-                    travee.children[indicePDAV].visible = false;
+
+                    // Cas E
+                    travee.children[indicePDAR].visible = travee.children[indicePDAV].visible = true;
+                    traveeDroite.children[indicePGAR].visible = traveeDroite.children[indicePDAV].visible = true;
                     travee.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
@@ -855,9 +828,9 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeDroite.name, "PG", "PEXT");
 
                     inventaire["MPL"] += 2;
-                    modifierIncrustation(travee.name, "PDAV", "MPL");
-
                 } else {
+
+                    // Cas F
                     traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
@@ -883,8 +856,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             } else {
                 // On teste la position du décalage entre travées AVANT le décalage.
                 if (decalageTraveeGauche == tableauTravees[nomTravee]['decalage']) {
-                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = traveeGauche.children[indicePDAV].visible = true;
-                    traveeGauche.children[indicePDAR].visible = false;
+
+                    // Cas G
+                    travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
+                    traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = true;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
@@ -897,9 +872,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(traveeGauche.name, "PD", "PEXT");
 
                     inventaire["MPL"] += 2;
-                    modifierIncrustation(traveeGauche.name, "PDAR", "MPL");
 
                 } else {
+
+                    // Cas H
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
@@ -915,7 +891,6 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             }
         }
 
-
         travee.position.z -= (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['positionZ'] -= (LONGUEUR_TRAVEE / 2);
         tableauTravees[nomTravee]['decalage']--;
@@ -924,8 +899,6 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
     recalculerConstructions();
     incrusterCotes();
     unSelect();
-
-    log(inventaire);
 }
 
 
@@ -1138,7 +1111,7 @@ export function traitementCreationTravee(travee) {
         modifierIncrustation(travee.name, 'PG', 'PINT', true);
         var voisine = scene.getObjectByName(PREFIXE_TRAVEE + (nbTravees - 1));
         modifierIncrustation(voisine.name, 'PD', 'PINT', true);
-        inventaire["MPL"] -= 2;
+        inventaire["MPL"] -= 2; // Car 2 murs disparaissent.
     }
     hidePignonIncrustations();
 

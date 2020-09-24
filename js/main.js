@@ -390,8 +390,10 @@ export function showMainIncrustations() {
                 child.visible = true;
             else {
 
-                // Attention au cas particulier des modules en jonction
                 child.visible = false;
+
+                // Cas particulier des modules PO, dont le mur plein est invisible (mais qui possède un bout de mur).
+                if (child.userData.customVisibility) child.visible = true;
             }
         }
     });
@@ -429,6 +431,7 @@ export function modifierIncrustation(travee, face, remplacant = false, visibilit
             var positionZ = groupe.children[i].position.z;
 
             if (remplacant) {
+                var backupUserData = groupe.children[i].userData;
                 groupe.remove(groupe.children[i]);
 
                 if (remplacant.indexOf('_') != -1) remplacant = remplacant.slice(0, remplacant.indexOf('_'));
@@ -438,6 +441,7 @@ export function modifierIncrustation(travee, face, remplacant = false, visibilit
                 nouvelleIncrustation.position.set(positionX, positionY, positionZ);
                 nouvelleIncrustation.name = travee + ">" + face + ">Incrustation";
                 nouvelleIncrustation.visible = visibility;
+                nouvelleIncrustation.userData = backupUserData;
                 groupe.add(nouvelleIncrustation);
             } else
                 groupe.children[i].visible = false;
@@ -1283,27 +1287,36 @@ function selectionnerMatrices(nomsTravees, rangTravee, nomFaceDansTravee) {
 }
 
 
-export function rechercherFaceOpposee(nomTravee, face)) {
+export function rechercherFaceOpposee(nomTravee, face) {
 
-    // Le but est de rechercher le module qui est éventuellement en jonction (alias le module qui fait face, sur la travée mitoyenne)
-    // --> utile pour le doublonnage des modules.
-    var traveeEnCours = scene.getObjectByName(nomTravee);
+    // Le but est de rechercher le module qui est éventuellement en jonction (alias le module qui fait face,
+    // sur la travée mitoyenne) --> utile pour le doublonnage des modules.
+    var decalageTraveeEnCours = tableauTravees[nomTravee].decalage;
+    var numTraveeEnCours = parseInt(nomTravee.substr(nomTravee.indexOf(" ") + 1));
 
     if (face.includes("PG")) {
-        var numTraveeGauche = parseInt(nomTravee.substr(nomTravee.indexOf(" ") + 1) - 1);
-        var traveeVoisine = scene.getObjectByName(PREFIXE_TRAVEE + numTraveeGauche);
-        if (!traveeVoisine || (traveeVoisine.decalage === traveeEnCours.decalage)) return null;
+        var nomTraveeGauche = PREFIXE_TRAVEE + parseInt(numTraveeEnCours - 1);
+        if (scene.getObjectByName(nomTraveeGauche)) {
+            var decalageTraveeVoisine = tableauTravees[nomTraveeGauche].decalage;
+            if (decalageTraveeVoisine === decalageTraveeEnCours) return null;
 
-        if ()
+            if (face.includes("AV") && (decalageTraveeVoisine > decalageTraveeEnCours)) return [nomTraveeGauche, "PDAR"];
+            if (face.includes("AR") && (decalageTraveeVoisine < decalageTraveeEnCours)) return [nomTraveeGauche, "PDAV"];
+        }
     }
 
     if (face.includes("PD")) {
-        var numTraveeDroite = parseInt(nomTravee.substr(nomTravee.indexOf(" ") + 1) + 1);
-        var traveeVoisine = scene.getObjectByName(PREFIXE_TRAVEE + numTraveeDroite);
-        if (!traveeVoisine || (traveeVoisine.decalage === traveeEnCours.decalage)) return null;
+        var nomTraveeDroite = PREFIXE_TRAVEE + parseInt(numTraveeEnCours + 1);
+        if (scene.getObjectByName(nomTraveeDroite)) {
+            var decalageTraveeVoisine = tableauTravees[nomTraveeDroite].decalage;
+            if (decalageTraveeVoisine === decalageTraveeEnCours) return null;
 
-
+            if (face.includes("AV") && (decalageTraveeVoisine > decalageTraveeEnCours)) return [nomTraveeDroite, "PGAR"];
+            if (face.includes("AR") && (decalageTraveeVoisine < decalageTraveeEnCours)) return [nomTraveeDroite, "PGAV"];
+        }
     }
+
+    return null;
 }
 
 
@@ -1702,13 +1715,23 @@ export function importProjet(nomFichier) {
 /**********************************************************************************************************/
 
 function creerProjetBasique() {
+
     // Création d'un projet de base
     var travee = creerTravee();
-    if (travee) traitementCreationTravee(travee);
+    traitementCreationTravee(travee);
     nbConstructions = nbTravees = 1;
 
+    /*
+        var travee2 = creerTravee();
+        traitementCreationTravee(travee2);
+        decalerTravee(travee2.name, 'back');
+    */
     var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
     traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
+    /*
+        var nouvelleOuverture = creerOuverture("Travee 2", "PGAV", "PO");
+        traitementCreationOuverture("Travee 2", "PGAV", nouvelleOuverture);
+    */
     selectionnerSolivage("Travee 1", "SOLT_bc");
 }
 

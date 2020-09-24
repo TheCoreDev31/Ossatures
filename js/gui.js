@@ -723,9 +723,6 @@ export function displayGui() {
                 modules.push(module);
                 coutEstimeBas += (module.quantite * PRODUITS[correspondance].coutFourchetteBasse);
                 coutEstimeHaut += (module.quantite * PRODUITS[correspondance].coutFourchetteHaute);
-
-                log(coutEstimeBas);
-                log(coutEstimeHaut);
             }
 
             donneesBrutes.modules = modules;

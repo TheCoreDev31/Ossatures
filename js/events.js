@@ -46,7 +46,8 @@ import {
     animate,
     traduireNomObjet,
     calculerTaillePoliceOptimale,
-    redimensionnerIncrustations
+    redimensionnerIncrustations,
+    rechercherFaceOpposee
 } from "./main.js"
 
 import {
@@ -89,7 +90,16 @@ $(".liste-deroulante").click(function (e) {
 
     switch (action) {
         case 'deleteOuverture':
+            var backupObjetSelectionne = objetSelectionne;
+            var typeOuverture = objetSelectionne.substring(objetSelectionne.indexOf("Ouverture"), objetSelectionne.lastIndexOf('>'));
             supprimerOuverture(scene.getObjectByName(objetSelectionne).parent.name);
+
+            // Pour les cas de modules en jonction, il faut également supprimer l'ouverture qui est en face.
+            var faceOpposee = rechercherFaceOpposee(extraireNomTravee(backupObjetSelectionne), extraireFace(backupObjetSelectionne));
+            if (faceOpposee != null) {
+                var autreOuverture = faceOpposee[0] + ">" + faceOpposee[1] + ">" + typeOuverture;
+                supprimerOuverture(autreOuverture);
+            }
             break;
         case 'addOpening':
             displayOpenings(objetSelectionne, faceInterieureOuExterieure(objetSelectionne));
@@ -204,10 +214,15 @@ $(".popup-ouverture").click(function (e) {
             nouvelleOuverture = creerOuverture(nomTravee, nomFace, $(e.target).parent().attr('id'));
             traitementCreationOuverture(nomTravee, nomFace, nouvelleOuverture);
 
+            var faceOpposee = rechercherFaceOpposee(nomTravee, nomFace);
+            if (faceOpposee != null) {
+                nouvelleOuverture = creerOuverture(faceOpposee[0], faceOpposee[1], $(e.target).parent().attr('id'));
+                traitementCreationOuverture(faceOpposee[0], faceOpposee[1], nouvelleOuverture);
+            }
         } else {
 
             // Cas particulier du combo PE + F1 :
-            // on créé chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
+            // on crée chacune de 2 ouvertures puis on régularise (nb d'ouvertures, score VT, etc...)
             var ouvertures = creerComboOuvertures(nomTravee, nomFace);
             traitementCreationOuverture(nomTravee, nomFace, ouvertures);
         }

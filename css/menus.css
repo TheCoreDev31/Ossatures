@@ -1,4 +1,4 @@
-/* line 7, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 7, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 #div-menu-contextuel {
   display: flex;
   z-index: 200;
@@ -15,60 +15,60 @@
   -o-transition: opacity 500ms;
   -ms-transition: opacity 500ms; }
 
-/* line 26, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 26, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante {
   list-style: none;
   margin-right: 20px; }
 
-/* line 31, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 31, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 ul.liste-deroulante {
   margin: 10px;
   padding-left: 8px;
   border: 0px; }
 
-/* line 37, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 37, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li {
   padding: 6px 8px;
   cursor: pointer;
   font-family: "Avenir Next", "Avenir", sans-serif; }
-  /* line 42, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+  /* line 42, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
   .liste-deroulante li:before {
     padding-right: 8px;
     font-family: "Font Awesome 5 Free";
     font-weight: 900; }
 
-/* line 49, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 49, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li:not(.blank)::before {
   content: "\f00d"; }
 
-/* line 53, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 53, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.moveBack::before {
   content: "\f062"; }
 
-/* line 57, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 57, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.moveFront::before {
   content: "\f063"; }
 
-/* line 61, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 61, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.add::before {
   content: "\f067"; }
 
-/* line 65, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 65, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.delete::before {
-  content: "\f014"; }
+  content: "\f2ed"; }
 
-/* line 69, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 69, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.choose::before {
   content: "\f05b"; }
 
-/* line 73, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 73, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante li.disabled {
   cursor: not-allowed; }
-  /* line 76, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+  /* line 76, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
   .liste-deroulante li.disabled:hover {
     background-color: #202020; }
 
-/* line 81, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 81, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .liste-deroulante hr {
   background-color: grey;
   height: 1px;
@@ -76,11 +76,11 @@ ul.liste-deroulante {
   margin: 2px 0px; }
 
 /* Pour le dat.gui */
-/* line 90, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 90, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .dg .property-name {
   width: 70% !important; }
 
-/* line 94, /Volumes/Documents/Dev/Sources/Clients/Maninghem/css/menus.scss */
+/* line 94, /Volumes/Dev/Sources/Clients/Maninghem/css/menus.scss */
 .dg .c {
   width: 20% !important; }
 
