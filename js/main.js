@@ -1069,23 +1069,36 @@ export function verifierControlesMetier() {
         controlesOK = false;
         alerte('Il faut au moins une ouverture pour <u>chacune</u> de vos constructions.')
     } else {
-        var trappesConstruction1 = 0,
-            trappesConstruction2 = 0;
+        var SOLEConstruction1 = 0,
+            SOLEConstruction2 = 0,
+            SOLTConstruction1 = 0,
+            SOLTConstruction2 = 0;
 
-        // Il faut vérifier aussi qu'il y a bien une trappe par construction
+        // Il faut vérifier le bon nombre de trappes par construction
         for (var travee in tableauTravees) {
             if (tableauTravees[travee].numConstruction == 1) {
-                if (tableauTravees[travee].typeSolivage != "SOLP")
-                    trappesConstruction1++;
+                if (tableauTravees[travee].typeSolivage == "SOLE")
+                    SOLEConstruction1++;
+                if (tableauTravees[travee].typeSolivage == "SOLT")
+                    SOLTConstruction1++;
             }
             if (tableauTravees[travee].numConstruction == 2) {
-                if (tableauTravees[travee].typeSolivage != "SOLP")
-                    trappesConstruction2++;
+                if (tableauTravees[travee].typeSolivage == "SOLE")
+                    SOLEConstruction2++;
+                if (tableauTravees[travee].typeSolivage == "SOLT")
+                    SOLTConstruction2++;
             }
         }
-        if (trappesConstruction1 > 1 || trappesConstruction2 > 1) {
+        if (SOLEConstruction1 > 1 || SOLTConstruction1 > 1 || SOLEConstruction2 > 1 || SOLTConstruction2 > 1) {
             controlesOK = false;
-            alerte('Plusieurs trappes ont été positionnées sur la même construction.')
+            if (SOLEConstruction1 > 1)
+                alerte('Plusieurs trémies d\'escalier ont été positionnées sur la construction n°1.');
+            if (SOLTConstruction1 > 1)
+                alerte('Plusieurs trappes ont été positionnées sur la construction n°1.');
+            if (SOLEConstruction2 > 1)
+                alerte('Plusieurs trémies d\'escalier ont été positionnées sur la construction n°2.');
+            if (SOLEConstruction2 > 1)
+                alerte('Plusieurs trappes ont été positionnées sur la construction n°2.');
         }
     }
 
