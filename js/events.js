@@ -125,12 +125,6 @@ $(".liste-deroulante").click(function (e) {
         case 'addPignonOpening':
             displayPignonOpenings(objetSelectionne);
             break;
-        case 'deletePignonOpening':
-            // On remplace la texture du pignon intérieur par celle d'un pignon plein
-            var pignon = scene.getObjectByName(objetSelectionne);
-            pignon.material = PEXT_Material;
-            unSelect();
-            break;
         default:
             alert('Autre action inconnue !');
             break;

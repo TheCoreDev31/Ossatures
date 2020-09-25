@@ -1701,10 +1701,10 @@ export function importProjet(nomFichier) {
 
                     if (module.module === "PE+F1") {
                         var combo = creerComboOuvertures(nomTravee, module.face);
-                        traitementCreationOuverture(nomTravee, module, combo);
+                        traitementCreationOuverture(nomTravee, module.face, combo);
                     } else {
                         var nouvelleOuverture = creerOuverture(nomTravee, module.face, module.module);
-                        traitementCreationOuverture(nomTravee, module, nouvelleOuverture);
+                        traitementCreationOuverture(nomTravee, module.face, nouvelleOuverture);
                     }
 
                 });
@@ -1734,17 +1734,8 @@ function creerProjetBasique() {
     traitementCreationTravee(travee);
     nbConstructions = nbTravees = 1;
 
-    /*
-        var travee2 = creerTravee();
-        traitementCreationTravee(travee2);
-        decalerTravee(travee2.name, 'back');
-    */
     var nouvelleOuverture = creerOuverture("Travee 1", "AV", "PG2");
     traitementCreationOuverture("Travee 1", "AV", nouvelleOuverture);
-    /*
-        var nouvelleOuverture = creerOuverture("Travee 2", "PGAV", "PO");
-        traitementCreationOuverture("Travee 2", "PGAV", nouvelleOuverture);
-    */
     selectionnerSolivage("Travee 1", "SOLT_bc");
 }
 

@@ -554,8 +554,8 @@ export function selectionnerSolivage(nomTravee, solivageChoisi) {
             plancher.rotation.z = Math.PI;
             break;
     }
-    if (solivageChoisi.indexOf("haut") != -1) decalageIncrustation = -1;
-    if (solivageChoisi.indexOf("bas") != -1) decalageIncrustation = 1;
+    if (solivageChoisi.indexOf("_h") != -1) decalageIncrustation = -1;
+    if (solivageChoisi.indexOf("_b") != -1) decalageIncrustation = 1;
 
     inventaire[ancienSolivage]--;
     inventaire[familleSolivage]++;

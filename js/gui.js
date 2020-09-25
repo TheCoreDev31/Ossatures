@@ -433,14 +433,11 @@ export function displayContextualMenu(objet, x, y) {
             addSeparator();
         }
         if (objet.name.includes('plancher')) {
-            addMenu("Positionner la trappe d'accès", 'chooseFloorHole');
+            addMenu("Choisir le solivage", 'chooseFloorHole');
         } else {
 
             if (objet.name.includes('PINT')) {
-                if (objet.material == PEXT_Material)
-                    addMenu("Créer une ouverture", 'addPignonOpening');
-                else
-                    addMenu("Supprimer cette ouverture", 'deletePignonOpening');
+                addMenu("Choisir l'ouverture", 'addPignonOpening');
             } else {
                 var nomFace = extraireFace(objet.name);
                 // S'il existe déjà une ouverture sur ce module, on grise la possibilité d'en ajouter une autre.
@@ -748,7 +745,7 @@ export function displayGui() {
                         "format": "A4",
                         "orientation": "landscape",
                         "headerHeight": "0cm",
-                        "footer": "<div style='text-align:center;font-size:12px'>Dossier {{nomClient }} - page {#pageNum}/{#numPages}</div>",
+                        "footer": "<div style='text-align:right;font-size:12px'>Dossier {{nomClient }} - page {#pageNum}/{#numPages}</div>",
                         "footerHeight": "0.5cm"
                     }
                 },

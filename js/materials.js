@@ -431,7 +431,7 @@ export var PEXT_Material = [PEXT_Front_Material, PEXT_Back_Material];
 
 var PINT_Droite_Front_Texture = textureLoader.load("img/openings/PINT_droite_F.png");
 PINT_Droite_Front_Texture.wrapS = PEXT_Front_Texture.wrapT = THREE.RepeatWrapping;
-PINT_Droite_Front_Texture.repeat.set(0.014, 0.039);
+PINT_Droite_Front_Texture.repeat.set(0.013, 0.037);
 PINT_Droite_Front_Texture.offset.set(0.5, 0);
 var PINT_Droite_Front_Material = new THREE.MeshLambertMaterial({
     map: PINT_Droite_Front_Texture,
@@ -441,7 +441,7 @@ var PINT_Droite_Front_Material = new THREE.MeshLambertMaterial({
 });
 var PINT_Droite_Back_Texture = textureLoader.load("img/openings/PINT_droite_B.png");
 PINT_Droite_Back_Texture.wrapS = PEXT_Back_Texture.wrapT = THREE.RepeatWrapping;
-PINT_Droite_Back_Texture.repeat.set(0.014, 0.039);
+PINT_Droite_Back_Texture.repeat.set(0.013, 0.037);
 PINT_Droite_Back_Texture.offset.set(0.5, 0);
 var PINT_Droite_Back_Material = new THREE.MeshLambertMaterial({
     map: PINT_Droite_Back_Texture,
