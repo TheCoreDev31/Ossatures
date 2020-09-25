@@ -270,13 +270,42 @@ export function afficherVueAerienne(modePDF = false) {
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
     var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
     var origineZ = 0;
-    var MARGE = 40;
-    if (nbTravees == 1) MARGE = 100; // Eventuellement, cas particulier de la construction à 1 travée
+    var MARGE_DROITE = 40;
+    var MARGE_BAS = 20;
+    if (nbTravees == 1) MARGE_DROITE = 100; // Eventuellement, cas particulier de la construction à 1 travée
 
-    cameraOrtho.left = gauche - (MARGE / 2);
-    cameraOrtho.right = droite + MARGE;
+    cameraOrtho.left = gauche - (MARGE_DROITE / 2);
+    cameraOrtho.right = droite + MARGE_DROITE;
     cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
     cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+
+
+    var topMax = 0;
+    var bottomMax = 0;
+    for (var laTravee in tableauTravees) {
+        if (tableauTravees[laTravee].positionZ < topMax)
+            topMax = tableauTravees[laTravee].positionZ;
+
+        if (tableauTravees[laTravee].positionZ >= bottomMax)
+            bottomMax = tableauTravees[laTravee].positionZ;
+    }
+
+    topMax -= LONGUEUR_TRAVEE / 2;
+    topMax = -topMax;
+    bottomMax += (LONGUEUR_TRAVEE / 2) + MARGE_BAS;
+    bottomMax = -bottomMax;
+    log("gauche/droite : " + gauche + " / " + droite);
+    log("top/bottom calculés : " + cameraOrtho.top + " / " + cameraOrtho.bottom);
+    log("top/bottom réels : " + topMax + " / " + bottomMax);
+
+    if ((cameraOrtho.top < topMax) || (cameraOrtho.bottom > bottomMax)) {
+        cameraOrtho.top = topMax + MARGE_BAS;
+        cameraOrtho.bottom = bottomMax - MARGE_BAS;
+
+        var hauteur = cameraOrtho.top - cameraOrtho.bottom;
+        cameraOrtho.left = -(hauteur * aspectRatio) / 2;
+        cameraOrtho.right = (hauteur * aspectRatio) / 2;
+    }
 
     // On tient compte aussi des éventuels décalages en Z.
     var decalage = tableauTravees['Travee 1'].decalage - tableauTravees['Travee ' + nbTravees].decalage;

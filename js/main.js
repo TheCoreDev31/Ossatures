@@ -232,9 +232,9 @@ export function incrusterCotes() {
     var points = [];
     decalage = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2);
     points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, ((LONGUEUR_TRAVEE / 2)) + 1));
-    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
+    points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 6));
     decalage = tableauTravees[derniereTraveeConstruction1].positionX + (LARGEUR_TRAVEE / 2);
-    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
+    points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 6));
     points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrpX.add(line);
@@ -244,7 +244,7 @@ export function incrusterCotes() {
     texteCotes.name = "CoteX_1>texte";
     texteCotes.rotation.x = -Math.PI / 2;
     xTexte = (tableauTravees['Travee 1'].positionX + tableauTravees[derniereTraveeConstruction1].positionX) / 2;
-    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 12);
+    texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 9);
     cotesGrpX.add(texteCotes);
 
     // On prend en compte le décalage éventuel de la première construction par rapport à la seconde.
@@ -264,9 +264,9 @@ export function incrusterCotes() {
         var points = [];
         decalage = tableauTravees[premiereTraveeConstruction2].positionX - (LARGEUR_TRAVEE / 2);
         points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
-        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
+        points.push(new THREE.Vector3(decalage + 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 6));
         decalage = tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX + (LARGEUR_TRAVEE / 2);
-        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 8));
+        points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 6));
         points.push(new THREE.Vector3(decalage - 0.5, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 1));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrpX.add(line);
@@ -276,7 +276,7 @@ export function incrusterCotes() {
         texteCotes.name = "CoteX_2>texte";
         texteCotes.rotation.x = -Math.PI / 2;
         xTexte = (tableauTravees[premiereTraveeConstruction2].positionX + tableauTravees[PREFIXE_TRAVEE + nbTravees].positionX) / 2;
-        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 12);
+        texteCotes.position.set(xTexte, hauteurTexte, (LONGUEUR_TRAVEE / 2) + 9);
         cotesGrpX.add(texteCotes);
 
         // En fonction du décalage éventuel de la première construction, on peut décaler suivant Y.
@@ -305,14 +305,14 @@ export function incrusterCotes() {
     texteCotes.rotation.x = Math.PI / 2;
     texteCotes.rotation.y = Math.PI;
     texteCotes.rotation.z = -Math.PI / 2;
-    texteCotes.position.set(decalage - 10, hauteurTexte, 0);
+    texteCotes.position.set(decalage - 8, hauteurTexte, 0);
     texteCotes.name = "CoteY_1>texte";
     cotesGrpY.add(texteCotes);
 
     var points = [];
     points.push(new THREE.Vector3(decalage - 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-    points.push(new THREE.Vector3(decalage - 8, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-    points.push(new THREE.Vector3(decalage - 8, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+    points.push(new THREE.Vector3(decalage - 6, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+    points.push(new THREE.Vector3(decalage - 6, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
     points.push(new THREE.Vector3(decalage - 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
     var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
     cotesGrpY.add(line);
@@ -338,14 +338,14 @@ export function incrusterCotes() {
         texteCotes.rotation.z = -Math.PI / 2;
         texteCotes.rotation.x = Math.PI / 2;
         texteCotes.rotation.y = Math.PI;
-        texteCotes.position.set(decalage + 10, hauteurTexte, 0);
+        texteCotes.position.set(decalage + 8, hauteurTexte, 0);
         texteCotes.name = "CoteY_2>texte";
         cotesGrpY.add(texteCotes);
 
         var points = [];
         points.push(new THREE.Vector3(decalage + 1, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-        points.push(new THREE.Vector3(decalage + 8, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
-        points.push(new THREE.Vector3(decalage + 8, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
+        points.push(new THREE.Vector3(decalage + 6, hauteurTexte, LONGUEUR_TRAVEE / 2 - 0.5));
+        points.push(new THREE.Vector3(decalage + 6, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
         points.push(new THREE.Vector3(decalage + 1, hauteurTexte, -LONGUEUR_TRAVEE / 2 + 0.5));
         var line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), textMaterial);
         cotesGrpY.add(line);
