@@ -1119,7 +1119,7 @@ export function traitementCreationTravee(travee) {
     incrusterCotes();
 
     // On déplace également la boussole pour qu'elle soit toujours à la même distance de la droite de la construction
-    scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 50;
+    scene.getObjectByName('boussole').position.x = tableauTravees["Travee " + nbTravees].positionX + 40;
 
     restaurerPrefsUtilisateur(nbTravees, travee);
 }

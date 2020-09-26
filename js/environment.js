@@ -64,7 +64,7 @@ scene.background = textureCube;
 
 
 // Repère face avant
-var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(16, 16), boussoleMaterial);
+var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(12, 12), boussoleMaterial);
 boussole.name = 'boussole';
 boussole.rotation.x = -Math.PI / 2;
 boussole.position.set(50, -(HAUTEUR_TRAVEE / 2) + 0.1, 0);

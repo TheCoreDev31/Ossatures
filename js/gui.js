@@ -267,56 +267,48 @@ export function afficherVueAerienne(modePDF = false) {
     initPositionCamera(cameraOrtho);
 
     // On calcule les limites gauche, droite, haut et bas de la construction, afin de cadrer au mieux.
-    var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2); // Bord gauche de la construction
-    var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2); // Bord droit de la construction
-    var origineZ = 0;
-    var MARGE_DROITE = 40;
+    var MARGE_GAUCHE = 20;
+    var MARGE_DROITE = 50;
+    var MARGE_HAUT = 5;
     var MARGE_BAS = 20;
-    if (nbTravees == 1) MARGE_DROITE = 100; // Eventuellement, cas particulier de la construction à 1 travée
 
-    cameraOrtho.left = gauche - (MARGE_DROITE / 2);
-    cameraOrtho.right = droite + MARGE_DROITE;
-    cameraOrtho.top = ((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
-    cameraOrtho.bottom = -((cameraOrtho.right - cameraOrtho.left) / aspectRatio) / 2;
+    var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2) - MARGE_GAUCHE; // Bord gauche de la construction + marge
+    var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2) + MARGE_DROITE; // Bord droit + marge
+    var largeur = droite - gauche;
+    var hauteurCalculee = largeur / aspectRatio;
 
-
-    var topMax = 0;
-    var bottomMax = 0;
+    var maxTop = 0;
+    var minBottom = 0;
     for (var laTravee in tableauTravees) {
-        if (tableauTravees[laTravee].positionZ < topMax)
-            topMax = tableauTravees[laTravee].positionZ;
+        if (tableauTravees[laTravee].positionZ < maxTop)
+            maxTop = tableauTravees[laTravee].positionZ;
 
-        if (tableauTravees[laTravee].positionZ >= bottomMax)
-            bottomMax = tableauTravees[laTravee].positionZ;
+        if (tableauTravees[laTravee].positionZ >= minBottom)
+            minBottom = tableauTravees[laTravee].positionZ;
+    }
+    maxTop -= (LONGUEUR_TRAVEE / 2);
+    maxTop = -maxTop + MARGE_HAUT;
+    minBottom += (LONGUEUR_TRAVEE / 2);
+    minBottom = -minBottom - MARGE_BAS;
+    var hauteur = maxTop - minBottom;
+    var largeurCalculee = hauteur * aspectRatio;
+
+    if (hauteurCalculee >= hauteur) {
+        cameraOrtho.left = gauche;
+        cameraOrtho.right = droite;
+        cameraOrtho.top = maxTop + ((hauteurCalculee - hauteur) / 2);
+        cameraOrtho.bottom = minBottom - ((hauteurCalculee - hauteur) / 2);
+    } else {
+        cameraOrtho.top = maxTop;
+        cameraOrtho.bottom = minBottom;
+        cameraOrtho.left = gauche - ((largeurCalculee - largeur) / 2);
+        cameraOrtho.right = droite + ((largeurCalculee - largeur) / 2);
     }
 
-    topMax -= LONGUEUR_TRAVEE / 2;
-    topMax = -topMax;
-    bottomMax += (LONGUEUR_TRAVEE / 2) + MARGE_BAS;
-    bottomMax = -bottomMax;
-    log("gauche/droite : " + gauche + " / " + droite);
-    log("top/bottom calculés : " + cameraOrtho.top + " / " + cameraOrtho.bottom);
-    log("top/bottom réels : " + topMax + " / " + bottomMax);
 
-    if ((cameraOrtho.top < topMax) || (cameraOrtho.bottom > bottomMax)) {
-        cameraOrtho.top = topMax + MARGE_BAS;
-        cameraOrtho.bottom = bottomMax - MARGE_BAS;
-
-        var hauteur = cameraOrtho.top - cameraOrtho.bottom;
-        cameraOrtho.left = -(hauteur * aspectRatio) / 2;
-        cameraOrtho.right = (hauteur * aspectRatio) / 2;
-    }
-
-    // On tient compte aussi des éventuels décalages en Z.
-    var decalage = tableauTravees['Travee 1'].decalage - tableauTravees['Travee ' + nbTravees].decalage;
-    if (DEBUG) log("decalage=" + decalage);
-    if (decalage < 0) {
-        cameraOrtho.top -= (LONGUEUR_TRAVEE / 8);
-        cameraOrtho.bottom -= (LONGUEUR_TRAVEE / 8);
-    }
-    if (decalage > 0) {
-        cameraOrtho.top += (LONGUEUR_TRAVEE / 8);
-        cameraOrtho.bottom += (LONGUEUR_TRAVEE / 8);
+    if (DEBUG) {
+        log("left/right : " + gauche + " / " + droite + " soit une largeur de " + largeur + " et une hauteur calculée de " + hauteurCalculee);
+        log("top/bottom : " + maxTop + " / " + minBottom + " soit une hauteur de " + hauteur + " et une largeur calculée de " + largeurCalculee);
     }
 
     activeCamera = cameraOrtho;
