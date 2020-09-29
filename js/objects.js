@@ -74,15 +74,12 @@ export function supprimerToutesOuvertures() {
     inventaire["MPE"] = inventaire["MPF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPEF"] = inventaire["MPI"] = 0;
 
     // On supprime également tous les solivages
-    inventaire["SOLP"] = nbTravees;
-    inventaire["SOLE"] = inventaire["SOLT"] = 0;
     for (var i = 1; i <= nbTravees; i++) {
         var nomTravee = PREFIXE_TRAVEE + i;
-        tableauTravees[nomTravee].typeSolivage = "SOLP";
-        scene.getObjectByName(nomTravee + ">plancher").material = SOLP_Material;
-        modifierIncrustation(nomTravee, "plancher", "SOLP");
+        selectionnerSolivage(nomTravee, "SOLP");
     }
-
+    inventaire["SOLE"] = inventaire["SOLT"] = 0;
+    inventaire["SOLP"] = nbTravees;
     nbOuvertures = 0;
 }
 
@@ -554,21 +551,18 @@ export function selectionnerSolivage(nomTravee, solivageChoisi) {
             plancher.rotation.z = Math.PI;
             break;
     }
-    if (solivageChoisi.indexOf("_h") != -1) decalageIncrustation = -1;
-    if (solivageChoisi.indexOf("_b") != -1) decalageIncrustation = 1;
-
     inventaire[ancienSolivage]--;
     inventaire[familleSolivage]++;
-    nbOuvertures++;
-
+    if (ancienSolivage == "SOLP" && familleSolivage != "SOLP") nbOuvertures++;
     tableauTravees[nomTravee].typeSolivage = solivageChoisi;
 
-    var positionIncrustation = tableauTravees[nomTravee].positionZ;
-    if (decalageIncrustation < 0) positionIncrustation -= ((LONGUEUR_TRAVEE / 2) - 15);
-    if (decalageIncrustation > 0) positionIncrustation += ((LONGUEUR_TRAVEE / 2) - 15);
+    // Attention : coordonnées relatives et pas absolues
+    var positionIncrustation = 0;
+    if (solivageChoisi.indexOf("_h") != -1) positionIncrustation = -20;
+    if (solivageChoisi.indexOf("_b") != -1) positionIncrustation = 20;
+    scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
 
     modifierIncrustation(nomTravee, "plancher", solivageChoisi);
-    scene.getObjectByName(nomTravee + ">plancher>Incrustation").position.z = positionIncrustation;
 }
 
 
@@ -577,7 +571,7 @@ export function gererDecalageTravee(laNouvelleTravee) {
 
     if (nbTravees > 1) {
 
-        // Rajout d'une travée -> on décale tout le monde vers la droite (suivant X).
+        // Rajout d'une travée -> on décale tout le monde vers la gauche (suivant X).
         laNouvelleTravee.translateX(LARGEUR_TRAVEE / 2 * (nbTravees - 1));
         tableauTravees[laNouvelleTravee.name]['positionX'] += (LARGEUR_TRAVEE / 2 * (nbTravees - 1));
         for (var i = nbTravees - 1; i > 0; i--) {
@@ -706,11 +700,11 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                 if (decalageTraveeDroite == tableauTravees[nomTravee]['decalage']) {
 
                     // Cas A            
-                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = true;
-                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
                     travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
                     modifierIncrustation(travee.name, "PD", "PEXT");
@@ -725,12 +719,12 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                 } else {
 
                     // Cas B
-                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
-                    travee.children[indiceToit].children[indicePignonDroit].visible = false;
-                    modifierIncrustation(travee.name, "PD", "PINT");
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(travee.name, "PD", "PINT");
                     traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(traveeDroite.name, "PG", "PINT");
@@ -754,9 +748,9 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Cas C
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAR].visible = traveeGauche.children[indicePDAV].visible = true;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
                     travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                     modifierIncrustation(travee.name, "PG", "PEXT");
@@ -773,10 +767,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Cas D
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
-                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");
@@ -815,10 +809,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
                     // Cas E
                     travee.children[indicePDAR].visible = travee.children[indicePDAV].visible = true;
-                    traveeDroite.children[indicePGAR].visible = traveeDroite.children[indicePDAV].visible = true;
-                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
+                    traveeDroite.children[indicePGAR].visible = traveeDroite.children[indicePGAV].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
+                    travee.children[indiceToit].children[indicePignonDroit].visible = true;
                     travee.children[indiceToit].children[indicePignonDroit].name = "PEXT_droit_excluded";
                     travee.children[indiceToit].children[indicePignonDroit].material = pignonMaterial;
                     modifierIncrustation(travee.name, "PD", "PEXT");
@@ -831,8 +825,9 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                 } else {
 
                     // Cas F
-                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
                     travee.children[indicePDAV].visible = travee.children[indicePDAR].visible = false;
+                    traveeDroite.children[indicePGAV].visible = traveeDroite.children[indicePGAR].visible = true;
+
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
                     modifierIncrustation(travee.name, "PD", "PINT");
 
@@ -860,9 +855,9 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Cas G
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = true;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
 
                     // Gestion des pignons (changement de nom + de texture)
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = true;
                     travee.children[indiceToit].children[indicePignonGauche].name = "PEXT_gauche_excluded";
                     travee.children[indiceToit].children[indicePignonGauche].material = pignonMaterial;
                     modifierIncrustation(travee.name, "PG", "PEXT");
@@ -878,10 +873,10 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Cas H
                     travee.children[indicePGAV].visible = travee.children[indicePGAR].visible = true;
                     traveeGauche.children[indicePDAV].visible = traveeGauche.children[indicePDAR].visible = false;
-                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
-                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
+                    traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
+                    modifierIncrustation(traveeGauche.name, "PD", "PINT");
                     travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
                     travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");

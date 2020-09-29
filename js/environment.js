@@ -76,9 +76,9 @@ var ambient = new THREE.AmbientLight(COLOR_ARRAY['jaune'], 0.45);
 ambient.name = "ambientLight";
 scene.add(ambient);
 
-// Une lampe derrière pour l'ombre des bâtiments
 const reference = 200;
 
+// Une lampe derrière pour l'ombre des bâtiments
 export var rearLight = new THREE.DirectionalLight(COLOR_ARRAY['blanc'], 0.6);
 rearLight.position.set(reference, reference, -reference / 2);
 rearLight.castShadow = true;
@@ -109,7 +109,6 @@ rightLight.position.set(300, HAUTEUR_TRAVEE, 0);
 rightLight.castShadow = false;
 rightLight.name = "righLight";
 scene.add(rightLight);
-
 
 export function initPositionCamera(cameraActuelle) {
     if (cameraActuelle == cameraOrtho) {

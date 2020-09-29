@@ -42,7 +42,10 @@ import {
     retirerObjetModifiable,
     faceInterieureOuExterieure,
     modifierIncrustation,
+    showMainIncrustations,
     hideMainIncrustations,
+    showPignonIncrustations,
+    hidePignonIncrustations,
     animate,
     traduireNomObjet,
     calculerTaillePoliceOptimale,
@@ -326,6 +329,9 @@ $(".image-logo").dblclick(function (e) {
     log(inventaire);
     log("objetsModifiables[] = ");
     log(objetsModifiables);
+
+    showMainIncrustations();
+    showPignonIncrustations();
 });
 
 

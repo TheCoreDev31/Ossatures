@@ -377,6 +377,13 @@ export function displayPignonOpenings(traveeSelectionnee) {
         left: (window.innerWidth / 2) - ($("#popup-pignon").width() / 2) + 'px',
         top: (window.innerHeight / 2) - ($("#popup-pignon").height() / 2) + 'px'
     });
+
+    // RAZ des figures
+    $('.popup-ouverture-image').each(function (i) {
+        $(this).parent().removeClass();
+        $(this).parent().addClass("normal");
+    });
+
     $("#popup-pignon").show();
     $("#traveeSelectionnee").val(traveeSelectionnee);
     $("#overlay").show();
