@@ -1608,7 +1608,7 @@ function saveArrayBuffer(buffer, filename) {
 
 export function exportProjet() {
 
-    var copieLocale = true;
+    var copieLocale = false;
     var reference = generate(12);
     var exportJson = '{ "projet" : [';
 
