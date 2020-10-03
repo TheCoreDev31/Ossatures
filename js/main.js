@@ -1741,7 +1741,6 @@ function creerProjetBasique() {
 
 
 
-
 $(document).ready(function () {
 
     $(".popup-ouverture").hide();

@@ -560,3 +560,59 @@ th {
 #boutons button:focus {
     outline: none !important;
 }
+
+
+/********************    Formulaire d'enregistrement du projet  ************************/
+#formulaire {
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    width: 660px;
+    height: auto;
+    padding: 20px;
+    z-index: 500;
+    justify-content: space-around;
+
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all .5s ease-in;
+    box-shadow: 0 0 12px black;
+}
+
+#formulaire .titre {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+#formulaire .texte {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 0.9em;
+    text-align: justify-all;
+}
+
+#formulaire .question {
+    margin-right: auto;
+}
+
+#formulaire .form-class {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+#formulaire input.texte {
+    font-size: 0.8em;
+}
+
+#formulaire input.button {
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 0.9em;
+    margin: 20px auto 0px auto;
+}
+
+#formulaire .form-top-marge {
+    margin-top: 20px;
+}
