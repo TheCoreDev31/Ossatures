@@ -565,6 +565,11 @@ export function displayGui() {
 
             if (!verifierControlesMetier()) return;
 
+            // Tout d'abord, on enregistre le projet en sous-marin, afin d'inclure sa référence dans le devis.
+            scene.updateMatrixWorld();
+            var reference = exportProjet();
+
+
             var modePDF = true;
             var screenshot1, screenshot2, screenshot3, screenshot4, screenshot5, screenshot6, screenshot7, screenshot8, screenshot9;
 
@@ -691,6 +696,7 @@ export function displayGui() {
             donneesBrutes.referenceDevis = maintenant.getFullYear() + '' +
                 ((maintenant.getMonth() + 1) < 10 ? '0' + (maintenant.getMonth() + 1) : (maintenant.getMonth() + 1)) + '' +
                 maintenant.getDate() + '' + maintenant.getHours() + '' + maintenant.getMinutes();
+            donneesBrutes.referenceProjet = reference;
 
 
             // C'est ici qu'on calcule le nombre de charpentes et de pignons : c'est plus simple.

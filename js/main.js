@@ -1069,7 +1069,7 @@ export function verifierControlesMetier() {
     // Tout projet doit comporter au moins une ouverture par construction
     if ((inventaire["SOLE"] + inventaire["SOLT"]) < nbConstructions) {
         controlesOK = false;
-        alerte('Il faut au moins une ouverture pour <u>chacune</u> de vos constructions.')
+        alerte('Il faut au moins une ouverture de plancher pour <u>chacune</u> de vos constructions.')
     } else {
         var SOLEConstruction1 = 0,
             SOLEConstruction2 = 0,
