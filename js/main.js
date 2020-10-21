@@ -1077,28 +1077,32 @@ export function verifierControlesMetier() {
         // Il faut vérifier le bon nombre de trappes par construction
         for (var travee in tableauTravees) {
             if (tableauTravees[travee].numConstruction == 1) {
-                if (tableauTravees[travee].typeSolivage == "SOLE")
+                if (tableauTravees[travee].typeSolivage.includes("SOLE"))
                     SOLEConstruction1++;
-                if (tableauTravees[travee].typeSolivage == "SOLT")
+                if (tableauTravees[travee].typeSolivage.includes("SOLT"))
                     SOLTConstruction1++;
             }
             if (tableauTravees[travee].numConstruction == 2) {
-                if (tableauTravees[travee].typeSolivage == "SOLE")
+                if (tableauTravees[travee].typeSolivage.includes("SOLE"))
                     SOLEConstruction2++;
-                if (tableauTravees[travee].typeSolivage == "SOLT")
+                if (tableauTravees[travee].typeSolivage.includes("SOLT"))
                     SOLTConstruction2++;
             }
         }
         if (SOLEConstruction1 > 1 || SOLTConstruction1 > 1 || SOLEConstruction2 > 1 || SOLTConstruction2 > 1) {
             controlesOK = false;
+            var message;
             if (SOLEConstruction1 > 1)
-                alerte('Plusieurs trémies d\'escalier ont été positionnées sur la construction n°1.');
+                message = "Plusieurs trémies d\'escalier sur la construction n°1 :";
             if (SOLTConstruction1 > 1)
-                alerte('Plusieurs trappes ont été positionnées sur la construction n°1.');
+                message = "Plusieurs trappes sur la construction n°1 :";
             if (SOLEConstruction2 > 1)
-                alerte('Plusieurs trémies d\'escalier ont été positionnées sur la construction n°2.');
-            if (SOLEConstruction2 > 1)
-                alerte('Plusieurs trappes ont été positionnées sur la construction n°2.');
+                message = "Plusieurs trémies d\'escalier sur la construction n°2 :";
+            if (SOLTConstruction2 > 1)
+                message = "Plusieurs trappes sur la construction n°2 :";
+
+            message += "<br>un seul solivage <u>de chaque type</u> par construction autorisé.";
+            alerte(message);
         }
     }
 
@@ -1474,22 +1478,29 @@ export function recalculerConstructions(tableauDecalages = null) {
 
     if (nbTravees > 0) {
 
-        var nbTraveesParConstruction = 0;
-        var nbMaxTravees = 0;
-
         // Mode "simulation"
         if (tableauDecalages != null) {
-            var resultatSimulation = 1;
-            for (var i = 1; i < tableauDecalages.length; i++) {
-                nbTraveesParConstruction++;
-                if (tableauDecalages[i] != tableauDecalages[i - 1]) {
-                    resultatSimulation++;
-                    if (nbTraveesParConstruction > nbMaxTravees) nbMaxTravees = nbTraveesParConstruction;
-                    nbTraveesParConstruction = 0;
-                }
-            }
-            return [resultatSimulation, nbMaxTravees];
+            var nbTraveesConstCourante = 1;
+            var nbConstructions = 1;
+            var nbTraveesC1 = 1,
+                nbTraveesC2 = 0;
 
+            for (var i = 1; i < tableauDecalages.length; i++) {
+                if (tableauDecalages[i] != tableauDecalages[i - 1]) {
+                    nbConstructions++;
+                    nbTraveesConstCourante = 1;
+                } else
+                    nbTraveesConstCourante++;
+
+
+                if (nbConstructions == 1)
+                    if (nbTraveesConstCourante > nbTraveesC1) nbTraveesC1 = nbTraveesConstCourante;
+
+                if (nbConstructions == 2)
+                    if (nbTraveesConstCourante > nbTraveesC2) nbTraveesC2 = nbTraveesConstCourante;
+
+            }
+            return [nbConstructions, nbTraveesC1, nbTraveesC2];
         } else {
 
             // On recalcule tout en partant de la première travée, qui sera la construction 1.
@@ -1752,6 +1763,8 @@ $(document).ready(function () {
     $("#transparent-overlay").hide();
     $(".div-aide").addClass("affiche");
 
+    $("#formulaire").hide();
+
     // ATTENTION : bien respecter l'ordre d'appel des méthodes suivantes !!
     initCaracteristiquesOuvertures();
     initMatricesScoreVT();
@@ -1768,4 +1781,5 @@ $(document).ready(function () {
     creerProjetBasique();
 
     animate();
+
 });

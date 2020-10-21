@@ -56,6 +56,16 @@ function degrees_to_radians(degrees) {
 }
 
 
+export function recreerTrappes() {
+
+    for (var travee in tableauTravees) {
+        if (tableauTravees[travee].rangDansConstruction == 1) {
+            selectionnerSolivage(travee, "SOLT_bc");
+        }
+    }
+}
+
+
 export function supprimerToutesOuvertures() {
 
     // Supprime toutes les ouvertures du projet (fenêtres, solivages, ...), par exemple lors de l'ajout d'une travée ou son décalage.
@@ -646,6 +656,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
             unSelect();
             supprimerToutesOuvertures();
+
             if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
                 $("span:contains('ossatureBois')").click();
         }
@@ -674,14 +685,13 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
         tableauDecalages[numTravee - 1] += 1;
         var resultatsSimulation = simulerCalculConstructions(tableauDecalages);
         var nbConstructionSimule = resultatsSimulation[0];
-        var nbMaxtravees = resultatsSimulation[1];
         if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
             if (modeVerbose) {
                 alerte("Décalage refusé : nombre maximum de constructions atteint (" + NB_CONSTRUCTIONS_MAXI + ").");
             }
             return;
         }
-        if (nbMaxtravees > NB_TRAVEES_MAXI) {
+        if ((resultatsSimulation[1] > NB_TRAVEES_MAXI) || (resultatsSimulation[2] > NB_TRAVEES_MAXI)) {
             if (modeVerbose) {
                 alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
             }
@@ -787,10 +797,17 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
     } else { // décalage vers le fond
 
         tableauDecalages[numTravee - 1] -= 1;
-        var nbConstructionSimule = recalculerConstructions(tableauDecalages);
+        var resultatsSimulation = simulerCalculConstructions(tableauDecalages);
+        var nbConstructionSimule = resultatsSimulation[0];
         if (nbConstructionSimule > NB_CONSTRUCTIONS_MAXI) {
             if (modeVerbose) {
-                alerte("Décalage refusé : vous avez atteint le nombre maximum de constructions autorisées (" + NB_CONSTRUCTIONS_MAXI + ").");
+                alerte("Décalage refusé : nombre maximum de constructions atteint (" + NB_CONSTRUCTIONS_MAXI + ").");
+            }
+            return;
+        }
+        if ((resultatsSimulation[1] > NB_TRAVEES_MAXI) || (resultatsSimulation[2] > NB_TRAVEES_MAXI)) {
+            if (modeVerbose) {
+                alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
             }
             return;
         }
@@ -892,6 +909,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
     }
     recalculerConstructions();
+    recreerTrappes();
     incrusterCotes();
     unSelect();
 }
