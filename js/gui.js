@@ -788,10 +788,6 @@ export function displayGui() {
     var options = {
         Ajouter: function () {
 
-            if (nbOuvertures > 0) {
-                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
-                supprimerToutesOuvertures();
-            }
             /* Les cas où l'ajout est interdit sont :
                 1 - nb maxi de travées (au total) atteint (déjà géré dans creeTravee)
                 2 - on atteint le nb maxi de travées par construction */
@@ -801,6 +797,11 @@ export function displayGui() {
                     alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
                     return;
                 }
+            }
+
+            if (nbOuvertures > 0) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+                supprimerToutesOuvertures();
             }
 
             // On repasse volontairement en mode avec textures.
