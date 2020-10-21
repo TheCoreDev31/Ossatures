@@ -33,6 +33,7 @@ import {
 from "./materials.js"
 
 import {
+    URL_JSREPORT,
     info,
     alerte,
     log,
@@ -66,10 +67,6 @@ import {
     aspectRatio,
     initPositionCamera
 } from "./environment.js"
-
-
-// Quelques constantes utiles
-var URL_JSREPORT = "https://jsreport.thecoredev.fr:5489";
 
 
 export function unSelect() {

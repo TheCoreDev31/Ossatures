@@ -39,9 +39,11 @@ import {
 
 
 // Quelques variables globales
-var URL_DEVIS = "http://test.thecoredev.fr";
-//var URL_DEVIS = "https://devis.thecoredev.fr";
+//var URL_DEVIS = "http://test.thecoredev.fr";
+var URL_DEVIS = "https://devis.econologis.fr";
 
+// Quelques constantes utiles
+export var URL_JSREPORT = "https://jsreport.econologis.fr:5489";
 
 
 // Fonctions communes
