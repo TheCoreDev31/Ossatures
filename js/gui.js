@@ -4,7 +4,8 @@ import {
     supprimerToutesOuvertures,
     traitementCreationTravee,
     traitementCreationOuverture,
-    selectionnerSolivage
+    selectionnerSolivage,
+    recreerTrappes
 } from "./objects.js"
 
 import {
@@ -808,6 +809,7 @@ export function displayGui() {
             if (nbOuvertures > 0) {
                 if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
                 supprimerToutesOuvertures();
+                recreerTrappes();
             }
 
             // On repasse volontairement en mode avec textures.
@@ -819,7 +821,6 @@ export function displayGui() {
         },
 
         Supprimer: function () {
-
             if (nbTravees == 1) {
                 alerte("Au moins une travée requise.");
                 return;
@@ -827,6 +828,7 @@ export function displayGui() {
             if (nbOuvertures > 0) {
                 if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
                 supprimerToutesOuvertures();
+                recreerTrappes();
             }
 
             // On repasse volontairement en texture classique.
