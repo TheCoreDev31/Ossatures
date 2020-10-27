@@ -315,6 +315,8 @@ $("#boutons > #legende").click(function (e) {
 $("#popup-export-button").click(function (e) {
     $("#popup-export").hide();
     $("#overlay").hide();
+
+    $("#popup-export .texte").html(TEXTE_EXPORT);
 });
 
 
