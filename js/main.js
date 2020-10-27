@@ -1070,6 +1070,12 @@ export function verifierControlesMetier() {
     if ((inventaire["SOLE"] + inventaire["SOLT"]) < nbConstructions) {
         controlesOK = false;
         alerte('Il faut au moins une ouverture de plancher pour <u>chacune</u> de vos constructions.')
+
+        if ($("span:contains('afficherToit')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('afficherToit')").click();
+        if (!$("span:contains('afficherPlancher')").parent().find("input[type='checkbox']").prop('checked'))
+            $("span:contains('afficherPlancher')").click();
+
     } else {
         var SOLEConstruction1 = 0,
             SOLEConstruction2 = 0,

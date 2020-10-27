@@ -526,7 +526,7 @@ export function displayGui() {
         this.ossatureBois = false;
 
 
-        this.exporterCeProjet = function () {
+        this.sauvegarderCeProjet = function () {
 
             scene.updateMatrixWorld();
             var reference = exportProjet();
@@ -1030,7 +1030,7 @@ export function displayGui() {
 
     var guiMisc = myGui.addFolder("Diverses actions");
     guiMisc.add(controller, 'genererDevis');
-    guiMisc.add(controller, 'exporterCeProjet');
+    guiMisc.add(controller, 'sauvegarderCeProjet');
     guiMisc.add(controller, 'importerUnProjet');
     guiMisc.open();
 
