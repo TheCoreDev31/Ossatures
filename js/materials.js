@@ -291,21 +291,38 @@ var MPE_Back_Material = new THREE.MeshLambertMaterial({
 export var MPE_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPE_Back_Material, MPE_Front_Material];
 
 /******   Fenêtre de type F1   ****/
-var MF1_Front_Texture = textureLoader.load("img/openings/MF1_F.png");
-var MF1_Front_Material = new THREE.MeshLambertMaterial({
-    map: MF1_Front_Texture,
+var MF1d_Front_Texture = textureLoader.load("img/openings/MF1d_F.png");
+var MF1d_Front_Material = new THREE.MeshLambertMaterial({
+    map: MF1d_Front_Texture,
     vertexColors: true,
     color: COLOR_ARRAY['bois'],
     transparent: true
 });
-var MF1_Back_Texture = textureLoader.load("img/openings/MF1_B.png");
-var MF1_Back_Material = new THREE.MeshLambertMaterial({
-    map: MF1_Back_Texture,
+var MF1d_Back_Texture = textureLoader.load("img/openings/MF1d_B.png");
+var MF1d_Back_Material = new THREE.MeshLambertMaterial({
+    map: MF1d_Back_Texture,
     vertexColors: true,
     color: COLOR_ARRAY['bois'],
     transparent: true
 });
-export var MF1_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF1_Back_Material, MF1_Front_Material];
+export var MF1d_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF1d_Back_Material, MF1d_Front_Material];
+
+var MF1g_Front_Texture = textureLoader.load("img/openings/MF1g_F.png");
+var MF1g_Front_Material = new THREE.MeshLambertMaterial({
+    map: MF1g_Front_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+var MF1g_Back_Texture = textureLoader.load("img/openings/MF1g_B.png");
+var MF1g_Back_Material = new THREE.MeshLambertMaterial({
+    map: MF1g_Back_Texture,
+    vertexColors: true,
+    color: COLOR_ARRAY['bois'],
+    transparent: true
+});
+export var MF1g_Material = [MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MPL_Front_Material, MF1g_Back_Material, MF1g_Front_Material];
+
 
 /******   Fenêtre de type F2   ****/
 var MF2_Front_Texture = textureLoader.load("img/openings/MF2_F.png");

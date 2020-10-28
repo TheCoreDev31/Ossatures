@@ -18,7 +18,8 @@ import {
     roofMaterial,
     MPL_Material,
     MPE_Material,
-    MF1_Material,
+    MF1d_Material,
+    MF1g_Material,
     MF2_Material,
     MPEF_Material,
     MPF_Material,
@@ -957,8 +958,11 @@ export function displayGui() {
                                             case "PE":
                                                 child.material = MPE_Material;
                                                 break;
-                                            case "F1":
-                                                child.material = MF1_Material;
+                                            case "F1d":
+                                                child.material = MF1d_Material;
+                                                break;
+                                            case "F1g":
+                                                child.material = MF1g_Material;
                                                 break;
                                             case "F2":
                                                 child.material = MF2_Material;

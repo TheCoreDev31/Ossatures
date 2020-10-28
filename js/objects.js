@@ -15,7 +15,8 @@ import {
     MPL_Material,
     MPI_Material,
     MPE_Material,
-    MF1_Material,
+    MF1d_Material,
+    MF1g_Material,
     MF2_Material,
     MPEF_Material,
     MPF_Material,
@@ -225,7 +226,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 
 
         // Eventuellement, une vitre
-        if (typeOuverture == 'F1' || typeOuverture == 'F2' || typeOuverture == 'PF') {
+        if (typeOuverture.includes('F1') || typeOuverture == 'F2' || typeOuverture == 'PF') {
             var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
             windowGlass.position.set(.5, .5, 0);
             windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
@@ -435,8 +436,11 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
                     case "PE":
                         material = MPE_Material;
                         break;
-                    case "F1":
-                        material = MF1_Material;
+                    case "F1d":
+                        material = MF1d_Material;
+                        break;
+                    case "F1g":
+                        material = MF1g_Material;
                         break;
                     case "F2":
                         material = MF2_Material;
@@ -735,8 +739,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Gestion des pignons (changement de nom + de texture)
                     travee.children[indiceToit].children[indicePignonDroit].visible = false;
                     modifierIncrustation(travee.name, "PD", "PINT");
-                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
-                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = traveeDroite.name + ">PINT";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PINT_Droite_Material;
                     modifierIncrustation(traveeDroite.name, "PG", "PINT");
 
                     inventaire["MPL"] -= 2;
@@ -781,8 +785,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Gestion des pignons (changement de nom + de texture)
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
                     modifierIncrustation(traveeGauche.name, "PD", "PINT");
-                    travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
-                    travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    travee.children[indiceToit].children[indicePignonGauche].name = nomTravee + ">PINT";
+                    travee.children[indiceToit].children[indicePignonGauche].material = PINT_Droite_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");
 
                     inventaire["MPL"] -= 2;
@@ -849,8 +853,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     modifierIncrustation(travee.name, "PD", "PINT");
 
                     // Gestion des pignons (changement de nom + de texture)
-                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = "PINT";
-                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].name = traveeDroite.name + ">PINT";
+                    traveeDroite.children[indiceToit].children[indicePignonGauche].material = PINT_Droite_Material;
                     modifierIncrustation(traveeDroite.name, "PG", "PINT");
 
                     inventaire["MPL"] -= 2;
@@ -860,6 +864,7 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
 
         if (traveeGauche) {
             var decalageTraveeGauche = tableauTravees[nomTraveeGauche]['decalage'];
+
             if (Math.abs(decalageTraveeGauche - (tableauTravees[nomTravee]['decalage'] - 1)) > 1) {
                 if (modeVerbose) {
                     alerte("Impossible de réaliser un tel décalage.");
@@ -894,8 +899,8 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                     // Gestion des pignons (changement de nom + de texture)
                     traveeGauche.children[indiceToit].children[indicePignonDroit].visible = false;
                     modifierIncrustation(traveeGauche.name, "PD", "PINT");
-                    travee.children[indiceToit].children[indicePignonGauche].name = "PINT";
-                    travee.children[indiceToit].children[indicePignonGauche].material = PEXT_Material;
+                    travee.children[indiceToit].children[indicePignonGauche].name = nomTravee + ">PINT";
+                    travee.children[indiceToit].children[indicePignonGauche].material = PINT_Droite_Material;
                     modifierIncrustation(travee.name, "PG", "PINT");
 
                     inventaire["MPL"] -= 2;

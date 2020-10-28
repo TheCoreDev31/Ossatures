@@ -40,7 +40,7 @@
             var scene = new THREE.Scene();
             var loader = new THREE.TextureLoader();
             var raycaster, mouse, activeCamera, controls;
-            var DEBUG = false;
+            var DEBUG = true;
 
             var LARGEUR_TRAVEE = 36,
                 LONGUEUR_TRAVEE = 74.8,
@@ -102,8 +102,11 @@
         <div class="popup-ouverture" id="popup-ouverture-out">
             <span id="titre-popup">Quel type d'ouverture voulez-vous ajouter ?</span>
             <div class="container-images">
-                <figure id="F1" class="normal"><img src="icons/MF1.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65" />
-                    <figcaption>Fenêtre<br>45x65cm</figcaption>
+                <figure id="F1g" class="normal"><img src="icons/MF1g.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65 gauche" />
+                    <figcaption>Fenêtre<br>45x65cm<br>gauche</figcaption>
+                </figure>
+                <figure id="F1d" class="normal"><img src="icons/MF1d.jpg" class="popup-ouverture-image" alt="Fenêtre 45x65 droite" />
+                    <figcaption>Fenêtre<br>45x65cm<br>droite</figcaption>
                 </figure>
                 <figure id="F2" class="normal"><img src="icons/MF2.jpg" class="popup-ouverture-image" alt="Fenêtre 2 vantaux 105x115" />
                     <figcaption>Fenêtre<br>105x115cm</figcaption>
@@ -120,7 +123,7 @@
                 <figure id="PG1" class="normal"><img src="icons/MPG1.jpg" class="popup-ouverture-image" alt="Porte de garage 240x200" />
                     <figcaption>Porte garage<br>240x200cm</figcaption>
                 </figure>
-                <figure id="PG2" class="normal"><img src="icons/MPG1.jpg" class="popup-ouverture-image" alt="Porte de garage renforcée 240x200" />
+                <figure id="PG2" class="normal"><img src="icons/MPG2.jpg" class="popup-ouverture-image" alt="Porte de garage renforcée 240x200" />
                     <figcaption>Porte garage<br>renforcée</figcaption>
                 </figure>
             </div>
