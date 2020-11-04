@@ -802,8 +802,14 @@ export function displayGui() {
             if (nbTravees > 1) {
                 var voisine = tableauTravees[PREFIXE_TRAVEE + nbTravees];
                 if (voisine['rangDansConstruction'] >= NB_TRAVEES_MAXI) {
-                    alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
-                    return;
+                    log(nbConstructions);
+                    if (nbConstructions == 2) {
+                        alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
+                        return;
+                    } else {
+                        alert("décalage possible");
+                        return;
+                    }
                 }
             }
 

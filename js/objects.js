@@ -601,12 +601,12 @@ export function gererDecalageTravee(laNouvelleTravee) {
             switch (decalageVoisineGauche) {
                 case 1:
                     if (verifierPossibiliteDecalage(laNouvelleTravee.name, 'front')) {
-                        decalerTravee(laNouvelleTravee.name, 'front');
+                        decalerTravee(laNouvelleTravee.name, 'front', false);
                     }
                     break;
                 default:
                     if (verifierPossibiliteDecalage(laNouvelleTravee.name, 'back')) {
-                        decalerTravee(laNouvelleTravee.name, 'back');
+                        decalerTravee(laNouvelleTravee.name, 'back', false);
                     }
                     break;
             }

@@ -616,3 +616,63 @@ th {
 #formulaire .form-top-marge {
     margin-top: 20px;
 }
+
+
+/*********************   Popup de choix du sens de décalage  ***************************/
+#popup-decalage {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+    grid-template-rows: 2fr repeat(2, 1fr);
+
+    position: fixed;
+    width: 700px;
+    height: auto;
+    padding: 20px;
+    z-index: 300;
+
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all .5s ease-in;
+    box-shadow: 0 0 12px black;
+}
+
+#popup-decalage span {
+    grid-column: span 4;
+}
+
+#popup-decalage .texte {
+    margin-left: 20px;
+    font-family: "Avenir next", "Avenir", sans-serif;
+    font-size: 18px;
+}
+
+#popup-decalage #decalage-arriere {
+    grid-column: 1/3;
+    grid-row: 2;
+}
+
+#popup-decalage #decalage-arriere:before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f062";
+    font-weight: 900;
+    margin-right: 20px;
+}
+
+#popup-decalage #decalage-avant {
+    grid-column: 3/5;
+    grid-row: 2;
+}
+
+#popup-decalage #decalage-avant:before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f063";
+    font-weight: 900;
+    margin-right: 20px;
+}
+
+#popup-decalage #annuler {
+    grid-column: 2/4;
+    grid-row: 3;
+}

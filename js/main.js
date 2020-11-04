@@ -1504,31 +1504,31 @@ export function recalculerConstructions(tableauDecalages = null) {
         // Mode "simulation"
         if (tableauDecalages != null) {
             var nbTraveesConstCourante = 1;
-            var nbConstructions = 1;
+            var nbConstructionsTmp = 1;
             var nbTraveesC1 = 1,
                 nbTraveesC2 = 0;
 
             for (var i = 1; i < tableauDecalages.length; i++) {
                 if (tableauDecalages[i] != tableauDecalages[i - 1]) {
-                    nbConstructions++;
+                    nbConstructionsTmp++;
                     nbTraveesConstCourante = 1;
                 } else
                     nbTraveesConstCourante++;
 
 
-                if (nbConstructions == 1)
+                if (nbConstructionsTmp == 1)
                     if (nbTraveesConstCourante > nbTraveesC1) nbTraveesC1 = nbTraveesConstCourante;
 
-                if (nbConstructions == 2)
+                if (nbConstructionsTmp == 2)
                     if (nbTraveesConstCourante > nbTraveesC2) nbTraveesC2 = nbTraveesConstCourante;
 
             }
-            return [nbConstructions, nbTraveesC1, nbTraveesC2];
+            return [nbConstructionsTmp, nbTraveesC1, nbTraveesC2];
         } else {
 
             // On recalcule tout en partant de la première travée, qui sera la construction 1.
             var traveesParConstruction = 1;
-            nbConstructions = 1;
+            nbConstructionsTmp = 1;
             tableauTravees[PREFIXE_TRAVEE + 1]['numConstruction'] = 1;
             tableauTravees[PREFIXE_TRAVEE + 1]['rangDansConstruction'] = 1;
 
@@ -1536,18 +1536,18 @@ export function recalculerConstructions(tableauDecalages = null) {
 
                 if (tableauTravees[PREFIXE_TRAVEE + i]['decalage'] != tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['decalage']) {
                     // Nouvelle construction
-                    nbConstructions++;
+                    nbConstructionsTmp++;
                     traveesParConstruction = 1;
-                    tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructions;
+                    tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructionsTmp;
                     tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = 1;
                 } else {
 
                     // Même décalage que la travée de gauche
                     traveesParConstruction++;
                     if (traveesParConstruction > NB_TRAVEES_MAXI) {
-                        nbConstructions++;
+                        nbConstructionsTmp++;
                         traveesParConstruction = 1;
-                        tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructions;
+                        tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = nbConstructionsTmp;
                         tableauTravees[PREFIXE_TRAVEE + i]['rangDansConstruction'] = 1;
                     } else {
                         tableauTravees[PREFIXE_TRAVEE + i]['numConstruction'] = tableauTravees[PREFIXE_TRAVEE + parseInt(i - 1)]['numConstruction'];
@@ -1555,6 +1555,7 @@ export function recalculerConstructions(tableauDecalages = null) {
                     }
                 }
             }
+            nbConstructions = nbConstructionsTmp;
         }
     }
 }
