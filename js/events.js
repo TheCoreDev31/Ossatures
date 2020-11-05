@@ -321,6 +321,14 @@ $("#popup-export-button").click(function (e) {
 });
 
 
+/**********************************   Popup de choix du sens de décalage   *************************************************/
+$("#popup-decalage-annuler").click(function (e) {
+    $("#popup-decalage").hide();
+    $("#overlay").hide();
+});
+
+
+
 
 
 /*    Petit easter-egg : le double-clic sur le logo Maninghem affiche des logs complètes dans la console  */

@@ -361,10 +361,6 @@ export function chooseFloorHole(traveeSelectionnee) {
         $(this).parent().addClass("normal");
     });
 
-    $("#popup-plancher").css({
-        left: (window.innerWidth / 2) - ($("#popup-plancher").width() / 2) + 'px',
-        top: (window.innerHeight / 2) - ($("#popup-plancher").height() / 2) + 'px'
-    });
     $("#popup-plancher").show();
     $("#traveeSelectionnee").val(traveeSelectionnee);
     $("#overlay").show();
@@ -372,11 +368,6 @@ export function chooseFloorHole(traveeSelectionnee) {
 
 
 export function displayPignonOpenings(traveeSelectionnee) {
-    $("#popup-pignon").css({
-        left: (window.innerWidth / 2) - ($("#popup-pignon").width() / 2) + 'px',
-        top: (window.innerHeight / 2) - ($("#popup-pignon").height() / 2) + 'px'
-    });
-
     // RAZ des figures
     $('.popup-ouverture-image').each(function (i) {
         $(this).parent().removeClass();
@@ -390,7 +381,6 @@ export function displayPignonOpenings(traveeSelectionnee) {
 
 
 export function displayOpenings(traveeSelectionnee, face) {
-
     // RAZ des figures
     $('.popup-ouverture-image').each(function (i) {
         $(this).parent().removeClass();
@@ -398,21 +388,11 @@ export function displayOpenings(traveeSelectionnee, face) {
     });
     disableUnauthorizedOpenings(verifierContraintes(traveeSelectionnee));
 
-    if (face == 'interieur') {
-        $("#popup-ouverture-in").css({
-            left: (window.innerWidth / 2) - ($("#popup-ouverture-in").width() / 2) + 'px',
-            top: (window.innerHeight / 2) - ($("#popup-ouverture-in").height() / 2) + 'px'
-        });
+    if (face == 'interieur')
         $("#popup-ouverture-in").show();
-
-    } else {
-
-        $("#popup-ouverture-out").css({
-            left: (window.innerWidth / 2) - ($("#popup-ouverture-out").width() / 2) + 'px',
-            top: (window.innerHeight / 2) - ($("#popup-ouverture-out").height() / 2) + 'px'
-        });
+    else
         $("#popup-ouverture-out").show();
-    }
+
     $("#traveeSelectionnee").val(traveeSelectionnee);
     $("#overlay").show();
 }
@@ -535,10 +515,6 @@ export function displayGui() {
 
             var texteFinal = $("#popup-export .texte").html().replace('%s', reference);
             $("#popup-export span.texte").html(texteFinal);
-            $("#popup-export").css({
-                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
-                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
-            });
             $("#popup-export").show();
             $("#overlay").show();
         };
@@ -579,11 +555,6 @@ export function displayGui() {
             if (coordonneesClient === null) return;
             var maintenant = new Date();
 
-
-            $("#popup-attente").css({
-                left: (window.innerWidth / 2) - ($("#popup-attente").width() / 2) + 'px',
-                top: (window.innerHeight / 2) - ($("#popup-attente").height() / 2) + 'px'
-            });
             $("#overlay").show();
             $("#popup-attente").show();
 
@@ -807,7 +778,8 @@ export function displayGui() {
                         alerte("Vous avez atteint le nombre maximal de travées autorisées (" + NB_TRAVEES_MAXI + ").");
                         return;
                     } else {
-                        alert("décalage possible");
+                        $('#overlay').show();
+                        $('#popup-decalage').show();
                         return;
                     }
                 }

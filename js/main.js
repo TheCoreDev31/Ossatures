@@ -1493,6 +1493,50 @@ export function initialiserScoresVT(nomTravee) {
 }
 
 
+function positionnerPopups() {
+
+    var largeurViewport = window.innerWidth;
+    var hauteurViewport = window.innerHeight;
+
+    $("#popup-plancher").css({
+        left: (largeurViewport / 2) - ($("#popup-plancher").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-plancher").height() / 2) + 'px'
+    });
+
+    $("#popup-pignon").css({
+        left: (largeurViewport / 2) - ($("#popup-pignon").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-pignon").height() / 2) + 'px'
+    });
+
+    $("#popup-export").css({
+        left: (largeurViewport / 2) - ($("#popup-attente").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-attente").height() / 2) + 'px'
+    });
+
+    $("#popup-attente").css({
+        left: (largeurViewport / 2) - ($("#popup-attente").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-attente").height() / 2) + 'px'
+    });
+
+    $("#popup-ouverture-in").css({
+        left: (largeurViewport / 2) - ($("#popup-ouverture-in").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-ouverture-in").height() / 2) + 'px'
+    });
+
+    $("#popup-ouverture-out").css({
+        left: (largeurViewport / 2) - ($("#popup-ouverture-out").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-ouverture-out").height() / 2) + 'px'
+    });
+
+    $("#popup-decalage").css({
+        left: (largeurViewport / 2) - ($("#popup-decalage").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-decalage").height() / 2) + 'px'
+    });
+
+}
+
+
+
 export function simulerCalculConstructions(tableauDecalages) {
     return recalculerConstructions(tableauDecalages);
 }
@@ -1785,7 +1829,9 @@ $(document).ready(function () {
     $("#popup-export").hide();
     $("#overlay").hide();
     $("#transparent-overlay").hide();
+    $('#popup-decalage').hide();
     $(".div-aide").addClass("affiche");
+    positionnerPopups();
 
     $("#formulaire").hide();
 
