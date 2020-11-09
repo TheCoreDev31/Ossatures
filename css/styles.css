@@ -660,6 +660,7 @@ th {
 
 #popup-decalage #popup-decalage-arriere:before {
     font-family: "Font Awesome 5 Free";
+
     content: "\f062";
     font-weight: 900;
     margin-right: 20px;

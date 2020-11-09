@@ -58,7 +58,8 @@ import {
     restaurerPrefsUtilisateur,
     importProjet,
     exportProjet,
-    initObjetsSysteme
+    initObjetsSysteme,
+    updateClipboard
 } from "./main.js"
 
 import {
@@ -517,6 +518,15 @@ export function displayGui() {
             $("#popup-export span.texte").html(texteFinal);
             $("#popup-export").show();
             $("#overlay").show();
+
+            navigator.permissions.query({
+                name: "clipboard-write"
+            }).then(result => {
+                if (result.state == "granted" || result.state == "prompt") {
+                    /* write to the clipboard now */
+                    updateClipboard(reference);
+                }
+            });
         };
 
 

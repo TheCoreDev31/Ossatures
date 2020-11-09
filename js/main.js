@@ -39,7 +39,6 @@ import {
 
 
 // Quelques variables globales
-//var URL_DEVIS = "http://test.thecoredev.fr";
 var URL_DEVIS = "https://devis.econologis.fr";
 
 // Quelques constantes utiles
@@ -1509,8 +1508,8 @@ function positionnerPopups() {
     });
 
     $("#popup-export").css({
-        left: (largeurViewport / 2) - ($("#popup-attente").width() / 2) + 'px',
-        top: (hauteurViewport / 2) - ($("#popup-attente").height() / 2) + 'px'
+        left: (largeurViewport / 2) - ($("#popup-export").width() / 2) + 'px',
+        top: (hauteurViewport / 2) - ($("#popup-export").height() / 2) + 'px'
     });
 
     $("#popup-attente").css({
@@ -1683,6 +1682,16 @@ function saveArrayBuffer(buffer, filename) {
     }), filename);
 }
 */
+
+export function updateClipboard(newClip) {
+    navigator.clipboard.writeText(newClip).then(function () {
+        /* clipboard successfully set */
+    }, function () {
+        /* clipboard write failed */
+        alerte("Impossible d'écrire dans votre presse-papiers.<br>Veuillez bien noter la référence suivante : " + newClip);
+
+    });
+}
 
 
 export function exportProjet() {

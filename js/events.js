@@ -67,11 +67,15 @@ import {
 import {
     supprimerOuverture,
     decalerTravee,
+    creerTravee,
     creerOuverture,
     creerComboOuvertures,
+    supprimerToutesOuvertures,
+    traitementCreationTravee,
     traitementCreationOuverture,
     selectionnerSolivage,
-    verifierPossibiliteDecalage
+    verifierPossibiliteDecalage,
+    recreerTrappes
 } from "./objects.js"
 
 
@@ -326,9 +330,33 @@ $("#popup-decalage-annuler").click(function (e) {
     $("#popup-decalage").hide();
     $("#overlay").hide();
 });
+$("#popup-decalage-arriere").click(function (e) {
+    $("#popup-decalage").hide();
+    $("#overlay").hide();
+
+    decalerTravee(PREFIXE_TRAVEE + nbTravees, 'back', false);
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+    decalerTravee(PREFIXE_TRAVEE + (nbTravees - 1), 'front', false);
+    supprimerToutesOuvertures();
+    recreerTrappes();
+
+});
+
+$("#popup-decalage-avant").click(function (e) {
+    $("#popup-decalage").hide();
+    $("#overlay").hide();
+
+    decalerTravee(PREFIXE_TRAVEE + nbTravees, 'front', false);
+    var travee = creerTravee();
+    if (travee) traitementCreationTravee(travee);
+    decalerTravee(PREFIXE_TRAVEE + (nbTravees - 1), 'back', false);
+    supprimerToutesOuvertures();
+    recreerTrappes();
+});
 
 
-
+/*****************************************************************************************************************************/
 
 
 /*    Petit easter-egg : le double-clic sur le logo Maninghem affiche des logs complètes dans la console  */
