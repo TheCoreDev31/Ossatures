@@ -369,7 +369,7 @@ export function creerComboOuvertures(nomTravee, nomFace, forcerIncrustation = fa
     var ouvertures = new Array();
 
     var porte = creerOuverture(nomTravee, nomFace, 'PE', forcerIncrustation);
-    var fenetre = creerOuverture(nomTravee, nomFace, 'F1', forcerIncrustation);
+    var fenetre = creerOuverture(nomTravee, nomFace, 'F1g', forcerIncrustation);
     ouvertures.push(porte);
     ouvertures.push(fenetre);
 

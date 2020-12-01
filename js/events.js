@@ -51,7 +51,8 @@ import {
     traduireNomObjet,
     calculerTaillePoliceOptimale,
     redimensionnerIncrustations,
-    rechercherFaceOpposee
+    rechercherFaceOpposee,
+    verifierControlesMetier
 } from "./main.js"
 
 import {
@@ -181,16 +182,20 @@ $("#popup-plancher").click(function (e) {
 
     if (!$(e.target).parent().hasClass('disabled')) {
 
-        var nomTravee = extraireNomTravee(objetSelectionne);
-        var nomFace = extraireFace(objetSelectionne);
-        var solivageChoisi = $(e.target).parent().attr('id');
-        var typeSolivage, decalageIncrustation = 0;
+        if (verifierControlesMetier()) {
+            var nomTravee = extraireNomTravee(objetSelectionne);
+            var nomFace = extraireFace(objetSelectionne);
+            var solivageChoisi = $(e.target).parent().attr('id');
+            var typeSolivage, decalageIncrustation = 0;
 
-        selectionnerSolivage(nomTravee, solivageChoisi);
+            selectionnerSolivage(nomTravee, solivageChoisi);
 
-        $(".popup-ouverture").hide();
-        $("#overlay").hide();
-        unSelect();
+            $(".popup-ouverture").hide();
+            $("#overlay").hide();
+            unSelect();
+        } else {
+            alerte("");
+        }
     }
 });
 
