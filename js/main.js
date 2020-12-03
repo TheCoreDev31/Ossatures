@@ -86,13 +86,13 @@ var matrice_1,
 
 
 /********************************   Gestion des messages d'info et des alertes   ***************************************/
-export function alerte(message) {
+export function alerte(message, timeOut = 5000) {
     $("#message-info").prop("class", "alerte");
     $("#message-info").html(message);
     setTimeout(function () {
         $("#message-info").prop("class", "normal");
         $("#message-info").html("");
-    }, 5000);
+    }, timeOut);
     unSelect();
 }
 
@@ -1076,7 +1076,7 @@ export function extraireFace(objet) {
 /******************   Fonctions métier   *****************/
 
 
-export function verifierControlesMetier() {
+export function verifierControlesMetier(solivageSimule = null, constructionSimulee = null) {
 
     var controlesOK = true;
 
@@ -1111,6 +1111,21 @@ export function verifierControlesMetier() {
                     SOLTConstruction2++;
             }
         }
+
+        /* Mode simulation */
+        if ((null !== solivageSimule) && (null !== constructionSimulee)) {
+            switch (constructionSimulee) {
+                case 1:
+                    if (solivageSimule.includes("SOLE")) SOLEConstruction1++;
+                    if (solivageSimule.includes("SOLT")) SOLTConstruction1++;
+                    break;
+                case 2:
+                    if (solivageSimule.includes("SOLE")) SOLEConstruction2++;
+                    if (solivageSimule.includes("SOLT")) SOLTConstruction2++;
+                    break;
+            }
+        }
+
         if (SOLEConstruction1 > 1 || SOLTConstruction1 > 1 || SOLEConstruction2 > 1 || SOLTConstruction2 > 1) {
             controlesOK = false;
             var message;
@@ -1123,8 +1138,10 @@ export function verifierControlesMetier() {
             if (SOLTConstruction2 > 1)
                 message = "Plusieurs trappes sur la construction n°2 :";
 
-            message += "<br>un seul solivage <u>de chaque type</u> par construction autorisé.";
-            alerte(message);
+            message += "<br>une seule ouverture <u>de chaque type</u> par construction autorisée.";
+
+            if ((null !== solivageSimule) && (null !== constructionSimulee)) return false;
+            else alerte(message);
         }
     }
 

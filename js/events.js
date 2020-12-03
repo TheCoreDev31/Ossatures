@@ -182,10 +182,11 @@ $("#popup-plancher").click(function (e) {
 
     if (!$(e.target).parent().hasClass('disabled')) {
 
-        if (verifierControlesMetier()) {
-            var nomTravee = extraireNomTravee(objetSelectionne);
-            var nomFace = extraireFace(objetSelectionne);
-            var solivageChoisi = $(e.target).parent().attr('id');
+        var nomTravee = extraireNomTravee(objetSelectionne);
+        var nomFace = extraireFace(objetSelectionne);
+        var solivageChoisi = $(e.target).parent().attr('id');
+
+        if (verifierControlesMetier(solivageChoisi, tableauTravees[nomTravee].numConstruction)) {
             var typeSolivage, decalageIncrustation = 0;
 
             selectionnerSolivage(nomTravee, solivageChoisi);
@@ -194,7 +195,10 @@ $("#popup-plancher").click(function (e) {
             $("#overlay").hide();
             unSelect();
         } else {
-            alerte("");
+            unSelect();
+            $("#overlay").hide();
+            $(".popup-ouverture").hide();
+            alerte("Une seule ouverture <u>de chaque type</u> par construction autorisée.");
         }
     }
 });
