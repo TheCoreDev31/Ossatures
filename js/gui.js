@@ -270,7 +270,7 @@ export function afficherVueAerienne(modePDF = false) {
     var MARGE_GAUCHE = 20;
     var MARGE_DROITE = 50;
     var MARGE_HAUT = 5;
-    var MARGE_BAS = 20;
+    var MARGE_BAS = 30;
 
     var gauche = tableauTravees['Travee 1'].positionX - (LARGEUR_TRAVEE / 2) - MARGE_GAUCHE; // Bord gauche de la construction + marge
     var droite = tableauTravees['Travee ' + nbTravees].positionX + (LARGEUR_TRAVEE / 2) + MARGE_DROITE; // Bord droit + marge

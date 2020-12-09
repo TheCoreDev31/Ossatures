@@ -8,7 +8,8 @@ body {
 
 
 /************   Affichage message d'info ou d'erreur   ***************/
-.infos {
+.infos,
+.alertes {
     position: absolute;
     top: 50px;
     width: 100%;
@@ -17,7 +18,8 @@ body {
     display: block;
 }
 
-#message-info {
+#message-info,
+#message-alerte {
     font-family: "Avenir Next", "Avenir", sans-serif;
     font-size: 20px;
 }

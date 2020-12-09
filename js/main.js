@@ -86,12 +86,12 @@ var matrice_1,
 
 
 /********************************   Gestion des messages d'info et des alertes   ***************************************/
-export function alerte(message, timeOut = 5000) {
-    $("#message-info").prop("class", "alerte");
-    $("#message-info").html(message);
+export function alerte(message, timeOut = 3000) {
+    $("#message-alerte").prop("class", "alerte");
+    $("#message-alerte").html(message);
     setTimeout(function () {
-        $("#message-info").prop("class", "normal");
-        $("#message-info").html("");
+        $("#message-alerte").prop("class", "normal");
+        $("#message-alerte").html("");
     }, timeOut);
     unSelect();
 }
@@ -1079,9 +1079,13 @@ export function extraireFace(objet) {
 export function verifierControlesMetier(solivageSimule = null, constructionSimulee = null) {
 
     var controlesOK = true;
+    var nbSolivageSimule = 0;
+
+    if (solivageSimule !== null && (solivageSimule.includes('SOLE') || solivageSimule.includes('SOLT')))
+        nbSolivageSimule++;
 
     // Tout projet doit comporter au moins une ouverture par construction
-    if ((inventaire["SOLE"] + inventaire["SOLT"]) < nbConstructions) {
+    if ((inventaire["SOLE"] + inventaire["SOLT"] + nbSolivageSimule) < nbConstructions) {
         controlesOK = false;
         alerte('Il faut au moins une ouverture de plancher pour <u>chacune</u> de vos constructions.')
 
