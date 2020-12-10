@@ -40,19 +40,23 @@ body {
 
 .logo {
     position: absolute;
-    transform: scale(0.7);
-    bottom: 10px;
-    right: 50px;
+    bottom: 28px;
+    right: 80px;
 }
 
 .logo h4 {
     color: white;
-    font-size: 14px;
-    text-align: end;
+    font-size: 12px;
+    text-align: left;
+    font-family: "Avenir Next", "Avenir", sans-serif;
 }
 
 .image-logo {
+    width: 120px;
     filter: drop-shadow(5px 5px 5px black);
+    opacity: 0.8;
+    border-radius: 6px;
+    margin-bottom: 10px;
 }
 
 
@@ -143,6 +147,19 @@ body {
     font-family: "Font Awesome 5 Free";
     font-size: 30px;
     content: "\f0a9";
+}
+
+.lien-tuto {
+    position: absolute;
+    top: 10px;
+    right: 40px;
+}
+
+.lien-tuto a {
+    font-family: "Avenir Next", "Avenir", sans-serif;
+    font-size: 14px;
+    color: red !important;
+    font-weight: 600;
 }
 
 
