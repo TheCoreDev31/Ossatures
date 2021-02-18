@@ -62,7 +62,6 @@ scene.background = textureCube;
 /*****************************************************/
 
 
-
 // Repère face avant
 var boussole = new THREE.Mesh(new THREE.PlaneBufferGeometry(12, 12), boussoleMaterial);
 boussole.name = 'boussole';

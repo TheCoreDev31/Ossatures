@@ -42,7 +42,7 @@ import {
 var URL_DEVIS = "https://devis.econologis.fr";
 
 // Quelques constantes utiles
-export var URL_JSREPORT = "https://jsreport.econologis.fr:5489";
+export var URL_JSREPORT = "https://report.econologis.fr:5489";
 
 
 // Fonctions communes
