@@ -9,7 +9,8 @@ import {
     onMouseClick,
     onMouseDoubleClick,
     onWindowResize,
-    onMouseMove
+    onMouseMove,
+    keyPressed
 } from "./events.js"
 
 import {
@@ -1877,6 +1878,7 @@ $(document).ready(function () {
     document.addEventListener('dblclick', onMouseDoubleClick);
     document.addEventListener('click', onMouseClick);
     //    document.addEventListener('mousemove', onMouseMove, false);
+    document.body.addEventListener('keydown', keyPressed);
 
     creerProjetBasique();
 

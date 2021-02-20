@@ -536,3 +536,10 @@ export function onWindowResize() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+
+/***********************************************/
+
+export function keyPressed(e) {
+    unSelect();
+}

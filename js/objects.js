@@ -651,21 +651,21 @@ export function verifierPossibiliteDecalage(nomTravee, direction, modeVerbose = 
 
 
 export function decalerTravee(nomTravee, direction, modeVerbose = true) {
+    /*
+        if (modeVerbose) {
+            if (nbOuvertures > 0) {
+                if (modeVerbose) {
+                    if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+                }
 
-    if (modeVerbose) {
-        if (nbOuvertures > 0) {
-            if (modeVerbose) {
-                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+                unSelect();
+                supprimerToutesOuvertures();
+
+                if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                    $("span:contains('ossatureBois')").click();
             }
-
-            unSelect();
-            supprimerToutesOuvertures();
-
-            if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
-                $("span:contains('ossatureBois')").click();
         }
-    }
-
+    */
     var travee = scene.getObjectByName(nomTravee);
     var numTravee = parseInt(nomTravee.substr(nomTravee.indexOf(' ') + 1, 2));
     var nomTraveeGauche = nomTravee.substr(0, nomTravee.indexOf(' ') + 1) + (numTravee - 1);
@@ -701,6 +701,19 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
             }
             return;
         }
+
+        if (modeVerbose) {
+            if (nbOuvertures > 0) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+
+                unSelect();
+                supprimerToutesOuvertures();
+
+                if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                    $("span:contains('ossatureBois')").click();
+            }
+        }
+
         // On masque certains murs de la travée courante et également des travées adjacentes.
         if (traveeDroite) {
             var decalageTraveeDroite = tableauTravees[nomTraveeDroite]['decalage'];
@@ -814,6 +827,18 @@ export function decalerTravee(nomTravee, direction, modeVerbose = true) {
                 alerte("Décalage refusé : nombre maximum de travées atteint (" + NB_TRAVEES_MAXI + ").");
             }
             return;
+        }
+
+        if (modeVerbose) {
+            if (nbOuvertures > 0) {
+                if (!confirm("Vous allez perdre toutes les ouvertures déjà créées. Continuer ?")) return;
+
+                unSelect();
+                supprimerToutesOuvertures();
+
+                if ($("span:contains('ossatureBois')").parent().find("input[type='checkbox']").prop('checked'))
+                    $("span:contains('ossatureBois')").click();
+            }
         }
 
         // On masque certains murs de la travée courante et également des travées adjacentes.
