@@ -83,6 +83,7 @@ export function supprimerToutesOuvertures() {
     }
 
     inventaire["MPE"] = inventaire["MPF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPEF"] = inventaire["MPI"] = 0;
+    inventaire["MF1R"] = inventaire["MF2R"] = inventaire["MPER"] = 0;
 
     // On supprime également tous les solivages
     for (var i = 1; i <= nbTravees; i++) {
@@ -177,7 +178,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 
     } else { // Ouvertures "classiques"
 
-        if (typeOuverture === 'F2' || typeOuverture === 'PF') nbPanneaux = 2;
+        if (typeOuverture === 'F2' || typeOuverture === 'PF' || typeOuverture === 'F2R') nbPanneaux = 2;
 
         // On constitue en premier le chassis
         var windowGeometry = new THREE.Shape();
@@ -226,7 +227,7 @@ export function creerOuverture(nomTravee, face, typeOuverture, forcerIncrustatio
 
 
         // Eventuellement, une vitre
-        if (typeOuverture.includes('F1') || typeOuverture == 'F2' || typeOuverture == 'PF') {
+        if (typeOuverture.includes('F1') || typeOuverture == 'F2' || typeOuverture == 'F2R' || typeOuverture == 'PF') {
             var windowGlass = new THREE.Mesh(new THREE.BoxGeometry(largeur - 0.5, hauteur - 0.5, EPAISSEUR_MUR + 0.2), glassMaterial);
             windowGlass.position.set(.5, .5, 0);
             windowGlass.name = nomTravee + '>' + face + '>Ouverture ' + typeOuverture + '>Vitre';
@@ -384,7 +385,7 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
     if (Array.isArray(ouvertures)) nomOuverture = "PE+F1";
     else nomOuverture = ouvertures.name;
 
-    // A la création d'uneouverture, on rajoute TOUJOURS dans la scene la texture "classique" d'abord...
+    // A la création d'une ouverture, on rajoute TOUJOURS dans la scene la texture "classique" d'abord...
     if (nomOuverture != "PE+F1") { // Ouverture classique, hors combo "PE + F1"
 
         scene.getObjectByName(nomTravee).add(ouvertures);
@@ -453,6 +454,18 @@ export function traitementCreationOuverture(nomTravee, nomFace, ouvertures) {
                         break;
                     case "PG2":
                         material = MPG2_Material;
+                        break;
+                    case "F2R":
+                        material = MF2_Material;
+                        break;
+                    case "F1dR":
+                        material = MF1d_Material;
+                        break;
+                    case "F1gR":
+                        material = MF1g_Material;
+                        break;
+                    case "PER":
+                        material = MPE_Material;
                         break;
                 }
                 scene.getObjectByName(mur).material = material;

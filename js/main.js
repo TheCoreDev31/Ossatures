@@ -593,6 +593,7 @@ export function initObjetsSysteme() {
 
 function initInventaire() {
     inventaire["MPL"] = inventaire["MPE"] = inventaire["MPF"] = inventaire["MPEF"] = inventaire["MF1"] = inventaire["MF2"] = inventaire["MPG1"] = inventaire["MPG2"] = inventaire["MPI"] = 0;
+    inventaire["MF1R"] = inventaire["MF2R"] = inventaire["MPER"] = 0;
 
     inventaire["CH1T"] = inventaire["CHTS"] = 0;
 
@@ -630,6 +631,21 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PE']['coutFourchetteBasse'] = 0;
     PRODUITS['PE']['coutFourchetteHaute'] = 0;
 
+    PRODUITS['PER'] = new Array();
+    PRODUITS['PER']['VT'] = 3;
+    PRODUITS['PER']['largeur'] = 9;
+    PRODUITS['PER']['hauteur'] = 21.5;
+    PRODUITS['PER']['epaisseur'] = 3;
+    PRODUITS['PER']['elevation'] = 0.3;
+    PRODUITS['PER']['interieur'] = true;
+    PRODUITS['PER']['exterieur'] = true;
+    PRODUITS['PER']['decalageX'] = 0.1;
+    PRODUITS['PER']['codeModule'] = 'MPER';
+    PRODUITS['PER']['categorie'] = "Porte d'entrée";
+    PRODUITS['PER']['libelleModule'] = 'Porte entrée 90x215 renforcée';
+    PRODUITS['PER']['coutFourchetteBasse'] = 0;
+    PRODUITS['PER']['coutFourchetteHaute'] = 0;
+
     PRODUITS['F1d'] = new Array();
     PRODUITS['F1d']['VT'] = 2;
     PRODUITS['F1d']['largeur'] = 4.5;
@@ -644,6 +660,21 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1d']['libelleModule'] = 'Fenêtre 45x65';
     PRODUITS['F1d']['coutFourchetteBasse'] = 0;
     PRODUITS['F1d']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['F1dR'] = new Array();
+    PRODUITS['F1dR']['VT'] = 3;
+    PRODUITS['F1dR']['largeur'] = 4.5;
+    PRODUITS['F1dR']['hauteur'] = 6.5;
+    PRODUITS['F1dR']['epaisseur'] = 3;
+    PRODUITS['F1dR']['elevation'] = 14.8;
+    PRODUITS['F1dR']['interieur'] = false;
+    PRODUITS['F1dR']['exterieur'] = true;
+    PRODUITS['F1dR']['decalageX'] = 8.8;
+    PRODUITS['F1dR']['codeModule'] = 'MF1R';
+    PRODUITS['F1dR']['categorie'] = 'Fenêtre';
+    PRODUITS['F1dR']['libelleModule'] = 'Fenêtre 45x65 renforcée';
+    PRODUITS['F1dR']['coutFourchetteBasse'] = 0;
+    PRODUITS['F1dR']['coutFourchetteHaute'] = 0;
 
     PRODUITS['F1g'] = new Array();
     PRODUITS['F1g']['VT'] = 2;
@@ -660,6 +691,21 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F1g']['coutFourchetteBasse'] = 0;
     PRODUITS['F1g']['coutFourchetteHaute'] = 0;
 
+    PRODUITS['F1gR'] = new Array();
+    PRODUITS['F1gR']['VT'] = 3;
+    PRODUITS['F1gR']['largeur'] = 4.5;
+    PRODUITS['F1gR']['hauteur'] = 6.5;
+    PRODUITS['F1gR']['epaisseur'] = 3;
+    PRODUITS['F1gR']['elevation'] = 14.8;
+    PRODUITS['F1gR']['interieur'] = false;
+    PRODUITS['F1gR']['exterieur'] = true;
+    PRODUITS['F1gR']['decalageX'] = -8.8;
+    PRODUITS['F1gR']['codeModule'] = 'MF1R';
+    PRODUITS['F1gR']['categorie'] = 'Fenêtre';
+    PRODUITS['F1gR']['libelleModule'] = 'Fenêtre 45x65 renforcée';
+    PRODUITS['F1gR']['coutFourchetteBasse'] = 0;
+    PRODUITS['F1gR']['coutFourchetteHaute'] = 0;
+
     PRODUITS['F2'] = new Array();
     PRODUITS['F2']['VT'] = 2;
     PRODUITS['F2']['largeur'] = 10.5;
@@ -674,6 +720,21 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['F2']['libelleModule'] = 'Fenêtre 105x115';
     PRODUITS['F2']['coutFourchetteBasse'] = 0;
     PRODUITS['F2']['coutFourchetteHaute'] = 0;
+
+    PRODUITS['F2R'] = new Array();
+    PRODUITS['F2R']['VT'] = 3;
+    PRODUITS['F2R']['largeur'] = 10.5;
+    PRODUITS['F2R']['hauteur'] = 11.5;
+    PRODUITS['F2R']['epaisseur'] = 3;
+    PRODUITS['F2R']['elevation'] = 10;
+    PRODUITS['F2R']['interieur'] = false;
+    PRODUITS['F2R']['exterieur'] = true;
+    PRODUITS['F2R']['decalageX'] = -0.5;
+    PRODUITS['F2R']['codeModule'] = 'MF2R';
+    PRODUITS['F2R']['categorie'] = 'Fenêtre';
+    PRODUITS['F2R']['libelleModule'] = 'Fenêtre 105x115 renforcée';
+    PRODUITS['F2R']['coutFourchetteBasse'] = 0;
+    PRODUITS['F2R']['coutFourchetteHaute'] = 0;
 
     PRODUITS['PF'] = new Array();
     PRODUITS['PF']['VT'] = 1.4;
@@ -1478,18 +1539,44 @@ export function verifierContraintes(objet) {
     coteFace = faceInterieureOuExterieure(objet);
     typesOuverturesAutorisees = chercherOuverturesCandidates(delta, coteFace);
 
-    // Cas particulier du MPG2 : on ne le propose qu'en façade, et uniquement pour les constructions à 1 ou 2 travées.
-    if (typesOuverturesAutorisees.indexOf("PG2") > -1) {
-        var aSupprimer = false;
+    // Cas particulier des modules renforcés (MPG2, MF2R, ...) : on ne les propose qu'en façade, et uniquement pour les constructions à 1 (pour tous) ou 2 travées (uniquement pour MPG2).
+    if (typesOuverturesAutorisees.indexOf("PG2") > -1 ||
+        typesOuverturesAutorisees.indexOf("PER") > -1 ||
+        typesOuverturesAutorisees.indexOf("F1gR") > -1 ||
+        typesOuverturesAutorisees.indexOf("F1dR") > -1 ||
+        typesOuverturesAutorisees.indexOf("F2R") > -1) {
+        var aSupprimer = [];
         if (nomFace != "AV" && nomFace != "AR")
-            aSupprimer = true;
+            aSupprimer = ['PG2', 'F1dR', 'F1gR', 'F2R', 'PER'];
         else {
-            if (traveesMemeConstruction.length > 2)
-                aSupprimer = true;
+            if ((typesOuverturesAutorisees.indexOf("PG2") > -1) && (traveesMemeConstruction.length > 2))
+                aSupprimer.push('PG2');
+
+            if ((traveesMemeConstruction.length > 1) && (
+                    typesOuverturesAutorisees.indexOf("F1gR") > -1 ||
+                    typesOuverturesAutorisees.indexOf("F1dR") > -1 ||
+                    typesOuverturesAutorisees.indexOf("F2R") > -1 ||
+                    typesOuverturesAutorisees.indexOf("PER") > -1
+                )) {
+                aSupprimer.push('F1dR');
+                aSupprimer.push('F1gR');
+                aSupprimer.push('F2R');
+                aSupprimer.push('PER');
+            }
         }
 
-        if (aSupprimer)
+        if (aSupprimer.length > 0) {
+            aSupprimer.forEach(function (item) {
+                typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf(item), 1);
+            });
+            /*
             typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('PG2'), 1);
+            typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('F1gR'), 1);
+            typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('F1dR'), 1);
+            typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('F2R'), 1);
+            typesOuverturesAutorisees.splice(typesOuverturesAutorisees.indexOf('PER'), 1);
+            */
+        }
     }
 
     if (DEBUG) {

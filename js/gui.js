@@ -549,7 +549,7 @@ export function displayGui() {
         };
 
 
-        this.genererDevis = function () {
+        this.genererDemandePrix = function () {
 
             if (!verifierControlesMetier()) return;
 
@@ -970,6 +970,18 @@ export function displayGui() {
                                             case "PG2":
                                                 child.material = MPG2_Material;
                                                 break;
+                                            case "PER":
+                                                child.material = MPE_Material;
+                                                break;
+                                            case "F1dR":
+                                                child.material = MF1d_Material;
+                                                break;
+                                            case "F1gR":
+                                                child.material = MF1g_Material;
+                                                break;
+                                            case "F2R":
+                                                child.material = MF2_Material;
+                                                break;
                                         }
                                     }
                                 });
@@ -1023,7 +1035,7 @@ export function displayGui() {
 
 
     var guiMisc = myGui.addFolder("Diverses actions");
-    guiMisc.add(controller, 'genererDevis');
+    guiMisc.add(controller, 'genererDemandePrix');
     guiMisc.add(controller, 'sauvegarderCeProjet');
     guiMisc.add(controller, 'importerUnProjet');
     guiMisc.open();
