@@ -637,7 +637,7 @@ function initCaracteristiquesOuvertures() {
     PRODUITS['PER']['hauteur'] = 21.5;
     PRODUITS['PER']['epaisseur'] = 3;
     PRODUITS['PER']['elevation'] = 0.3;
-    PRODUITS['PER']['interieur'] = true;
+    PRODUITS['PER']['interieur'] = false;
     PRODUITS['PER']['exterieur'] = true;
     PRODUITS['PER']['decalageX'] = 0.1;
     PRODUITS['PER']['codeModule'] = 'MPER';
