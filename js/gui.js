@@ -561,7 +561,7 @@ export function displayGui() {
             var modePDF = true;
             var screenshot1, screenshot2, screenshot3, screenshot4, screenshot5, screenshot6, screenshot7, screenshot8, screenshot9;
 
-            var coordonneesClient = prompt("Veuillez indiquer le nom et prénom à faire figurer dans le devis SVP.", "Client sans nom");
+            var coordonneesClient = prompt("Veuillez indiquer le nom et prénom à faire figurer dans la demande de prix SVP.", "Client sans nom");
             if (coordonneesClient === null) return;
             var maintenant = new Date();
 
@@ -767,7 +767,7 @@ export function displayGui() {
             };
 
             jsreport.renderAsync(request).then(function (res) {
-                res.download('devis_maninghem.pdf')
+                res.download('Demande de prix Econologis.pdf')
                 $("#popup-attente").hide();
                 $("#overlay").hide();
             });
